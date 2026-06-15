@@ -9,11 +9,11 @@ import com.cheesecomer.rewardseal.data.source.database.entity.RewardSheetEntity
 
 @Dao
 interface RewardSheetDao {
-    @Query("SELECT * FROM reward_sheets")
+    @Query("SELECT * FROM reward_sheets WHERE deletedAt IS NULL")
     suspend fun findAll(): List<RewardSheetEntity>
 
-    @Query("SELECT * FROM reward_sheets WHERE goalCount > currentCount")
-    suspend fun findActive(): List<RewardSheetEntity>
+    @Query("SELECT * FROM reward_sheets WHERE id = (SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL)")
+    suspend fun findExchangeable(): List<RewardSheetEntity>
 
     @Query("SELECT * FROM reward_sheets WHERE id = :id")
     suspend fun findById(id: Long): RewardSheetEntity?

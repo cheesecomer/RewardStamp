@@ -48,11 +48,11 @@ fun SheetDetailScreen(
             application.rewardStampRepository
         )
     )
-    var showStampDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(sheetId) {
         viewModel.load(sheetId)
     }
+    var showStampDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember {
         mutableStateOf(false)
     }
@@ -155,9 +155,6 @@ fun SheetDetailScreen(
                 onRestartWithEditClick = {
                     onRestartWithEditClick(sheetId)
                 },
-                onReceiveLaterClick = {
-                    onBackClick()
-                },
             )
         } else {
             Text("${sheet.currentCount} / ${sheet.goalCount}")
@@ -177,7 +174,7 @@ fun SheetDetailScreen(
                 Text("削除")
             }
             if (sheet.currentCount >= sheet.goalCount) {
-                Text("ごほうび達成！ ${sheet.reward}")
+                Text("ごほうび達成！")
             }
             RewardBoardView(
                 board = RewardBoardState(
@@ -198,7 +195,6 @@ fun CompletedSheetActions(
     sheet: RewardSheet,
     onRestartClick: () -> Unit,
     onRestartWithEditClick: () -> Unit,
-    onReceiveLaterClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -206,32 +202,22 @@ fun CompletedSheetActions(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Text(
-            text = "🎉 ごほうび達成！",
+            text = "\uD83C\uDF89 シートが満タンになりました！",
             style = MaterialTheme.typography.headlineMedium,
         )
 
-        Text("${sheet.title} を ${sheet.goalCount}回 がんばりました")
+        Text("${sheet.title} を ${sheet.goalCount}回 がんばってシートを満タンにしました。")
 
         Text(
-            text = "ごほうび：${sheet.reward}",
-            style = MaterialTheme.typography.titleMedium,
-        )
-
-        Text(
-            text = "ごほうびを受け取ったら、\n未受領ごほうび一覧からチェックできます。",
+            text = "ごほうび交換画面で、ためたシートとごほうびを交換できます。",
             style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Text(
-            text = "次のチャレンジをはじめますか？",
-            style = MaterialTheme.typography.titleMedium,
         )
 
         Button(
             onClick = onRestartClick,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            Text("同じ内容でもう一度がんばる")
+            Text("もっとがんばる")
         }
 
         Button(
@@ -239,13 +225,6 @@ fun CompletedSheetActions(
             modifier = Modifier.fillMaxWidth(),
         ) {
             Text("ごほうびや回数を変えてがんばる")
-        }
-
-        TextButton(
-            onClick = onReceiveLaterClick,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text("あとでごほうびをうけとる")
         }
     }
 }

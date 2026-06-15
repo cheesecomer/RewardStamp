@@ -48,20 +48,15 @@ fun CompletedRewardDetailScreen(
         )
 
         Text(
-            text = reward.title,
-            style = MaterialTheme.typography.titleLarge,
+            text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
+            style = MaterialTheme.typography.headlineSmall
         )
 
-        Text("${reward.goalCount}回 がんばりました")
-        Text("ごほうび：${reward.reward}")
-
-        Text(
-            text = if (reward.rewardReceived) {
-                "ごほうび受け取り済み"
-            } else {
-                "ごほうび未受領"
-            }
-        )
+        if (reward.consumedAt != null) {
+            Text(
+                text = "交換済み"
+            )
+        }
 
         RewardBoardView(
             board = RewardBoardState(

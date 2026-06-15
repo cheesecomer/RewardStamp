@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -25,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
-import com.cheesecomer.rewardseal.ui.screen.sheetlist.SheetListViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,6 +41,7 @@ fun SheetEditScreen(
     val viewModel: SheetEditViewModel = viewModel(
         factory = SheetEditViewModel.factory(
             application.rewardSheetRepository,
+            application.rewardMilestoneRepository
         )
     )
 
@@ -52,7 +54,9 @@ fun SheetEditScreen(
     val uiState = viewModel.uiState
 
     Column(
-        modifier = modifier.padding(16.dp),
+        modifier = modifier
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         CenterAlignedTopAppBar(
@@ -91,14 +95,14 @@ fun SheetEditScreen(
             )
         }
 
-        OutlinedTextField(
-            value = uiState.reward,
-            onValueChange = { viewModel.updateReward(it) },
-            label = { Text("ごほうび") },
-            placeholder = { Text("アイス") },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true,
-        )
+//        OutlinedTextField(
+//            value = uiState.reward,
+//            onValueChange = { viewModel.updateReward(it) },
+//            label = { Text("ごほうび") },
+//            placeholder = { Text("アイス") },
+//            modifier = Modifier.fillMaxWidth(),
+//            singleLine = true,
+//        )
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -143,13 +147,20 @@ fun SheetEditScreen(
             }
         }
 
+        MilestoneFormList(
+            milestones = uiState.milestones,
+            onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
+            onRewardChange = viewModel::updateMilestoneReward,
+            onAddClick = viewModel::addMilestone,
+            onRemoveClick = viewModel::removeMilestone,
+        )
+
         Button(
             onClick = {
-                viewModel.save()
-                onSaveClick()
+                viewModel.save(onSaveClick)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.title.isNotBlank() && uiState.reward.isNotBlank(),
+            enabled = uiState.title.isNotBlank() && uiState.hasReward(),
         ) {
             Text("保存")
         }

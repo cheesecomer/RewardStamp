@@ -90,16 +90,16 @@ class SheetDetailViewModel(
                     id = 0,
                     sheetId = sheet.id,
                     title = sheet.title,
-                    reward = sheet.reward,
                     goalCount = sheet.goalCount,
                     completedAt = LocalDateTime.now(),
-                    rewardReceived = false
+                    consumedAt = null
                 )
             )
             rewardStampRepository.attachToCompletedRewardSheet(
                 sheetId = sheet.id,
                 completedRewardSheetId = completedRewardSheetId,
             )
+            rewardSheetRepository.restart(sheet.id)
         }
     }
 
@@ -110,9 +110,6 @@ class SheetDetailViewModel(
     }
 
     fun restart(sheetId: Long) {
-        viewModelScope.launch {
-            rewardSheetRepository.restart(sheetId)
-        }
         load(sheetId)
     }
 }

@@ -97,6 +97,9 @@ fun RewardSealNavHost(
             UnreceivedRewardListScreen(
                 onBackClick = {
                     navController.popBackStack()
+                },
+                onRestartWithEditClick = { sheetId ->
+                    navController.navigate(Route.sheetEdit(sheetId))
                 }
             )
         }

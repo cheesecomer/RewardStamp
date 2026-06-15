@@ -9,26 +9,37 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
-import com.cheesecomer.rewardseal.model.CompletedRewardSheet
+import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
+import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
+import com.cheesecomer.rewardseal.model.RewardMilestone
 import kotlinx.coroutines.launch
 
+
 class UnreceivedRewardListViewModel(
-    private val completedRewardSheetRepository: CompletedRewardSheetRepository
+    private val rewardSheetRepository: RewardSheetRepository,
+    private val completedRewardSheetRepository: CompletedRewardSheetRepository,
+    private val milestoneRepository: RewardMilestoneRepository
 ) : ViewModel() {
     companion object {
         fun factory(
-            completedRewardSheetRepository: CompletedRewardSheetRepository
+            rewardSheetRepository: RewardSheetRepository,
+            completedRewardSheetRepository: CompletedRewardSheetRepository,
+            milestoneRepository: RewardMilestoneRepository
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     UnreceivedRewardListViewModel(
-                        completedRewardSheetRepository
+                        rewardSheetRepository,
+                        completedRewardSheetRepository,
+                        milestoneRepository
                     )
                 }
             }
     }
 
-    var rewards by mutableStateOf<List<CompletedRewardSheet>>(emptyList())
+    var uiState by mutableStateOf(
+        UnreceivedRewardListUiState()
+    )
         private set
 
     init {
@@ -37,14 +48,26 @@ class UnreceivedRewardListViewModel(
 
     fun reload() {
         viewModelScope.launch {
-            rewards = completedRewardSheetRepository.findUnreceived()
+            uiState = uiState.copy(
+                sheets = rewardSheetRepository.findExchangeable().map {
+                    val unconsumedCompletedCount = completedRewardSheetRepository.countExchangeableBySheetId(it.id)
+                    ExchangeableRewardListItemState(
+                        id = it.id,
+                        title = it.title,
+                        unconsumedCompletedCount = unconsumedCompletedCount,
+                        exchangeableMilestones =
+                            milestoneRepository.findExchangeableBySheetId(it.id, unconsumedCompletedCount),
+                        nextMilestone = milestoneRepository.findNext(it.id, unconsumedCompletedCount)
+                    )
+                }
+            )
         }
     }
 
-    fun receiveReward(id: Long) {
+    fun receiveReward(id: Long, milestone: RewardMilestone) {
         viewModelScope.launch {
-            completedRewardSheetRepository.markRewardReceived(id)
+            completedRewardSheetRepository.markRewardReceived(id, milestone.requiredCompletions)
+            reload()
         }
-        reload()
     }
 }
