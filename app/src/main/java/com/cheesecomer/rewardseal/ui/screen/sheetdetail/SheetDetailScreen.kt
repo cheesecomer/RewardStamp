@@ -26,7 +26,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.model.RewardSheet
-import com.cheesecomer.rewardseal.ui.screen.sheetlist.SheetListViewModel
+import com.cheesecomer.rewardseal.model.StampType
+import com.cheesecomer.rewardseal.ui.component.RewardBoardState
+import com.cheesecomer.rewardseal.ui.component.RewardBoardView
+import com.cheesecomer.rewardseal.ui.component.StampTypeGrid
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,9 +44,12 @@ fun SheetDetailScreen(
     val viewModel: SheetDetailViewModel = viewModel(
         factory = SheetDetailViewModel.factory(
             application.rewardSheetRepository,
-            application.completedRewardSheetRepository
+            application.completedRewardSheetRepository,
+            application.rewardStampRepository
         )
     )
+    var showStampDialog by remember { mutableStateOf(false) }
+
     LaunchedEffect(sheetId) {
         viewModel.load(sheetId)
     }
@@ -91,6 +97,38 @@ fun SheetDetailScreen(
             }
         )
     }
+    if (showStampDialog) {
+        AlertDialog(
+            onDismissRequest = {
+                showStampDialog = false
+            },
+            title = {
+                Text("スタンプを選ぶ")
+            },
+            text = {
+                StampTypeGrid(
+                    selectedStampType = StampType.Star,
+                    onStampTypeClick = { stampType ->
+                        showStampDialog = false
+                        viewModel.increment(
+                            sheetId = sheetId,
+                            stampType = stampType,
+                        )
+                    }
+                )
+            },
+            confirmButton = {},
+            dismissButton = {
+                TextButton(
+                    onClick = {
+                        showStampDialog = false
+                    }
+                ) {
+                    Text("キャンセル")
+                }
+            }
+        )
+    }
 
     Column {
         CenterAlignedTopAppBar(
@@ -125,7 +163,7 @@ fun SheetDetailScreen(
             Text("${sheet.currentCount} / ${sheet.goalCount}")
             Button(
                 onClick = {
-                    viewModel.increment(sheetId)
+                    showStampDialog = true
                 },
                 enabled = sheet.currentCount < sheet.goalCount,
             ) {
@@ -141,6 +179,15 @@ fun SheetDetailScreen(
             if (sheet.currentCount >= sheet.goalCount) {
                 Text("ごほうび達成！ ${sheet.reward}")
             }
+            RewardBoardView(
+                board = RewardBoardState(
+                    title = sheet.title,
+                    currentCount = sheet.currentCount,
+                    goalCount = sheet.goalCount,
+                ),
+                stamps = uiState.stamps,
+                modifier = Modifier.weight(1f)
+            )
         }
     }
 }

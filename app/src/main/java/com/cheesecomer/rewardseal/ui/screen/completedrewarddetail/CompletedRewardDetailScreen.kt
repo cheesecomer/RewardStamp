@@ -11,6 +11,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.ui.component.RewardBoardState
+import com.cheesecomer.rewardseal.ui.component.RewardBoardView
 
 @Composable
 fun CompletedRewardDetailScreen(
@@ -22,6 +24,7 @@ fun CompletedRewardDetailScreen(
     val viewModel: CompletedRewardDetailViewModel = viewModel(
         factory = CompletedRewardDetailViewModel.factory(
             application.completedRewardSheetRepository,
+            application.rewardStampRepository
         )
     )
 
@@ -60,6 +63,14 @@ fun CompletedRewardDetailScreen(
             }
         )
 
-        Text("ここに将来、双六マップとスタンプ日付を表示する")
+        RewardBoardView(
+            board = RewardBoardState(
+                title = reward.title,
+                currentCount = reward.goalCount,
+                goalCount = reward.goalCount,
+            ),
+            stamps = uiState.stamps,
+            modifier = Modifier.weight(1f)
+        )
     }
 }

@@ -5,14 +5,17 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.cheesecomer.rewardseal.data.source.database.dao.CompletedRewardSheetDao
 import com.cheesecomer.rewardseal.data.source.database.dao.RewardSheetDao
+import com.cheesecomer.rewardseal.data.source.database.dao.RewardStampDao
 import com.cheesecomer.rewardseal.data.source.database.entity.CompletedRewardSheetEntity
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardSheetEntity
+import com.cheesecomer.rewardseal.data.source.database.entity.RewardStampEntity
 
 @Database(
     exportSchema = false,
     entities = [
         RewardSheetEntity::class,
         CompletedRewardSheetEntity::class,
+        RewardStampEntity::class,
     ],
     version = 1,
 )
@@ -20,4 +23,5 @@ import com.cheesecomer.rewardseal.data.source.database.entity.RewardSheetEntity
 abstract class AppDatabase : RoomDatabase() {
     abstract fun rewardSheetDao(): RewardSheetDao
     abstract fun completedRewardSheetDao(): CompletedRewardSheetDao
+    abstract fun rewardStampDao(): RewardStampDao
 }

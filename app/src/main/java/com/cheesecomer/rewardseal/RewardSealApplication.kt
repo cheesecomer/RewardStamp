@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
 
 class RewardSealApplication : Application() {
@@ -21,5 +22,8 @@ class RewardSealApplication : Application() {
 
     val completedRewardSheetRepository: CompletedRewardSheetRepository by lazy {
         CompletedRewardSheetRepository(database.completedRewardSheetDao())
+    }
+    val rewardStampRepository: RewardStampRepository by lazy {
+        RewardStampRepository(database.rewardStampDao())
     }
 }

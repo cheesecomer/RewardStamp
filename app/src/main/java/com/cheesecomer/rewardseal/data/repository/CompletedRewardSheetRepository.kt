@@ -8,8 +8,8 @@ import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 class CompletedRewardSheetRepository(
     private val dao: CompletedRewardSheetDao
 ) {
-    suspend fun save(completedSheet: CompletedRewardSheet) {
-        dao.insert(completedSheet.toEntity())
+    suspend fun save(completedSheet: CompletedRewardSheet): Long {
+        return dao.insert(completedSheet.toEntity())
     }
 
     suspend fun findAll(): List<CompletedRewardSheet> {

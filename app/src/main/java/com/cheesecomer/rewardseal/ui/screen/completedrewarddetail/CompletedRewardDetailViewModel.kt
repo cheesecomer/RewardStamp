@@ -9,22 +9,26 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import com.cheesecomer.rewardseal.ui.screen.completedrewardlist.CompletedRewardListViewModel
 import kotlinx.coroutines.launch
 
 class CompletedRewardDetailViewModel(
-    private val completedRewardSheetRepository: CompletedRewardSheetRepository
+    private val completedRewardSheetRepository: CompletedRewardSheetRepository,
+    private val rewardStampRepository: RewardStampRepository
 
 ) : ViewModel() {
     companion object {
         fun factory(
             completedRewardSheetRepository: CompletedRewardSheetRepository,
+            rewardStampRepository: RewardStampRepository
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     CompletedRewardDetailViewModel(
-                        completedRewardSheetRepository
+                        completedRewardSheetRepository,
+                        rewardStampRepository
                     )
                 }
             }
@@ -38,10 +42,11 @@ class CompletedRewardDetailViewModel(
     var reward by mutableStateOf<CompletedRewardSheet?>(null)
         private set
 
-    fun load(sheetId: Long) {
+    fun load(completedRewardSheetId: Long) {
         viewModelScope.launch {
             uiState = uiState.copy(
-                reward = completedRewardSheetRepository.findById(sheetId)
+                reward = completedRewardSheetRepository.findById(completedRewardSheetId),
+                stamps = rewardStampRepository.findByCompletedRewardSheetId(completedRewardSheetId)
             )
         }
     }
