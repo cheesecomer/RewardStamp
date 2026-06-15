@@ -58,21 +58,17 @@ fun CompletedRewardListScreen(
                         modifier = Modifier.padding(16.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
-                        Text(
-                            text = reward.title,
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-
-                        Text("${reward.goalCount}回 達成")
-                        Text("ごほうび：${reward.reward}")
 
                         Text(
-                            text = if (reward.rewardReceived) {
-                                "ごほうび受け取り済み"
-                            } else {
-                                "ごほうび未受領"
-                            }
+                            text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
+//                            style = MaterialTheme.typography.headlineMedium
                         )
+
+                        if (reward.consumedAt != null) {
+                            Text(
+                                text = "交換済み"
+                            )
+                        }
                     }
                 }
             }

@@ -11,10 +11,9 @@ fun CompletedRewardSheetEntity.toModel(): CompletedRewardSheet {
         id = id,
         sheetId = sheetId,
         title = title,
-        reward = reward,
         goalCount = goalCount,
         completedAt = completedAt,
-        rewardReceived = rewardReceived
+        consumedAt = consumedAt
     )
 }
 fun CompletedRewardSheet.toEntity(): CompletedRewardSheetEntity {
@@ -22,9 +21,8 @@ fun CompletedRewardSheet.toEntity(): CompletedRewardSheetEntity {
         id = id,
         sheetId = sheetId,
         title = title,
-        reward = reward,
         goalCount = goalCount,
         completedAt = completedAt,
-        rewardReceived = rewardReceived
+        consumedAt = consumedAt
     )
 }

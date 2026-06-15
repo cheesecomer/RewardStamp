@@ -49,7 +49,7 @@ class SheetListViewModel(
 
     fun reload() {
         viewModelScope.launch {
-            sheets = rewardSheetRepository.findActive()
+            sheets = rewardSheetRepository.findAll()
             unreceivedRewardCount = completedRewardSheetRepository.countUnreceived()
             completedRewardCount = completedRewardSheetRepository.countAll()
         }

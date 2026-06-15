@@ -4,6 +4,7 @@ import com.cheesecomer.rewardseal.data.source.database.dao.RewardSheetDao
 import com.cheesecomer.rewardseal.data.source.database.mapper.toEntity
 import com.cheesecomer.rewardseal.data.source.database.mapper.toModel
 import com.cheesecomer.rewardseal.model.RewardSheet
+import java.time.LocalDateTime
 
 class RewardSheetRepository(
     private val dao: RewardSheetDao,
@@ -14,18 +15,23 @@ class RewardSheetRepository(
             ?.toModel()
     }
 
-    suspend fun save(sheet: RewardSheet) {
+    suspend fun save(sheet: RewardSheet): Long {
         val entity = sheet.toEntity()
 
         if (sheet.id == 0L) {
-            dao.insert(entity)
+            return dao.insert(entity)
         } else {
             dao.update(entity)
+            return entity.id
         }
     }
+    suspend fun findExchangeable(): List<RewardSheet> {
+        return dao.findExchangeable()
+            .map { it.toModel() }
+    }
 
-    suspend fun findActive(): List<RewardSheet> {
-        return dao.findActive()
+    suspend fun findAll(): List<RewardSheet> {
+        return dao.findAll()
             .map { it.toModel() }
     }
 
@@ -61,6 +67,6 @@ class RewardSheetRepository(
             return
         }
 
-        dao.delete(sheet)
+        dao.update(sheet.copy(deletedAt = LocalDateTime.now()))
     }
 }

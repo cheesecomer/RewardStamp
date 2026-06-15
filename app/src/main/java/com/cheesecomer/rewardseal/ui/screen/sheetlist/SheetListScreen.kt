@@ -58,7 +58,7 @@ fun SheetListScreen(
                     }
             ) {
                 Text(
-                    text = "未受領のごほうびがあります：${unreceivedRewardCount}件",
+                    text = "交換できるごほうびはあります：${unreceivedRewardCount}件",
                     modifier = Modifier.padding(16.dp)
                 )
             }

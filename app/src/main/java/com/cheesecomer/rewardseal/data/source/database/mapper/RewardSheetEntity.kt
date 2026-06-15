@@ -9,7 +9,6 @@ fun RewardSheetEntity.toModel(): RewardSheet {
     return RewardSheet(
         id = id,
         title = title,
-        reward = reward,
         currentCount = currentCount,
         goalCount = goalCount,
     )
@@ -18,8 +17,8 @@ fun RewardSheet.toEntity(): RewardSheetEntity {
     return RewardSheetEntity(
         id = id,
         title = title,
-        reward = reward,
         currentCount = currentCount,
         goalCount = goalCount,
+        deletedAt = null
     )
 }
