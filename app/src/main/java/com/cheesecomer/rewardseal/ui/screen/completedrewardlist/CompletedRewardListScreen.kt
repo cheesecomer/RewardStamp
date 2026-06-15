@@ -50,7 +50,7 @@ fun CompletedRewardListScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable() {
+                        .clickable {
                             onRewardClick(reward.id)
                         },
                 ) {

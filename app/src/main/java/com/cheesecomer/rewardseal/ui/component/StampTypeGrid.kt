@@ -1,6 +1,5 @@
 package com.cheesecomer.rewardseal.ui.component
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +22,6 @@ import com.cheesecomer.rewardseal.model.StampType
 
 @Composable
 fun StampTypeGrid(
-    selectedStampType: StampType,
     onStampTypeClick: (StampType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -37,7 +35,6 @@ fun StampTypeGrid(
         items(StampType.entries) { stampType ->
             StampTypeGridItem(
                 stampType = stampType,
-                selected = stampType == selectedStampType,
                 onClick = {
                     onStampTypeClick(stampType)
                 },
@@ -49,24 +46,14 @@ fun StampTypeGrid(
 @Composable
 private fun StampTypeGridItem(
     stampType: StampType,
-    selected: Boolean,
     onClick: () -> Unit,
 ) {
     Card(
         modifier = Modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick),
-        border = if (selected) {
-            BorderStroke(2.dp, MaterialTheme.colorScheme.primary)
-        } else {
-            null
-        },
         colors = CardDefaults.cardColors(
-            containerColor = if (selected) {
-                MaterialTheme.colorScheme.primaryContainer
-            } else {
-                MaterialTheme.colorScheme.surfaceVariant
-            },
+            containerColor = MaterialTheme.colorScheme.surfaceVariant,
         ),
     ) {
         Column(

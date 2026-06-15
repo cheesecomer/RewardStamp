@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -17,7 +16,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
@@ -28,6 +26,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.ui.component.dialog.ChoiceRewardDialog
+import com.cheesecomer.rewardseal.ui.component.dialog.ExchangeDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,76 +50,24 @@ fun ExchangeableRewardListScreen(
     if (showExchangeDialog != 0L) {
         val sheet = sheets.find { it.id == showExchangeDialog }!!
         if (sheet.exchangeableMilestones.size == 1) {
-            val milestone = sheet.exchangeableMilestones[0]
-            AlertDialog(
+            ExchangeDialog(
+                milestone = sheet.exchangeableMilestones[0],
                 onDismissRequest = {
                     showExchangeDialog = 0L
                 },
-                title = {
-                    Text("交換しますか？")
-                },
-                text = {
-                    Text("${milestone.reward} と交換しますか？")
-                },
-                confirmButton = {
-                    TextButton(
-                        onClick = {
-                            showExchangeDialog = 0L
-                            viewModel.receiveReward(sheet.id, milestone)
-                        }
-                    ) {
-                        Text("交換する")
-                    }
-                },
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showExchangeDialog = 0L
-                        }
-                    ) {
-                        Text("キャンセル")
-                    }
+                onRewardSelected = { milestone ->
+                    viewModel.receiveReward(sheet.id, milestone)
                 }
             )
         } else {
-            val milestones = sheet.exchangeableMilestones
-            AlertDialog(
+            ChoiceRewardDialog(
+                milestones = sheet.exchangeableMilestones,
                 onDismissRequest = {
                     showExchangeDialog = 0L
                 },
-                title = {
-                    Text("ごほうびを選んでね")
-                },
-                text = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                    ) {
-                        milestones.forEach { milestone ->
-                            TextButton(
-                                onClick = {
-                                    showExchangeDialog = 0L
-                                    viewModel.receiveReward(sheet.id, milestone)
-                                },
-                                modifier = Modifier.fillMaxWidth(),
-                            ) {
-                                Text(
-                                    text = "${milestone.reward}（${milestone.requiredCompletions}枚）",
-                                    modifier = Modifier.fillMaxWidth(),
-                                )
-                            }
-                        }
-                    }
-                },
-                confirmButton = {},
-                dismissButton = {
-                    TextButton(
-                        onClick = {
-                            showExchangeDialog = 0L
-                        },
-                    ) {
-                        Text("キャンセル")
-                    }
-                },
+                onRewardSelected = { milestone ->
+                    viewModel.receiveReward(sheet.id, milestone)
+                }
             )
         }
     }

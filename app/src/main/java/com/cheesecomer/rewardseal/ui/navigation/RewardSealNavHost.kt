@@ -94,7 +94,7 @@ fun RewardSealNavHost(
             )
         }
         composable(Route.EXCHANGEABLE_REWARD_LIST) {
-            ExchangeableRewardListScreen(
+                ExchangeableRewardListScreen(
                 onBackClick = {
                     navController.popBackStack()
                 }

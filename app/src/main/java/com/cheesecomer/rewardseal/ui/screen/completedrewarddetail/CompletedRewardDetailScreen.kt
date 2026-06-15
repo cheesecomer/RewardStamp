@@ -28,14 +28,15 @@ fun CompletedRewardDetailScreen(
         )
     )
 
-    LaunchedEffect(completedRewardId) {
-        viewModel.load(completedRewardId)
-    }
     val uiState = viewModel.uiState
     val reward = uiState.reward
     if (reward == null) {
         Text("見つかりません")
         return
+    }
+
+    LaunchedEffect(completedRewardId) {
+        viewModel.load(completedRewardId)
     }
 
     Column(
