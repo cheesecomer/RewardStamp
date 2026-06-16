@@ -8,16 +8,25 @@ import com.cheesecomer.rewardseal.model.RewardMilestone
 class RewardMilestoneRepository(
     private val dao: RewardMilestoneDao,
 ) {
-    suspend fun findBySheetId(sheetId: Long) : List<RewardMilestone> {
-        return dao.findBySheetId(sheetId).map { it.toModel() }
-    }
-    suspend fun findExchangeableBySheetId(sheetId: Long, requiredCompletions: Int) : List<RewardMilestone> {
-        return dao.findExchangeableBySheetId(sheetId, requiredCompletions).map { it.toModel() }
-    }
-    suspend fun findNext(sheetId: Long, requiredCompletions: Int) : RewardMilestone? {
-        return dao.findNext(sheetId, requiredCompletions)?.toModel()
-    }
-    suspend fun saveAll(sheetId: Long, rewardMilestones: List<RewardMilestone>) {
+    suspend fun findBySheetId(sheetId: Long): List<RewardMilestone> = dao.findBySheetId(sheetId).map { it.toModel() }
+
+    suspend fun findExchangeableBySheetId(
+        sheetId: Long,
+        completedCount: Int,
+    ): List<RewardMilestone> =
+        dao.findExchangeableBySheetId(sheetId, completedCount).map {
+            it.toModel()
+        }
+
+    suspend fun findNext(
+        sheetId: Long,
+        completedCount: Int,
+    ): RewardMilestone? = dao.findNext(sheetId, completedCount)?.toModel()
+
+    suspend fun saveAll(
+        sheetId: Long,
+        rewardMilestones: List<RewardMilestone>,
+    ) {
         val ids = rewardMilestones.map { it.id }.filter { it != 0L }
         if (ids.isNotEmpty()) {
             dao.deleteNotIn(sheetId, ids)

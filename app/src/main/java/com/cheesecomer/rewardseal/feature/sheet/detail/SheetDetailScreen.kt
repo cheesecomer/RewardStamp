@@ -14,10 +14,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -80,7 +80,7 @@ private fun SheetDetailDialogs(
     activeDialog: SheetDetailDialog?,
     onDismissRequest: () -> Unit,
     onDeleteRequest: () -> Unit,
-    onStampTypeSelected: (StampType) -> Unit,
+    onStampTypeSelect: (StampType) -> Unit,
 ) {
     when (activeDialog) {
         SheetDetailDialog.Delete -> {
@@ -93,7 +93,7 @@ private fun SheetDetailDialogs(
         SheetDetailDialog.Stamp -> {
             SelectStampDialog(
                 onDismissRequest = onDismissRequest,
-                onStampTypeSelected = onStampTypeSelected,
+                onStampTypeSelect = onStampTypeSelect,
             )
         }
 
@@ -107,10 +107,9 @@ private fun ProgressSheet(
     stamps: List<RewardStamp>,
     onEditRequest: () -> Unit,
     onDeleteRequest: () -> Unit,
-    onStampTypeSelected: (StampType) -> Unit,
+    onStampTypeSelect: (StampType) -> Unit,
 ) {
     var activeDialog by remember { mutableStateOf<SheetDetailDialog?>(null) }
-
 
     SheetDetailDialogs(
         activeDialog = activeDialog,
@@ -121,9 +120,9 @@ private fun ProgressSheet(
             activeDialog = null
             onDeleteRequest()
         },
-        onStampTypeSelected = { stampType ->
+        onStampTypeSelect = { stampType ->
             activeDialog = null
-            onStampTypeSelected(stampType)
+            onStampTypeSelect(stampType)
         },
     )
 
@@ -139,7 +138,7 @@ private fun ProgressSheet(
         }
 
         Button(
-            onClick = onEditRequest
+            onClick = onEditRequest,
         ) {
             Text("編集")
         }
@@ -147,42 +146,49 @@ private fun ProgressSheet(
         Button(
             onClick = {
                 activeDialog = SheetDetailDialog.Delete
-            }
+            },
         ) {
             Text("削除")
         }
 
         RewardBoardView(
-            board = RewardBoardState(
-                title = sheet.title,
-                currentCount = sheet.currentCount,
-                goalCount = sheet.goalCount,
-            ),
+            board =
+                RewardBoardState(
+                    title = sheet.title,
+                    currentCount = sheet.currentCount,
+                    goalCount = sheet.goalCount,
+                ),
             stamps = stamps,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
+}
+
+@Composable
+private fun sheetDetailViewModel(): SheetDetailViewModel {
+    val application =
+        LocalContext.current.applicationContext as RewardSealApplication
+    return viewModel<SheetDetailViewModel>(
+        factory =
+            SheetDetailViewModel.factory(
+                application.rewardSheetRepository,
+                application.completedRewardSheetRepository,
+                application.rewardStampRepository,
+            ),
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SheetDetailScreen(
     sheetId: Long,
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
-    onRestartWithEditClick: (sheetId: Long) -> Unit,
+    onRestartWithEditClick: (sheetId: Long) -> Unit = {},
+    viewModel: SheetDetailViewModel = sheetDetailViewModel(),
 ) {
-    val application =
-        LocalContext.current.applicationContext as RewardSealApplication
-    val viewModel: SheetDetailViewModel = viewModel(
-        factory = SheetDetailViewModel.factory(
-            application.rewardSheetRepository,
-            application.completedRewardSheetRepository,
-            application.rewardStampRepository
-        )
-    )
-
     LaunchedEffect(sheetId) {
         viewModel.load(sheetId)
     }
@@ -194,21 +200,21 @@ fun SheetDetailScreen(
         return
     }
 
-    Column {
+    Column(modifier = modifier) {
         CenterAlignedTopAppBar(
             title = {
                 Text(sheet.title)
             },
             navigationIcon = {
                 IconButton(
-                    onClick = onBackClick
+                    onClick = onBackClick,
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "戻る"
+                        contentDescription = "戻る",
                     )
                 }
-            }
+            },
         )
         if (sheet.isCompleted) {
             CompletedSheetActions(
@@ -230,7 +236,7 @@ fun SheetDetailScreen(
                         onDeleteClick()
                     }
                 },
-                onStampTypeSelected = { stampType ->
+                onStampTypeSelect = { stampType ->
                     viewModel.increment(
                         sheetId = sheetId,
                         stampType = stampType,

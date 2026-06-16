@@ -9,13 +9,9 @@ object Route {
     const val COMPLETED_REWARD_LIST = "completed_reward_list"
     const val COMPLETED_REWARD_DETAIL = "completed_reward_detail/{completedRewardId}"
 
-    fun sheetDetail(sheetId: Long): String {
-        return "sheet_detail/$sheetId"
-    }
-    fun sheetEdit(sheetId: Long): String {
-        return "sheet_edit/$sheetId"
-    }
-    fun completedRewardDetail(completedRewardId: Long): String {
-        return "completed_reward_detail/$completedRewardId"
-    }
+    fun sheetDetail(sheetId: Long): String = "sheet_detail/$sheetId"
+
+    fun sheetEdit(sheetId: Long): String = "sheet_edit/$sheetId"
+
+    fun completedRewardDetail(completedRewardId: Long): String = "completed_reward_detail/$completedRewardId"
 }

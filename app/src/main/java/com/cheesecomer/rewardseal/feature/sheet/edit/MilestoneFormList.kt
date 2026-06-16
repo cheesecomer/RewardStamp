@@ -85,9 +85,10 @@ private fun MilestoneFormItem(
                     label = {
                         Text("枚数")
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                        ),
                     singleLine = true,
                     modifier = Modifier.width(96.dp),
                 )

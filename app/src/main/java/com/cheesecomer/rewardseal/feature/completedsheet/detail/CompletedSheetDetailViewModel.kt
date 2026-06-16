@@ -1,6 +1,5 @@
-package com.cheesecomer.rewardseal.feature.completed_sheet.detail
+package com.cheesecomer.rewardseal.feature.completedsheet.detail
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,26 +15,25 @@ import kotlinx.coroutines.launch
 
 class CompletedSheetDetailViewModel(
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
-    private val rewardStampRepository: RewardStampRepository
-
+    private val rewardStampRepository: RewardStampRepository,
 ) : ViewModel() {
     companion object {
         fun factory(
             completedRewardSheetRepository: CompletedRewardSheetRepository,
-            rewardStampRepository: RewardStampRepository
+            rewardStampRepository: RewardStampRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     CompletedSheetDetailViewModel(
                         completedRewardSheetRepository,
-                        rewardStampRepository
+                        rewardStampRepository,
                     )
                 }
             }
     }
 
     var uiState by mutableStateOf(
-        CompletedSheetDetailUiState()
+        CompletedSheetDetailUiState(),
     )
         private set
 
@@ -44,10 +42,11 @@ class CompletedSheetDetailViewModel(
 
     fun load(completedRewardSheetId: Long) {
         viewModelScope.launch {
-            uiState = uiState.copy(
-                reward = completedRewardSheetRepository.findById(completedRewardSheetId),
-                stamps = rewardStampRepository.findByCompletedRewardSheetId(completedRewardSheetId)
-            )
+            uiState =
+                uiState.copy(
+                    reward = completedRewardSheetRepository.findById(completedRewardSheetId),
+                    stamps = rewardStampRepository.findByCompletedRewardSheetId(completedRewardSheetId),
+                )
         }
     }
 }

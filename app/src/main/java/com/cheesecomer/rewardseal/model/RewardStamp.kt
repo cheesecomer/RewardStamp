@@ -8,4 +8,5 @@ data class RewardStamp(
     val completedRewardSheetId: Long?,
     val position: Int,
     val stampType: StampType,
-    val stampedAt: LocalDateTime)
+    val stampedAt: LocalDateTime,
+)

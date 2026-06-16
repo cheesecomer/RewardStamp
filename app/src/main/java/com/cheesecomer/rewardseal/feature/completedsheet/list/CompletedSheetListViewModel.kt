@@ -1,7 +1,7 @@
-package com.cheesecomer.rewardseal.feature.completed_sheet.list
+package com.cheesecomer.rewardseal.feature.completedsheet.list
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -13,17 +13,14 @@ import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import kotlinx.coroutines.launch
 
 class CompletedSheetListViewModel(
-    private val completedRewardSheetRepository: CompletedRewardSheetRepository
-
+    private val completedRewardSheetRepository: CompletedRewardSheetRepository,
 ) : ViewModel() {
     companion object {
-        fun factory(
-            completedRewardSheetRepository: CompletedRewardSheetRepository,
-        ): ViewModelProvider.Factory =
+        fun factory(completedRewardSheetRepository: CompletedRewardSheetRepository): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     CompletedSheetListViewModel(
-                        completedRewardSheetRepository
+                        completedRewardSheetRepository,
                     )
                 }
             }

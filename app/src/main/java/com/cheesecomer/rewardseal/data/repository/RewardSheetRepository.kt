@@ -9,11 +9,10 @@ import java.time.LocalDateTime
 class RewardSheetRepository(
     private val dao: RewardSheetDao,
 ) {
-
-    suspend fun findById(id: Long): RewardSheet? {
-        return dao.findById(id)
+    suspend fun findById(id: Long): RewardSheet? =
+        dao
+            .findById(id)
             ?.toModel()
-    }
 
     suspend fun save(sheet: RewardSheet): Long {
         val entity = sheet.toEntity()
@@ -26,31 +25,29 @@ class RewardSheetRepository(
         }
     }
 
-    suspend fun findExchangeable(): List<RewardSheet> {
-        return dao.findExchangeable()
+    suspend fun findExchangeable(): List<RewardSheet> =
+        dao
+            .findExchangeable()
             .map { it.toModel() }
-    }
 
     suspend fun countExchangeable() = dao.countExchangeable()
 
-    suspend fun findAll(): List<RewardSheet> {
-        return dao.findAll()
+    suspend fun findAll(): List<RewardSheet> =
+        dao
+            .findAll()
             .map { it.toModel() }
-    }
 
-    suspend fun increment(id: Long) : Boolean {
+    suspend fun increment(id: Long): Boolean {
         val sheet = dao.findById(id)
-        if (sheet == null) {
+        if (sheet == null || sheet.currentCount >= sheet.goalCount) {
             return false
         }
 
-        if (sheet.currentCount >= sheet.goalCount) {
-            return false
-        }
-
-        dao.update(sheet.copy(
-            currentCount = sheet.currentCount + 1
-        ))
+        dao.update(
+            sheet.copy(
+                currentCount = sheet.currentCount + 1,
+            ),
+        )
 
         return true
     }

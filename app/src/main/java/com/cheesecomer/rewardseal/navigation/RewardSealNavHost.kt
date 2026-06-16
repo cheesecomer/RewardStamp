@@ -1,18 +1,18 @@
 package com.cheesecomer.rewardseal.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.cheesecomer.rewardseal.feature.completed_sheet.detail.CompletedSheetDetailScreen
-import com.cheesecomer.rewardseal.feature.completed_sheet.list.CompletedSheetListScreen
+import com.cheesecomer.rewardseal.feature.completedsheet.detail.CompletedSheetDetailScreen
+import com.cheesecomer.rewardseal.feature.completedsheet.list.CompletedSheetListScreen
+import com.cheesecomer.rewardseal.feature.exchangeablereward.list.ExchangeableRewardListScreen
 import com.cheesecomer.rewardseal.feature.sheet.detail.SheetDetailScreen
 import com.cheesecomer.rewardseal.feature.sheet.edit.SheetEditScreen
 import com.cheesecomer.rewardseal.feature.sheet.list.SheetListScreen
-import com.cheesecomer.rewardseal.feature.exchangeable_reward.list.ExchangeableRewardListScreen
 
+@Suppress("LongMethod")
 @Composable
 fun RewardSealNavHost(
     navController: NavHostController,
@@ -27,7 +27,7 @@ fun RewardSealNavHost(
             SheetListScreen(
                 onSheetClick = { sheetId ->
                     navController.navigate(
-                        Route.sheetDetail(sheetId)
+                        Route.sheetDetail(sheetId),
                     )
                 },
                 onUnreceivedRewardsClick = {
@@ -35,7 +35,7 @@ fun RewardSealNavHost(
                 },
                 onCompletedRewardsClick = {
                     navController.navigate(Route.COMPLETED_REWARD_LIST)
-                }
+                },
             )
         }
 
@@ -46,13 +46,13 @@ fun RewardSealNavHost(
                 },
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
             )
         }
 
         composable(
-            route = Route.SHEET_EDIT_WITH_ID
-        ) {backStackEntry ->
+            route = Route.SHEET_EDIT_WITH_ID,
+        ) { backStackEntry ->
 
             val sheetId =
                 backStackEntry.arguments
@@ -64,15 +64,16 @@ fun RewardSealNavHost(
                 onSaveClick = {
                     navController.popBackStack(
                         route = Route.SHEET_LIST,
-                        inclusive = false)
+                        inclusive = false,
+                    )
                 },
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
             )
         }
         composable(
-            route = Route.SHEET_DETAIL
+            route = Route.SHEET_DETAIL,
         ) { backStackEntry ->
 
             val sheetId =
@@ -94,23 +95,23 @@ fun RewardSealNavHost(
                 },
                 onEditClick = {
                     navController.navigate(Route.sheetEdit(sheetId))
-                }
+                },
             )
         }
         composable(Route.EXCHANGEABLE_REWARD_LIST) {
-                ExchangeableRewardListScreen(
+            ExchangeableRewardListScreen(
                 onBackClick = {
                     navController.popBackStack()
-                }
+                },
             )
         }
         composable(Route.COMPLETED_REWARD_LIST) {
             CompletedSheetListScreen(
                 onRewardClick = { completedRewardId ->
                     navController.navigate(
-                        Route.completedRewardDetail(completedRewardId)
+                        Route.completedRewardDetail(completedRewardId),
                     )
-                }
+                },
             )
         }
         composable(Route.COMPLETED_REWARD_DETAIL) { backStackEntry ->
@@ -121,7 +122,7 @@ fun RewardSealNavHost(
                     ?: 0L
 
             CompletedSheetDetailScreen(
-                completedRewardId = completedRewardId
+                completedRewardId = completedRewardId,
             )
         }
     }

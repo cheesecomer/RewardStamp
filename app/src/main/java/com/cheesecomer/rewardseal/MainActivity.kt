@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+private fun GreetingPreview() {
     RewardSealTheme {
         SheetListScreen()
     }

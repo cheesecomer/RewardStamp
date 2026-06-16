@@ -7,10 +7,25 @@ import com.cheesecomer.rewardseal.data.source.database.entity.RewardStampEntity
 
 @Dao
 interface RewardStampDao {
-    @Query("SELECT * FROM reward_stamps WHERE sheetId = :sheetId and completedRewardSheetId IS NULL ORDER BY position ASC")
+    @Query(
+        """
+    SELECT *
+    FROM   reward_stamps
+    WHERE sheetId = :sheetId
+      AND completedRewardSheetId IS NULL
+    ORDER BY position ASC
+    """,
+    )
     suspend fun findBySheetId(sheetId: Long): List<RewardStampEntity>
 
-    @Query("SELECT * FROM reward_stamps WHERE completedRewardSheetId = :completedRewardSheetId ORDER BY position ASC")
+    @Query(
+        """
+    SELECT *
+    FROM   reward_stamps
+    WHERE  completedRewardSheetId = :completedRewardSheetId
+    ORDER BY position ASC
+    """,
+    )
     suspend fun findByCompletedRewardSheetId(completedRewardSheetId: Long): List<RewardStampEntity>
 
     @Insert
@@ -25,7 +40,7 @@ interface RewardStampDao {
     SET completedRewardSheetId = :completedRewardSheetId
     WHERE sheetId = :sheetId
       AND completedRewardSheetId IS NULL
-    """
+    """,
     )
     suspend fun attachToCompletedRewardSheet(
         sheetId: Long,

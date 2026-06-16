@@ -106,3 +106,11 @@ SQLite
 - アニメーション演出
 - イラスト・アイコン整備
 - Google Play 公開
+
+## Code Quality
+
+```bash
+./gradlew ktlintFormat
+./gradlew ktlintCheck
+./gradlew detekt
+```

@@ -1,0 +1,27 @@
+style:
+  MagicNumber:
+    active: true
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreNamedArgument: true
+    ignoreNumbers:
+      - "-1"
+      - "0"
+      - "1"
+      - "2"
+      - "100"
+  UnusedPrivateMember:
+    active: true
+    ignoreAnnotated:
+      - Preview
+      - Composable
+naming:
+  FunctionNaming:
+    ignoreAnnotated:
+      - Composable
+complexity:
+  LongParameterList:
+    ignoreAnnotated:
+      - Composable

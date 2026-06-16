@@ -11,5 +11,5 @@ data class RewardSheetEntity(
     val title: String,
     val currentCount: Int,
     val goalCount: Int,
-    val deletedAt: LocalDateTime?
+    val deletedAt: LocalDateTime?,
 )

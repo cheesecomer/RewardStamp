@@ -25,7 +25,10 @@ import com.cheesecomer.rewardseal.data.source.database.entity.RewardStampEntity
 @TypeConverters(LocalDateTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun rewardSheetDao(): RewardSheetDao
+
     abstract fun completedRewardSheetDao(): CompletedRewardSheetDao
+
     abstract fun rewardStampDao(): RewardStampDao
+
     abstract fun rewardMilestoneDao(): RewardMilestoneDao
 }

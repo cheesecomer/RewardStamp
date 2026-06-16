@@ -4,12 +4,16 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+
+    alias(libs.plugins.ktlint)
+    alias(libs.plugins.detekt)
 }
 
 android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
+
     namespace = "com.cheesecomer.rewardseal"
     compileSdk = 36
 
@@ -28,7 +32,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -65,6 +69,21 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
+    ktlintRuleset(libs.ktlint.compose.rules)
+}
 
-//    ksp("androidx.room:room-compiler:2.7.2")
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
+
+    filter {
+        exclude("**/*.gradle.kts")
+    }
+}
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    autoCorrect = true
+
+    config.setFrom("$rootDir/detekt.yml")
 }

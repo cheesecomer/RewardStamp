@@ -8,8 +8,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import com.cheesecomer.rewardseal.model.RewardSheet
@@ -21,40 +21,44 @@ import java.time.LocalDateTime
 class SheetDetailViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
-    private val rewardStampRepository: RewardStampRepository
+    private val rewardStampRepository: RewardStampRepository,
 ) : ViewModel() {
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
             completedRewardSheetRepository: CompletedRewardSheetRepository,
-            rewardStampRepository: RewardStampRepository
+            rewardStampRepository: RewardStampRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     SheetDetailViewModel(
                         rewardSheetRepository,
                         completedRewardSheetRepository,
-                        rewardStampRepository
+                        rewardStampRepository,
                     )
                 }
             }
     }
 
     var uiState by mutableStateOf(
-        SheetDetailUiState()
+        SheetDetailUiState(),
     )
         private set
 
     fun load(sheetId: Long) {
         viewModelScope.launch {
-            uiState = uiState.copy(
-                sheet = rewardSheetRepository.findById(sheetId),
-                stamps = rewardStampRepository.findBySheetId(sheetId),
-            )
+            uiState =
+                uiState.copy(
+                    sheet = rewardSheetRepository.findById(sheetId),
+                    stamps = rewardStampRepository.findBySheetId(sheetId),
+                )
         }
     }
 
-    fun increment(sheetId: Long, stampType: StampType) {
+    fun increment(
+        sheetId: Long,
+        stampType: StampType,
+    ) {
         viewModelScope.launch {
             val sheetBefore = uiState.sheet ?: return@launch
             if (!rewardSheetRepository.increment(sheetId)) {
@@ -69,14 +73,16 @@ class SheetDetailViewModel(
                     position = sheetBefore.currentCount,
                     stampType = stampType,
                     stampedAt = LocalDateTime.now(),
-                )
+                ),
             )
 
             val sheet = rewardSheetRepository.findById(sheetId)
             val stamps = rewardStampRepository.findBySheetId(sheetId)
-            uiState = uiState.copy(
-                sheet = sheet,
-                stamps = stamps)
+            uiState =
+                uiState.copy(
+                    sheet = sheet,
+                    stamps = stamps,
+                )
             sheet
                 ?.takeIf { it.currentCount == it.goalCount }
                 ?.let(::createCompletedRewardSheet)
@@ -85,16 +91,17 @@ class SheetDetailViewModel(
 
     fun createCompletedRewardSheet(sheet: RewardSheet) {
         viewModelScope.launch {
-            val completedRewardSheetId = completedRewardSheetRepository.save(
-                CompletedRewardSheet(
-                    id = 0,
-                    sheetId = sheet.id,
-                    title = sheet.title,
-                    goalCount = sheet.goalCount,
-                    completedAt = LocalDateTime.now(),
-                    consumedAt = null
+            val completedRewardSheetId =
+                completedRewardSheetRepository.save(
+                    CompletedRewardSheet(
+                        id = 0,
+                        sheetId = sheet.id,
+                        title = sheet.title,
+                        goalCount = sheet.goalCount,
+                        completedAt = LocalDateTime.now(),
+                        consumedAt = null,
+                    ),
                 )
-            )
             rewardStampRepository.attachToCompletedRewardSheet(
                 sheetId = sheet.id,
                 completedRewardSheetId = completedRewardSheetId,
@@ -103,7 +110,10 @@ class SheetDetailViewModel(
         }
     }
 
-    fun delete(sheetId: Long, onCompleted: () -> Unit) {
+    fun delete(
+        sheetId: Long,
+        onCompleted: () -> Unit,
+    ) {
         viewModelScope.launch {
             rewardSheetRepository.delete(sheetId)
             onCompleted()

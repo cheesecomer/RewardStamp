@@ -9,8 +9,9 @@ import com.cheesecomer.rewardseal.model.RewardMilestone
 @Composable
 fun ExchangeDialog(
     milestone: RewardMilestone,
-    onRewardSelected: (milestone: RewardMilestone) -> Unit,
-    onDismissRequest: () -> Unit) {
+    onRewardSelect: (milestone: RewardMilestone) -> Unit,
+    onDismissRequest: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -23,18 +24,18 @@ fun ExchangeDialog(
             TextButton(
                 onClick = {
                     onDismissRequest()
-                    onRewardSelected(milestone)
-                }
+                    onRewardSelect(milestone)
+                },
             ) {
                 Text("交換する")
             }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text("キャンセル")
             }
-        }
+        },
     )
 }

@@ -13,30 +13,32 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cheesecomer.rewardseal.navigation.RewardSealNavHost
 import com.cheesecomer.rewardseal.navigation.Route
+
 @Composable
-fun App() {
+fun App(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
-    Scaffold (
+    Scaffold(
+        modifier = modifier,
         floatingActionButton = {
             if (currentRoute == Route.SHEET_LIST) {
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(Route.SHEET_EDIT)
-                    }
+                    },
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "シートを作る"
+                        contentDescription = "シートを作る",
                     )
                 }
             }
-        }
+        },
     ) { innerPadding ->
         RewardSealNavHost(
             navController = navController,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
         )
     }
 }

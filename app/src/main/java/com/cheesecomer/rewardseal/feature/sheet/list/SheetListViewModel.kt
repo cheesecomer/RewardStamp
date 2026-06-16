@@ -9,32 +9,32 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.model.RewardSheet
 import kotlinx.coroutines.launch
 
 class SheetListViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
-    private val completedRewardSheetRepository: CompletedRewardSheetRepository
+    private val completedRewardSheetRepository: CompletedRewardSheetRepository,
 ) : ViewModel() {
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
-            completedRewardSheetRepository: CompletedRewardSheetRepository
+            completedRewardSheetRepository: CompletedRewardSheetRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     SheetListViewModel(
                         rewardSheetRepository,
-                        completedRewardSheetRepository
+                        completedRewardSheetRepository,
                     )
                 }
             }
     }
 
     var sheets by mutableStateOf<List<RewardSheet>>(
-        emptyList()
+        emptyList(),
     )
         private set
 

@@ -3,7 +3,7 @@ package com.cheesecomer.rewardseal.ui.component.dialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-    import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -14,8 +14,9 @@ import com.cheesecomer.rewardseal.model.RewardMilestone
 @Composable
 fun ChoiceRewardDialog(
     milestones: List<RewardMilestone>,
-    onRewardSelected: (milestone: RewardMilestone) -> Unit,
-    onDismissRequest: () -> Unit) {
+    onRewardSelect: (milestone: RewardMilestone) -> Unit,
+    onDismissRequest: () -> Unit,
+) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -29,7 +30,7 @@ fun ChoiceRewardDialog(
                     TextButton(
                         onClick = {
                             onDismissRequest()
-                            onRewardSelected(milestone)
+                            onRewardSelect(milestone)
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {

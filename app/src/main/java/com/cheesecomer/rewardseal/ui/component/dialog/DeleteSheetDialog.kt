@@ -5,13 +5,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
-
 @Composable
 fun DeleteSheetDialog(
     onDeleteRequest: () -> Unit,
-    onDismissRequest: () -> Unit
+    onDismissRequest: () -> Unit,
 ) {
-
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -22,17 +20,17 @@ fun DeleteSheetDialog(
         },
         confirmButton = {
             TextButton(
-                onClick = onDeleteRequest
+                onClick = onDeleteRequest,
             ) {
                 Text("削除")
             }
         },
         dismissButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text("キャンセル")
             }
-        }
+        },
     )
 }

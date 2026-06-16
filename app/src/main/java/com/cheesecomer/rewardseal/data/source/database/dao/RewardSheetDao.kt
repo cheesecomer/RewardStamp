@@ -12,10 +12,26 @@ interface RewardSheetDao {
     @Query("SELECT * FROM reward_sheets WHERE deletedAt IS NULL")
     suspend fun findAll(): List<RewardSheetEntity>
 
-    @Query("SELECT * FROM reward_sheets WHERE id IN (SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL)")
+    @Query(
+        """
+    SELECT *
+    FROM reward_sheets
+    WHERE id IN (
+        SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL
+    )
+    """,
+    )
     suspend fun findExchangeable(): List<RewardSheetEntity>
 
-    @Query("SELECT count(*) FROM reward_sheets WHERE id IN (SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL)")
+    @Query(
+        """
+    SELECT count(*)
+    FROM reward_sheets
+    WHERE id IN (
+        SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL
+    )
+    """,
+    )
     suspend fun countExchangeable(): Int
 
     @Query("SELECT * FROM reward_sheets WHERE id = :id")

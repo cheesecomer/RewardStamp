@@ -16,25 +16,25 @@ import kotlinx.coroutines.launch
 
 class SheetEditViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
-    private val milestoneRepository: RewardMilestoneRepository
+    private val milestoneRepository: RewardMilestoneRepository,
 ) : ViewModel() {
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
-            milestoneRepository: RewardMilestoneRepository
+            milestoneRepository: RewardMilestoneRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     SheetEditViewModel(
                         rewardSheetRepository,
-                        milestoneRepository
+                        milestoneRepository,
                     )
                 }
             }
     }
 
     var uiState by mutableStateOf(
-        SheetEditUiState()
+        SheetEditUiState(),
     )
         private set
 
@@ -43,25 +43,28 @@ class SheetEditViewModel(
             val sheet = rewardSheetRepository.findById(sheetId)
             if (sheet == null) return@launch
 
-            uiState = uiState.copy(
-                sheetId = sheetId,
-                title = sheet.title,
-                goalCount = sheet.goalCount,
-                milestones = milestoneRepository.findBySheetId(sheetId).map { it.toUiState() }
-            )
+            uiState =
+                uiState.copy(
+                    sheetId = sheetId,
+                    title = sheet.title,
+                    goalCount = sheet.goalCount,
+                    milestones = milestoneRepository.findBySheetId(sheetId).map { it.toUiState() },
+                )
         }
     }
 
     fun updateTitle(title: String) {
-        uiState = uiState.copy(
-            title = title
-        )
+        uiState =
+            uiState.copy(
+                title = title,
+            )
     }
 
     fun incrementGoalCount() {
-        uiState = uiState.copy(
-            goalCount = uiState.goalCount + 1
-        )
+        uiState =
+            uiState.copy(
+                goalCount = uiState.goalCount + 1,
+            )
     }
 
     fun decrementGoalCount() {
@@ -69,75 +72,90 @@ class SheetEditViewModel(
             return
         }
 
-        uiState = uiState.copy(
-            goalCount = uiState.goalCount - 1
-        )
+        uiState =
+            uiState.copy(
+                goalCount = uiState.goalCount - 1,
+            )
     }
+
     fun addMilestone() {
-        uiState = uiState.copy(
-            milestones = uiState.milestones + RewardMilestoneUiState(),
-        )
+        uiState =
+            uiState.copy(
+                milestones = uiState.milestones + RewardMilestoneUiState(),
+            )
     }
+
     fun removeMilestone(index: Int) {
-        uiState = uiState.copy(
-            milestones = uiState.milestones.filterIndexed { i, _ ->
-                i != index
-            }
-        )
+        uiState =
+            uiState.copy(
+                milestones =
+                    uiState.milestones.filterIndexed { i, _ ->
+                        i != index
+                    },
+            )
     }
+
     fun updateMilestoneRequiredCompletions(
         index: Int,
         value: String,
     ) {
-        uiState = uiState.copy(
-            milestones = uiState.milestones.mapIndexed { i, milestone ->
-                if (i == index) {
-                    milestone.copy(
-                        requiredCompletions = value,
-                    )
-                } else {
-                    milestone
-                }
-            }
-        )
+        uiState =
+            uiState.copy(
+                milestones =
+                    uiState.milestones.mapIndexed { i, milestone ->
+                        if (i == index) {
+                            milestone.copy(
+                                requiredCompletions = value,
+                            )
+                        } else {
+                            milestone
+                        }
+                    },
+            )
     }
+
     fun updateMilestoneReward(
         index: Int,
         value: String,
     ) {
-        uiState = uiState.copy(
-            milestones = uiState.milestones.mapIndexed { i, milestone ->
-                if (i == index) {
-                    milestone.copy(
-                        reward = value,
-                    )
-                } else {
-                    milestone
-                }
-            }
-        )
+        uiState =
+            uiState.copy(
+                milestones =
+                    uiState.milestones.mapIndexed { i, milestone ->
+                        if (i == index) {
+                            milestone.copy(
+                                reward = value,
+                            )
+                        } else {
+                            milestone
+                        }
+                    },
+            )
     }
-    fun createRewardSheet(): RewardSheet {
-        return RewardSheet(
+
+    fun createRewardSheet(): RewardSheet =
+        RewardSheet(
             id = uiState.sheetId,
             title = uiState.title,
             currentCount = 0,
             goalCount = uiState.goalCount,
         )
-    }
+
     fun save(onSaved: () -> Unit) {
         viewModelScope.launch {
-            val sheetId = rewardSheetRepository.save(
-                createRewardSheet()
-            )
-            val milestones = uiState.milestones.map {
-                RewardMilestone(
-                    id = it.id,
-                    sheetId = sheetId,
-                    requiredCompletions = it.requiredCompletions.toInt(),
-                    reward = it.reward,
+            val sheetId =
+                rewardSheetRepository.save(
+                    createRewardSheet(),
                 )
-            }
+            val milestones =
+                uiState.milestones.map {
+                    RewardMilestone(
+                        id = it.id,
+                        sheetId = sheetId,
+                        requiredCompletions = it.requiredCompletions.toInt(),
+                        reward = it.reward,
+                    )
+                }
             milestoneRepository.saveAll(sheetId, milestones)
 
             onSaved()

@@ -1,4 +1,4 @@
-package com.cheesecomer.rewardseal.feature.completed_sheet.detail
+package com.cheesecomer.rewardseal.feature.completedsheet.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -15,19 +15,24 @@ import com.cheesecomer.rewardseal.ui.component.RewardBoardState
 import com.cheesecomer.rewardseal.ui.component.RewardBoardView
 
 @Composable
-fun CompletedSheetDetailScreen(
-    modifier: Modifier = Modifier,
-    completedRewardId: Long,
-) {
+private fun completedSheetDetailViewModel(): CompletedSheetDetailViewModel {
     val application =
         LocalContext.current.applicationContext as RewardSealApplication
-    val viewModel: CompletedSheetDetailViewModel = viewModel(
-        factory = CompletedSheetDetailViewModel.factory(
-            application.completedRewardSheetRepository,
-            application.rewardStampRepository
-        )
+    return viewModel<CompletedSheetDetailViewModel>(
+        factory =
+            CompletedSheetDetailViewModel.factory(
+                application.completedRewardSheetRepository,
+                application.rewardStampRepository,
+            ),
     )
+}
 
+@Composable
+fun CompletedSheetDetailScreen(
+    completedRewardId: Long,
+    modifier: Modifier = Modifier,
+    viewModel: CompletedSheetDetailViewModel = completedSheetDetailViewModel(),
+) {
     LaunchedEffect(completedRewardId) {
         viewModel.load(completedRewardId)
     }
@@ -50,23 +55,24 @@ fun CompletedSheetDetailScreen(
 
         Text(
             text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
-            style = MaterialTheme.typography.headlineSmall
+            style = MaterialTheme.typography.headlineSmall,
         )
 
         if (reward.consumedAt != null) {
             Text(
-                text = "交換済み"
+                text = "交換済み",
             )
         }
 
         RewardBoardView(
-            board = RewardBoardState(
-                title = reward.title,
-                currentCount = reward.goalCount,
-                goalCount = reward.goalCount,
-            ),
+            board =
+                RewardBoardState(
+                    title = reward.title,
+                    currentCount = reward.goalCount,
+                    goalCount = reward.goalCount,
+                ),
             stamps = uiState.stamps,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
         )
     }
 }

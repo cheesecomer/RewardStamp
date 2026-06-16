@@ -9,10 +9,9 @@ import com.cheesecomer.rewardseal.ui.component.StampTypeGrid
 
 @Composable
 fun SelectStampDialog(
-    onStampTypeSelected: (stampType: StampType) -> Unit,
-    onDismissRequest: () -> Unit
+    onStampTypeSelect: (stampType: StampType) -> Unit,
+    onDismissRequest: () -> Unit,
 ) {
-
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = {
@@ -20,16 +19,16 @@ fun SelectStampDialog(
         },
         text = {
             StampTypeGrid(
-                onStampTypeClick = onStampTypeSelected
+                onStampTypeClick = onStampTypeSelect,
             )
         },
         confirmButton = {},
         dismissButton = {
             TextButton(
-                onClick = onDismissRequest
+                onClick = onDismissRequest,
             ) {
                 Text("キャンセル")
             }
-        }
+        },
     )
 }

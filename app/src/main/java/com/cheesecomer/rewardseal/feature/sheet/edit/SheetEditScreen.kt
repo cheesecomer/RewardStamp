@@ -28,23 +28,106 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 
+@Composable
+private fun sheetEditViewModel(): SheetEditViewModel {
+    val application =
+        LocalContext.current.applicationContext as RewardSealApplication
+    return viewModel(
+        factory =
+            SheetEditViewModel.factory(
+                application.rewardSheetRepository,
+                application.rewardMilestoneRepository,
+            ),
+    )
+}
+
+@Composable
+fun GoalCountPicker(
+    goalCount: Int,
+    modifier: Modifier = Modifier,
+    onPlusClick: () -> Unit = {},
+    onMinusClick: () -> Unit = {},
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = "何回がんばる？",
+                style = MaterialTheme.typography.titleMedium,
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                TextButton(
+                    onClick = {
+                        if (goalCount > 1) {
+                            onMinusClick
+                        }
+                    },
+                ) {
+                    Text("−")
+                }
+
+                Text(
+                    text = "$goalCount 回",
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+
+                TextButton(
+                    onClick = onPlusClick,
+                ) {
+                    Text("＋")
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SheetEditScreenHeader(
+    sheetId: Long?,
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
+) {
+    CenterAlignedTopAppBar(
+        title = {
+            if (sheetId == null) {
+                Text("シートを作る")
+            } else {
+                Text("ごほうびや回数を変える")
+            }
+        },
+        modifier = modifier,
+        navigationIcon = {
+            IconButton(
+                onClick = onBackClick,
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "戻る",
+                )
+            }
+        },
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SheetEditScreen(
     modifier: Modifier = Modifier,
     sheetId: Long? = null,
+    viewModel: SheetEditViewModel = sheetEditViewModel(),
     onSaveClick: () -> Unit = {},
-    onBackClick: () -> Unit = {}
+    onBackClick: () -> Unit = {},
 ) {
-    val application =
-        LocalContext.current.applicationContext as RewardSealApplication
-    val viewModel: SheetEditViewModel = viewModel(
-        factory = SheetEditViewModel.factory(
-            application.rewardSheetRepository,
-            application.rewardMilestoneRepository
-        )
-    )
-
     LaunchedEffect(sheetId) {
         if (sheetId != null) {
             viewModel.load(sheetId)
@@ -54,30 +137,13 @@ fun SheetEditScreen(
     val uiState = viewModel.uiState
 
     Column(
-        modifier = modifier
-            .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+        modifier =
+            modifier
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        CenterAlignedTopAppBar(
-            title = {
-                if (sheetId == null) {
-                    Text("シートを作る")
-                } else {
-                    Text("ごほうびや回数を変える")
-                }
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = onBackClick
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "戻る"
-                    )
-                }
-            }
-        )
+        SheetEditScreenHeader(sheetId, onBackClick = onBackClick)
 
         if (sheetId == null) {
             OutlinedTextField(
@@ -91,61 +157,19 @@ fun SheetEditScreen(
         } else {
             Text(
                 text = "${uiState.title}をがんばる",
-                style = MaterialTheme.typography.titleLarge
+                style = MaterialTheme.typography.titleLarge,
             )
         }
 
-//        OutlinedTextField(
-//            value = uiState.reward,
-//            onValueChange = { viewModel.updateReward(it) },
-//            label = { Text("ごほうび") },
-//            placeholder = { Text("アイス") },
-//            modifier = Modifier.fillMaxWidth(),
-//            singleLine = true,
-//        )
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    text = "何回がんばる？",
-                    style = MaterialTheme.typography.titleMedium,
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    TextButton(
-                        onClick = {
-                            if (uiState.goalCount > 1) {
-                                viewModel.decrementGoalCount()
-                            }
-                        },
-                    ) {
-                        Text("−")
-                    }
-
-                    Text(
-                        text = "${uiState.goalCount} 回",
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-
-                    TextButton(
-                        onClick = {
-                            viewModel.incrementGoalCount()
-                        },
-                    ) {
-                        Text("＋")
-                    }
-                }
-            }
-        }
+        GoalCountPicker(
+            uiState.goalCount,
+            onPlusClick = {
+                viewModel.incrementGoalCount()
+            },
+            onMinusClick = {
+                viewModel.decrementGoalCount()
+            },
+        )
 
         MilestoneFormList(
             milestones = uiState.milestones,

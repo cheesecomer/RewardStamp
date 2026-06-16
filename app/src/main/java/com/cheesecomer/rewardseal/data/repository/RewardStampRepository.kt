@@ -8,12 +8,12 @@ import com.cheesecomer.rewardseal.model.RewardStamp
 class RewardStampRepository(
     private val dao: RewardStampDao,
 ) {
-    suspend fun findBySheetId(sheetId: Long): List<RewardStamp> {
-        return dao.findBySheetId(sheetId).map { it.toModel() }
-    }
-    suspend fun findByCompletedRewardSheetId(completedRewardSheetId: Long): List<RewardStamp> {
-        return dao.findByCompletedRewardSheetId(completedRewardSheetId).map { it.toModel() }
-    }
+    suspend fun findBySheetId(sheetId: Long): List<RewardStamp> = dao.findBySheetId(sheetId).map { it.toModel() }
+
+    suspend fun findByCompletedRewardSheetId(completedRewardSheetId: Long): List<RewardStamp> =
+        dao.findByCompletedRewardSheetId(completedRewardSheetId).map {
+            it.toModel()
+        }
 
     suspend fun save(stamp: RewardStamp) {
         dao.insert(stamp.toEntity())
@@ -25,9 +25,8 @@ class RewardStampRepository(
 
     suspend fun attachToCompletedRewardSheet(
         sheetId: Long,
-        completedRewardSheetId: Long
+        completedRewardSheetId: Long,
     ) {
         dao.attachToCompletedRewardSheet(sheetId, completedRewardSheetId)
     }
-
 }
