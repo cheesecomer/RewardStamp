@@ -8,6 +8,7 @@ import java.time.LocalDateTime
 
 class RewardSheetRepository(
     private val dao: RewardSheetDao,
+    private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) {
     suspend fun findById(id: Long): RewardSheet? =
         dao
@@ -67,6 +68,6 @@ class RewardSheetRepository(
             return
         }
 
-        dao.update(sheet.copy(deletedAt = LocalDateTime.now()))
+        dao.update(sheet.copy(deletedAt = now()))
     }
 }

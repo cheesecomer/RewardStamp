@@ -16,6 +16,9 @@ detekt = "1.23.8"
 composeRules = "0.6.1"
 truth = "1.4.5"
 coroutinesTest = "1.9.0"
+robolectric = "4.16"
+androidxTest = "1.6.1"
+test-logger = "4.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -39,6 +42,8 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 ktlint-compose-rules = { module = "io.nlopez.compose.rules:ktlint", version.ref = "composeRules" }
 truth = { module = "com.google.truth:truth", version.ref = "truth" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+androidx-test-core = { module = "androidx.test:core", version.ref = "androidxTest" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -48,4 +53,5 @@ androidx-room = { id = "androidx.room", version.ref = "room" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
 
