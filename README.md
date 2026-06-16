@@ -12,6 +12,26 @@
 
 親子で達成感を共有しながら、楽しく習慣づくりをサポートします。
 
+## Getting Started
+
+リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。
+
+```bash
+git clone git@github.com:cheesecomer/RewardSeal.git
+cd RewardSeal
+
+./gradlew help
+```
+
+Git Hooks が設定されている場合、以下のチェックが自動で実行されます。
+
+- **pre-commit**
+  - `./gradlew ktlintCheck`
+  - `./gradlew detekt`
+
+- **pre-push**
+  - `./gradlew assembleDebug`
+
 ## 主な機能
 
 ### シート管理
@@ -49,7 +69,7 @@
 - 未受領ごほうびへの導線
 - 完了済みシートへの導線
 - 空状態表示
-- シート作成FAB
+- シート作成 FAB
 
 ## 技術スタック
 
@@ -109,8 +129,18 @@ SQLite
 
 ## Code Quality
 
+コードスタイルと静的解析には ktlint と Detekt を使用しています。
+
+### Format
+
 ```bash
 ./gradlew ktlintFormat
+```
+
+### Check
+
+```bash
 ./gradlew ktlintCheck
 ./gradlew detekt
+./gradlew assembleDebug
 ```

@@ -36,9 +36,6 @@ class CompletedSheetListViewModel(
     fun reload() {
         viewModelScope.launch {
             sheets = completedRewardSheetRepository.findAll()
-            sheets.forEach {
-                android.util.Log.d("findExchangeable", "${it.title} / ${it.sheetId} : ${it.consumedAt}")
-            }
         }
     }
 }
