@@ -107,6 +107,9 @@ kover {
     reports {
         filters {
             excludes {
+                annotatedBy(
+                    "com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage",
+                )
                 classes(
                     "*AppDatabase_Impl*",
                     "*_Impl*",

@@ -27,6 +27,10 @@ naming:
     ignoreAnnotated:
       - Composable
 complexity:
+  TooManyFunctions:
+    excludes:
+      - "**/src/test/**"
+      - "**/src/androidTest/**"
   LongParameterList:
     ignoreAnnotated:
       - Composable

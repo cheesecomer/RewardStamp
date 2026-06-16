@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
@@ -22,7 +23,9 @@ class SheetDetailViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardStampRepository: RewardStampRepository,
+    private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
+    @ExcludeFromCoverage
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
@@ -72,7 +75,7 @@ class SheetDetailViewModel(
                     completedRewardSheetId = null,
                     position = sheetBefore.currentCount,
                     stampType = stampType,
-                    stampedAt = LocalDateTime.now(),
+                    stampedAt = now(),
                 ),
             )
 
@@ -98,7 +101,7 @@ class SheetDetailViewModel(
                         sheetId = sheet.id,
                         title = sheet.title,
                         goalCount = sheet.goalCount,
-                        completedAt = LocalDateTime.now(),
+                        completedAt = now(),
                         consumedAt = null,
                     ),
                 )

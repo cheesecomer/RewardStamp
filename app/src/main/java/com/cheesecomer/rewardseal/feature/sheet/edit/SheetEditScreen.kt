@@ -206,7 +206,7 @@ fun SheetEditScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = uiState.title.isNotBlank() && uiState.hasReward(),
+                enabled = viewModel.canSave(),
             ) {
                 Text("保存")
             }

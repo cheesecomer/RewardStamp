@@ -8,16 +8,19 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.model.RewardSheet
 import kotlinx.coroutines.launch
 
+@Suppress("TooManyFunctions")
 class SheetEditViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val milestoneRepository: RewardMilestoneRepository,
 ) : ViewModel() {
+    @ExcludeFromCoverage
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
@@ -141,7 +144,13 @@ class SheetEditViewModel(
             goalCount = uiState.goalCount,
         )
 
+    fun canSave(): Boolean = uiState.canSave()
+
     fun save(onSaved: () -> Unit) {
+        if (!canSave()) {
+            return
+        }
+
         viewModelScope.launch {
             val sheetId =
                 rewardSheetRepository.save(

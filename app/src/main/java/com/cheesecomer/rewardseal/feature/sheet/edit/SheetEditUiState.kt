@@ -13,7 +13,11 @@ data class RewardMilestoneUiState(
     val id: Long = 0,
     val requiredCompletions: String = "",
     val reward: String = "",
-)
+) {
+    fun isValid() =
+        reward.isNotBlank() &&
+            (requiredCompletions.toIntOrNull() ?: 0) > 0
+}
 
 data class SheetEditUiState(
     val sheetId: Long = 0,
@@ -26,5 +30,5 @@ data class SheetEditUiState(
             ),
         ),
 ) {
-    fun hasReward(): Boolean = milestones.all { it.reward.isNotBlank() }
+    fun canSave(): Boolean = title.isNotBlank() && milestones.all { it.isValid() }
 }
