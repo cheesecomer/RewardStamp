@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.ktlint)
     alias(libs.plugins.detekt)
     alias(libs.plugins.test.logger)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -101,6 +102,24 @@ detekt {
     autoCorrect = true
 
     config.setFrom("$rootDir/detekt.yml")
+}
+kover {
+    reports {
+        filters {
+            excludes {
+                classes(
+                    "*AppDatabase_Impl*",
+                    "*_Impl*",
+                    "*Dao_Impl*",
+                    "*.BuildConfig",
+                    "*.R",
+                    "*.R$*",
+                    "*.Manifest",
+                    "*.Manifest$*",
+                )
+            }
+        }
+    }
 }
 
 tasks.withType<Test>().configureEach {

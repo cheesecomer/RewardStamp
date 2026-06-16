@@ -17,6 +17,11 @@ style:
     ignoreAnnotated:
       - Preview
       - Composable
+  MaxLineLength:
+    active: true
+    excludes:
+      - "**/src/test/**"
+      - "**/src/androidTest/**"
 naming:
   FunctionNaming:
     ignoreAnnotated:
@@ -25,3 +30,6 @@ complexity:
   LongParameterList:
     ignoreAnnotated:
       - Composable
+    excludes:
+      - "**/src/test/**"
+      - "**/src/androidTest/**"
