@@ -15,6 +15,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -155,27 +156,35 @@ fun ExchangeableRewardListScreen(
         )
     }
 
-    Column(
-        modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        ExchangeableRewardListScreenHeader(onBackClick = onBackClick)
-
-        if (sheets.isEmpty()) {
-            Text("交換できるごほうびはありません")
-            return
-        }
-
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            ExchangeableRewardListScreenHeader(onBackClick = onBackClick)
+        },
+    ) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            items(sheets) { sheet ->
-                ExchangeableRewardListItem(
-                    sheet,
-                    onRewardReceiveClick = {
-                        showExchangeDialog = sheet.id
-                    },
-                )
+            if (sheets.isEmpty()) {
+                Text("交換できるごほうびはありません")
+                return@Column
+            }
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                items(sheets) { sheet ->
+                    ExchangeableRewardListItem(
+                        sheet,
+                        onRewardReceiveClick = {
+                            showExchangeDialog = sheet.id
+                        },
+                    )
+                }
             }
         }
     }

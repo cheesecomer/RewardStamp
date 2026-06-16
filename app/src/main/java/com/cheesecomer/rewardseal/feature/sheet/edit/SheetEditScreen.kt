@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -119,7 +120,31 @@ fun SheetEditScreenHeader(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TitleForm(
+    value: String,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    onValueChange: (String) -> Unit = {},
+) {
+    if (enabled) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text("なにを がんばる？") },
+            placeholder = { Text("はみがき") },
+            modifier = modifier.fillMaxWidth(),
+            singleLine = true,
+        )
+    } else {
+        Text(
+            modifier = modifier,
+            text = "${value}をがんばる",
+            style = MaterialTheme.typography.titleLarge,
+        )
+    }
+}
+
 @Composable
 fun SheetEditScreen(
     modifier: Modifier = Modifier,
@@ -136,59 +161,55 @@ fun SheetEditScreen(
 
     val uiState = viewModel.uiState
 
-    Column(
-        modifier =
-            modifier
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        SheetEditScreenHeader(sheetId, onBackClick = onBackClick)
-
-        if (sheetId == null) {
-            OutlinedTextField(
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            SheetEditScreenHeader(sheetId, onBackClick = onBackClick)
+        },
+    ) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            TitleForm(
                 value = uiState.title,
                 onValueChange = { viewModel.updateTitle(it) },
-                label = { Text("なにを がんばる？") },
-                placeholder = { Text("はみがき") },
+                enabled = sheetId == null,
+            )
+
+            GoalCountPicker(
+                uiState.goalCount,
+                onPlusClick = {
+                    viewModel.incrementGoalCount()
+                },
+                onMinusClick = {
+                    viewModel.decrementGoalCount()
+                },
+            )
+
+            MilestoneFormList(
+                milestones = uiState.milestones,
+                onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
+                onRewardChange = viewModel::updateMilestoneReward,
+                onAddClick = viewModel::addMilestone,
+                onRemoveClick = viewModel::removeMilestone,
+            )
+
+            Button(
+                onClick = {
+                    viewModel.save {
+                        onSaveClick()
+                    }
+                },
                 modifier = Modifier.fillMaxWidth(),
-                singleLine = true,
-            )
-        } else {
-            Text(
-                text = "${uiState.title}をがんばる",
-                style = MaterialTheme.typography.titleLarge,
-            )
-        }
-
-        GoalCountPicker(
-            uiState.goalCount,
-            onPlusClick = {
-                viewModel.incrementGoalCount()
-            },
-            onMinusClick = {
-                viewModel.decrementGoalCount()
-            },
-        )
-
-        MilestoneFormList(
-            milestones = uiState.milestones,
-            onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
-            onRewardChange = viewModel::updateMilestoneReward,
-            onAddClick = viewModel::addMilestone,
-            onRemoveClick = viewModel::removeMilestone,
-        )
-
-        Button(
-            onClick = {
-                viewModel.save {
-                    onSaveClick()
-                }
-            },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = uiState.title.isNotBlank() && uiState.hasReward(),
-        ) {
-            Text("保存")
+                enabled = uiState.title.isNotBlank() && uiState.hasReward(),
+            ) {
+                Text("保存")
+            }
         }
     }
 }

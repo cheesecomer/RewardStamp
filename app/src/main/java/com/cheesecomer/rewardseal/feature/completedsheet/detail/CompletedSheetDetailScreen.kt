@@ -3,6 +3,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -44,35 +45,42 @@ fun CompletedSheetDetailScreen(
         return
     }
 
-    Column(
-        modifier = modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = "がんばった記録",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-
-        Text(
-            text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
-            style = MaterialTheme.typography.headlineSmall,
-        )
-
-        if (reward.consumedAt != null) {
+    Scaffold(
+        modifier = modifier,
+    ) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
             Text(
-                text = "交換済み",
+                text = "がんばった記録",
+                style = MaterialTheme.typography.headlineMedium,
+            )
+
+            Text(
+                text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
+                style = MaterialTheme.typography.headlineSmall,
+            )
+
+            if (reward.consumedAt != null) {
+                Text(
+                    text = "交換済み",
+                )
+            }
+
+            RewardBoardView(
+                board =
+                    RewardBoardState(
+                        title = reward.title,
+                        currentCount = reward.goalCount,
+                        goalCount = reward.goalCount,
+                    ),
+                stamps = uiState.stamps,
+                modifier = Modifier.weight(1f),
             )
         }
-
-        RewardBoardView(
-            board =
-                RewardBoardState(
-                    title = reward.title,
-                    currentCount = reward.goalCount,
-                    goalCount = reward.goalCount,
-                ),
-            stamps = uiState.stamps,
-            modifier = Modifier.weight(1f),
-        )
     }
 }

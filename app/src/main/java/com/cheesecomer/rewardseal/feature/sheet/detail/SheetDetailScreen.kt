@@ -3,6 +3,7 @@ package com.cheesecomer.rewardseal.feature.sheet.detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -11,6 +12,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -180,6 +182,31 @@ private fun sheetDetailViewModel(): SheetDetailViewModel {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+fun SheetDetailHeader(
+    sheet: RewardSheet,
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
+) {
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        title = {
+            Text(sheet.title)
+        },
+        navigationIcon = {
+            IconButton(
+                onClick = onBackClick,
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "戻る",
+                )
+            }
+        },
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
 fun SheetDetailScreen(
     sheetId: Long,
     modifier: Modifier = Modifier,
@@ -200,49 +227,46 @@ fun SheetDetailScreen(
         return
     }
 
-    Column(modifier = modifier) {
-        CenterAlignedTopAppBar(
-            title = {
-                Text(sheet.title)
-            },
-            navigationIcon = {
-                IconButton(
-                    onClick = onBackClick,
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "戻る",
-                    )
-                }
-            },
-        )
-        if (sheet.isCompleted) {
-            CompletedSheetActions(
-                sheet = sheet,
-                onRestartClick = {
-                    viewModel.restart(sheetId)
-                },
-                onRestartWithEditClick = {
-                    onRestartWithEditClick(sheetId)
-                },
-            )
-        } else {
-            ProgressSheet(
-                sheet = sheet,
-                stamps = uiState.stamps,
-                onEditRequest = onEditClick,
-                onDeleteRequest = {
-                    viewModel.delete(sheetId) {
-                        onDeleteClick()
-                    }
-                },
-                onStampTypeSelect = { stampType ->
-                    viewModel.increment(
-                        sheetId = sheetId,
-                        stampType = stampType,
-                    )
-                },
-            )
+    Scaffold(
+        modifier = modifier,
+        topBar = {
+            SheetDetailHeader(sheet, onBackClick = onBackClick)
+        },
+    ) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+        ) {
+            if (sheet.isCompleted) {
+                CompletedSheetActions(
+                    sheet = sheet,
+                    onRestartClick = {
+                        viewModel.restart(sheetId)
+                    },
+                    onRestartWithEditClick = {
+                        onRestartWithEditClick(sheetId)
+                    },
+                )
+            } else {
+                ProgressSheet(
+                    sheet = sheet,
+                    stamps = uiState.stamps,
+                    onEditRequest = onEditClick,
+                    onDeleteRequest = {
+                        viewModel.delete(sheetId) {
+                            onDeleteClick()
+                        }
+                    },
+                    onStampTypeSelect = { stampType ->
+                        viewModel.increment(
+                            sheetId = sheetId,
+                            stampType = stampType,
+                        )
+                    },
+                )
+            }
         }
     }
 }

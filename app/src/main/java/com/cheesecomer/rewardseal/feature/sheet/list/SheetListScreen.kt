@@ -7,9 +7,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -109,67 +114,123 @@ fun SheetListItem(
 }
 
 @Composable
+fun FloatingCreateSheetButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    FloatingActionButton(
+        modifier = modifier,
+        onClick = onClick,
+    ) {
+        Icon(
+            imageVector = Icons.Default.Add,
+            contentDescription = "シートを作る",
+        )
+    }
+}
+
+@Composable
+private fun ExchangeableRewardBanner(
+    rewardCount: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (rewardCount <= 0) return
+
+    Card(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
+    ) {
+        Text(
+            text = "交換できるごほうびはあります：${rewardCount}件",
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Composable
+private fun NavigationCard(
+    text: String,
+    visible: Boolean,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (!visible) return
+
+    Card(
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(16.dp),
+        )
+    }
+}
+
+@Composable
 fun SheetListScreen(
     modifier: Modifier = Modifier,
     viewModel: SheetListViewModel = sheetListViewModel(),
     onSheetClick: (Long) -> Unit = {},
     onUnreceivedRewardsClick: () -> Unit = {},
     onCompletedRewardsClick: () -> Unit = {},
+    onCreateSheetClick: () -> Unit = {},
 ) {
     val sheets = viewModel.sheets
+    val completedRewardCount = viewModel.completedSheetCount
+
     LaunchedEffect(Unit) {
         viewModel.reload()
     }
 
-    Column(modifier = modifier.padding(16.dp)) {
-        Text(
-            text = "ごほうびシール",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier.padding(bottom = 16.dp),
-        )
+    Scaffold(
+        modifier = modifier,
+        floatingActionButton = {
+            FloatingCreateSheetButton(
+                onClick = onCreateSheetClick,
+            )
+        },
+    ) { innerPadding ->
+        Column(
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+        ) {
+            Text(
+                text = "ごほうびシール",
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
 
-        val unreceivedRewardCount = viewModel.exchangeableSheetCount
-        if (unreceivedRewardCount > 0) {
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .clickable {
-                            onUnreceivedRewardsClick()
-                        },
-            ) {
-                Text(
-                    text = "交換できるごほうびはあります：${unreceivedRewardCount}件",
-                    modifier = Modifier.padding(16.dp),
-                )
-            }
-        }
-        val completedRewardCount = viewModel.completedSheetCount
-        if (completedRewardCount > 0) {
-            Card(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .clickable {
-                            onCompletedRewardsClick()
-                        },
-            ) {
-                Text(
-                    text = "これまでのがんばりを見る",
-                    modifier = Modifier.padding(16.dp),
-                )
-            }
-        }
-        if (sheets.isEmpty()) {
-            EmptyList(completedRewardCount = completedRewardCount)
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-            ) {
-                items(sheets) { sheet ->
-                    SheetListItem(sheet, onSheetClick = onSheetClick)
+            NavigationCard(
+                text = "交換できるごほうびはあります：${viewModel.exchangeableSheetCount}件",
+                visible = viewModel.exchangeableSheetCount > 0,
+                onClick = onUnreceivedRewardsClick,
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
+
+            NavigationCard(
+                text = "これまでのがんばりを見る",
+                visible = viewModel.completedSheetCount > 0,
+                onClick = onCompletedRewardsClick,
+                modifier = Modifier.padding(vertical = 8.dp),
+            )
+
+            if (sheets.isEmpty()) {
+                EmptyList(completedRewardCount = completedRewardCount)
+            } else {
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                ) {
+                    items(sheets) { sheet ->
+                        SheetListItem(sheet, onSheetClick = onSheetClick)
+                    }
                 }
             }
         }
