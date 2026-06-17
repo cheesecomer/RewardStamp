@@ -4,6 +4,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
 import com.cheesecomer.rewardseal.data.source.database.completedRewardSheetEntity
+import com.cheesecomer.rewardseal.data.source.database.rewardMilestoneEntity
 import com.cheesecomer.rewardseal.data.source.database.rewardSheetEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -19,6 +20,7 @@ class RewardSheetDaoTest {
     private lateinit var database: AppDatabase
     private lateinit var rewardSheetDao: RewardSheetDao
     private lateinit var completedRewardSheetDao: CompletedRewardSheetDao
+    private lateinit var rewardMilestoneDao: RewardMilestoneDao
 
     @Before
     fun setUp() {
@@ -32,6 +34,7 @@ class RewardSheetDaoTest {
 
         rewardSheetDao = database.rewardSheetDao()
         completedRewardSheetDao = database.completedRewardSheetDao()
+        rewardMilestoneDao = database.rewardMilestoneDao()
     }
 
     @After
@@ -108,7 +111,7 @@ class RewardSheetDaoTest {
         }
 
     @Test
-    fun findExchangeable_returnsOnlyUnconsumedSheets() =
+    fun findExchangeable_returnsOnlyExchangeableSheets() =
         runTest {
             val exchangeableId =
                 rewardSheetDao.insert(
@@ -116,6 +119,19 @@ class RewardSheetDaoTest {
                         title = "交換可能",
                     ),
                 )
+            rewardMilestoneDao.insert(
+                rewardMilestoneEntity(sheetId = exchangeableId, requiredCompletions = 1),
+            )
+
+            val unexchangeableId =
+                rewardSheetDao.insert(
+                    rewardSheetEntity(
+                        title = "交換不可",
+                    ),
+                )
+            rewardMilestoneDao.insert(
+                rewardMilestoneEntity(sheetId = unexchangeableId, requiredCompletions = 2),
+            )
 
             val consumedId =
                 rewardSheetDao.insert(
@@ -123,10 +139,20 @@ class RewardSheetDaoTest {
                         title = "交換済み",
                     ),
                 )
+            rewardMilestoneDao.insert(
+                rewardMilestoneEntity(sheetId = consumedId, requiredCompletions = 1),
+            )
 
             completedRewardSheetDao.insert(
                 completedRewardSheetEntity(
                     sheetId = exchangeableId,
+                    consumedAt = null,
+                ),
+            )
+
+            completedRewardSheetDao.insert(
+                completedRewardSheetEntity(
+                    sheetId = unexchangeableId,
                     consumedAt = null,
                 ),
             )

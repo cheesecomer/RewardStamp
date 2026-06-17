@@ -42,7 +42,7 @@ class CompletedSheetDetailViewModel(
         viewModelScope.launch {
             uiState =
                 uiState.copy(
-                    reward = completedRewardSheetRepository.findById(completedRewardSheetId),
+                    sheet = completedRewardSheetRepository.findById(completedRewardSheetId),
                     stamps = rewardStampRepository.findByCompletedRewardSheetId(completedRewardSheetId),
                 )
         }

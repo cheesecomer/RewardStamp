@@ -51,10 +51,13 @@ class SheetListViewModel(
     }
 
     fun reload() {
+        android.util.Log.d("SheetListViewModel", "ON reload")
         viewModelScope.launch {
             sheets = rewardSheetRepository.findAll()
             exchangeableSheetCount = rewardSheetRepository.countExchangeable()
             completedSheetCount = completedRewardSheetRepository.countAll()
+
+            sheets.forEach { android.util.Log.d("SheetListViewModel", "${it.id}:${it.title}") }
         }
     }
 }

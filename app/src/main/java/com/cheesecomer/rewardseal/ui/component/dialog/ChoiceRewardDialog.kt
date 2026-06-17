@@ -8,16 +8,19 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.cheesecomer.rewardseal.model.RewardMilestone
 
 @Composable
 fun ChoiceRewardDialog(
     milestones: List<RewardMilestone>,
-    onRewardSelect: (milestone: RewardMilestone) -> Unit,
-    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+    onRewardSelect: (milestone: RewardMilestone) -> Unit = {},
+    onDismissRequest: () -> Unit = {},
 ) {
     AlertDialog(
+        modifier = modifier.testTag("ChoiceRewardDialog"),
         onDismissRequest = onDismissRequest,
         title = {
             Text("ごほうびを選んでね")

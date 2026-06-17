@@ -17,7 +17,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 
+@ExcludeFromCoverage
 @Composable
 private fun completedSheetListViewModel(): CompletedSheetListViewModel {
     val application =
@@ -31,13 +34,11 @@ private fun completedSheetListViewModel(): CompletedSheetListViewModel {
 }
 
 @Composable
-fun CompletedSheetListScreen(
+internal fun CompletedSheetListContent(
+    sheets: List<CompletedRewardSheet>,
     modifier: Modifier = Modifier,
-    viewModel: CompletedSheetListViewModel = completedSheetListViewModel(),
     onRewardClick: (Long) -> Unit = {},
 ) {
-    val sheets = viewModel.sheets
-
     Scaffold(
         modifier = modifier,
     ) { innerPadding ->
@@ -73,7 +74,6 @@ fun CompletedSheetListScreen(
                         ) {
                             Text(
                                 text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
-//                            style = MaterialTheme.typography.headlineMedium
                             )
 
                             if (reward.consumedAt != null) {
@@ -87,4 +87,18 @@ fun CompletedSheetListScreen(
             }
         }
     }
+}
+
+@ExcludeFromCoverage
+@Composable
+fun CompletedSheetListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: CompletedSheetListViewModel = completedSheetListViewModel(),
+    onRewardClick: (Long) -> Unit = {},
+) {
+    CompletedSheetListContent(
+        sheets = viewModel.sheets,
+        modifier = modifier,
+        onRewardClick = onRewardClick,
+    )
 }

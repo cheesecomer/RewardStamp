@@ -2,6 +2,7 @@ package com.cheesecomer.rewardseal
 
 import android.app.Application
 import androidx.room.Room
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.ExchangeableRewardRepository
 import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
@@ -9,6 +10,7 @@ import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
 
+@ExcludeFromCoverage
 class RewardSealApplication : Application() {
     val database: AppDatabase by lazy {
         Room

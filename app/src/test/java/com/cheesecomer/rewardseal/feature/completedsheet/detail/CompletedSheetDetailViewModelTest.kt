@@ -90,8 +90,8 @@ class CompletedSheetDetailViewModelTest {
 
             viewModel.load(completedRewardSheetId)
 
-            assertThat(viewModel.uiState.reward).isNotNull()
-            assertThat(viewModel.uiState.reward!!.title)
+            assertThat(viewModel.uiState.sheet).isNotNull()
+            assertThat(viewModel.uiState.sheet!!.title)
                 .isEqualTo("はみがき")
 
             assertThat(viewModel.uiState.stamps)

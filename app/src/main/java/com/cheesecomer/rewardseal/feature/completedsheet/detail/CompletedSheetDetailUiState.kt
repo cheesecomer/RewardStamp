@@ -4,6 +4,6 @@ import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
 
 data class CompletedSheetDetailUiState(
-    val reward: CompletedRewardSheet? = null,
+    val sheet: CompletedRewardSheet? = null,
     val stamps: List<RewardStamp> = emptyList(),
 )

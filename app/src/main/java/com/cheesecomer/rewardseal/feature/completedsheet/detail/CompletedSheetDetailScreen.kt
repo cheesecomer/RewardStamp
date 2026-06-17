@@ -12,9 +12,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.CompletedRewardSheet
+import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.ui.component.RewardBoardState
 import com.cheesecomer.rewardseal.ui.component.RewardBoardView
 
+@ExcludeFromCoverage
 @Composable
 private fun completedSheetDetailViewModel(): CompletedSheetDetailViewModel {
     val application =
@@ -29,18 +33,12 @@ private fun completedSheetDetailViewModel(): CompletedSheetDetailViewModel {
 }
 
 @Composable
-fun CompletedSheetDetailScreen(
-    completedRewardId: Long,
+internal fun CompletedSheetDetailContent(
+    sheet: CompletedRewardSheet?,
+    stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
-    viewModel: CompletedSheetDetailViewModel = completedSheetDetailViewModel(),
 ) {
-    LaunchedEffect(completedRewardId) {
-        viewModel.load(completedRewardId)
-    }
-
-    val uiState = viewModel.uiState
-    val reward = uiState.reward
-    if (reward == null) {
+    if (sheet == null) {
         Text("見つかりません")
         return
     }
@@ -61,11 +59,11 @@ fun CompletedSheetDetailScreen(
             )
 
             Text(
-                text = "${reward.title} を ${reward.goalCount}回 がんばりました！",
+                text = "${sheet.title} を ${sheet.goalCount}回 がんばりました！",
                 style = MaterialTheme.typography.headlineSmall,
             )
 
-            if (reward.consumedAt != null) {
+            if (sheet.consumedAt != null) {
                 Text(
                     text = "交換済み",
                 )
@@ -74,13 +72,31 @@ fun CompletedSheetDetailScreen(
             RewardBoardView(
                 board =
                     RewardBoardState(
-                        title = reward.title,
-                        currentCount = reward.goalCount,
-                        goalCount = reward.goalCount,
+                        title = sheet.title,
+                        currentCount = sheet.goalCount,
+                        goalCount = sheet.goalCount,
                     ),
-                stamps = uiState.stamps,
+                stamps = stamps,
                 modifier = Modifier.weight(1f),
             )
         }
     }
+}
+
+@ExcludeFromCoverage
+@Composable
+fun CompletedSheetDetailScreen(
+    completedSheetId: Long,
+    modifier: Modifier = Modifier,
+    viewModel: CompletedSheetDetailViewModel = completedSheetDetailViewModel(),
+) {
+    LaunchedEffect(completedSheetId) {
+        viewModel.load(completedSheetId)
+    }
+
+    CompletedSheetDetailContent(
+        sheet = viewModel.uiState.sheet,
+        stamps = viewModel.uiState.stamps,
+        modifier = modifier,
+    )
 }

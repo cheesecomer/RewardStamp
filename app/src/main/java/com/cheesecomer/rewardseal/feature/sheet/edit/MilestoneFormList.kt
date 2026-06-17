@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
@@ -49,11 +50,64 @@ fun MilestoneFormList(
 
         Button(
             onClick = onAddClick,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().testTag("MilestoneFormList.addMilestoneButton"),
         ) {
             Text("＋ ごほうびを追加")
         }
     }
+}
+
+@Composable
+private fun RequiredCompletionsField(
+    value: String,
+    index: Int,
+    modifier: Modifier = Modifier,
+    onValueChange: (index: Int, value: String) -> Unit = { _, _ -> },
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            onValueChange(index, it)
+        },
+        label = {
+            Text("枚数")
+        },
+        keyboardOptions =
+            KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+            ),
+        singleLine = true,
+        modifier =
+            modifier
+                .width(96.dp)
+                .testTag("MilestoneFormList.requiredCompletionsTextField.$index"),
+    )
+}
+
+@Composable
+private fun RewardField(
+    value: String,
+    index: Int,
+    modifier: Modifier = Modifier,
+    onValueChange: (index: Int, value: String) -> Unit = { _, _ -> },
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = {
+            onValueChange(index, it)
+        },
+        label = {
+            Text("ごほうび")
+        },
+        placeholder = {
+            Text("500円までのオモチャ")
+        },
+        singleLine = true,
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .testTag("MilestoneFormList.rewardTextField.$index"),
+    )
 }
 
 @Composable
@@ -77,20 +131,10 @@ private fun MilestoneFormItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                OutlinedTextField(
+                RequiredCompletionsField(
                     value = milestone.requiredCompletions,
-                    onValueChange = {
-                        onRequiredCompletionsChange(index, it)
-                    },
-                    label = {
-                        Text("枚数")
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                        ),
-                    singleLine = true,
-                    modifier = Modifier.width(96.dp),
+                    index = index,
+                    onValueChange = onRequiredCompletionsChange,
                 )
 
                 Text("シート達成で")
@@ -106,19 +150,10 @@ private fun MilestoneFormItem(
                 }
             }
 
-            OutlinedTextField(
+            RewardField(
                 value = milestone.reward,
-                onValueChange = {
-                    onRewardChange(index, it)
-                },
-                label = {
-                    Text("ごほうび")
-                },
-                placeholder = {
-                    Text("500円までのオモチャ")
-                },
-                singleLine = true,
-                modifier = Modifier.fillMaxWidth(),
+                index = index,
+                onValueChange = onRewardChange,
             )
         }
     }

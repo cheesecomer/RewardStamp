@@ -1,6 +1,7 @@
 package com.cheesecomer.rewardseal.data
 
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
+import com.cheesecomer.rewardseal.model.ExchangeableSheet
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
@@ -65,4 +66,25 @@ fun rewardStamp(
         position = position,
         stampType = stampType,
         stampedAt = stampedAt,
+    )
+
+fun exchangeableSheet(
+    id: Long = 1,
+    title: String = "Sheet",
+    unconsumedCompletedCount: Int = 10,
+    exchangeableMilestones: List<RewardMilestone> =
+        listOf(
+            rewardMilestone(
+                requiredCompletions = 1,
+                reward = "アイス",
+            ),
+        ),
+    nextMilestone: RewardMilestone? = null,
+): ExchangeableSheet =
+    ExchangeableSheet(
+        id = id,
+        title = title,
+        unconsumedCompletedCount = unconsumedCompletedCount,
+        exchangeableMilestones = exchangeableMilestones,
+        nextMilestone = nextMilestone,
     )

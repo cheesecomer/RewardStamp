@@ -14,11 +14,20 @@ interface RewardSheetDao {
 
     @Query(
         """
-    SELECT *
-    FROM reward_sheets
-    WHERE id IN (
-        SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL
-    )
+        SELECT *
+        FROM reward_sheets
+        WHERE id IN (
+            SELECT reward_milestones.sheetId
+            FROM reward_milestones
+            INNER JOIN (
+                SELECT sheetId, count(*) as completionCount
+                FROM completed_reward_sheets
+                WHERE consumedAt IS NULL
+                GROUP BY sheetId
+            )  as completed_reward_sheets
+                ON  completed_reward_sheets.sheetId = reward_milestones.sheetId 
+                AND reward_milestones.requiredCompletions <= completed_reward_sheets.completionCount
+        )
     """,
     )
     suspend fun findExchangeable(): List<RewardSheetEntity>
