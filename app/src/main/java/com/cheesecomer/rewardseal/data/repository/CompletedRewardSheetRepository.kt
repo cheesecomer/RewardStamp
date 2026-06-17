@@ -8,17 +8,13 @@ import java.time.LocalDateTime
 
 class CompletedRewardSheetRepository(
     private val dao: CompletedRewardSheetDao,
+    private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) {
     suspend fun save(completedSheet: CompletedRewardSheet): Long = dao.insert(completedSheet.toEntity())
 
     suspend fun findAll(): List<CompletedRewardSheet> =
         dao
             .findAll()
-            .map { it.toModel() }
-
-    suspend fun findUnreceived(): List<CompletedRewardSheet> =
-        dao
-            .findUnreceived()
             .map { it.toModel() }
 
     suspend fun findById(id: Long): CompletedRewardSheet? =
@@ -28,17 +24,20 @@ class CompletedRewardSheetRepository(
 
     suspend fun countAll(): Int = dao.countAll()
 
-    suspend fun countUnreceived(): Int = dao.countUnreceived()
-
     suspend fun countExchangeableBySheetId(sheetId: Long): Int = dao.countExchangeableBySheetId(sheetId)
 
     suspend fun markRewardReceived(
         sheetId: Long,
-        take: Int,
+        exchangeCount: Int,
     ) {
-        val sheets = dao.findUnreceivedBySheetId(sheetId, take)
-        sheets.forEach { sheet ->
-            dao.update(sheet.copy(consumedAt = LocalDateTime.now()))
+        val consumedAt = now()
+
+        dao.findUnreceivedBySheetId(sheetId, exchangeCount).forEach { sheet ->
+            dao.update(
+                sheet.copy(
+                    consumedAt = consumedAt,
+                ),
+            )
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.feature.completedsheet.detail.CompletedSheetDetailScreen
 import com.cheesecomer.rewardseal.feature.completedsheet.list.CompletedSheetListScreen
 import com.cheesecomer.rewardseal.feature.exchangeablereward.list.ExchangeableRewardListScreen
@@ -12,6 +13,7 @@ import com.cheesecomer.rewardseal.feature.sheet.detail.SheetDetailScreen
 import com.cheesecomer.rewardseal.feature.sheet.edit.SheetEditScreen
 import com.cheesecomer.rewardseal.feature.sheet.list.SheetListScreen
 
+@ExcludeFromCoverage
 @Suppress("LongMethod")
 @Composable
 fun RewardSealNavHost(
@@ -31,15 +33,18 @@ fun RewardSealNavHost(
                     )
                 },
                 onUnreceivedRewardsClick = {
-                    navController.navigate(Route.EXCHANGEABLE_REWARD_LIST)
+                    navController.navigate(Route.EXCHANGEABLE_SHEET_LIST)
                 },
                 onCompletedRewardsClick = {
-                    navController.navigate(Route.COMPLETED_REWARD_LIST)
+                    navController.navigate(Route.COMPLETED_SHEET_LIST)
+                },
+                onCreateSheetClick = {
+                    navController.navigate(Route.SHEET_NEW)
                 },
             )
         }
 
-        composable(Route.SHEET_EDIT) {
+        composable(Route.SHEET_NEW) {
             SheetEditScreen(
                 onSaveClick = {
                     navController.popBackStack()
@@ -51,7 +56,7 @@ fun RewardSealNavHost(
         }
 
         composable(
-            route = Route.SHEET_EDIT_WITH_ID,
+            route = Route.SHEET_EDIT,
         ) { backStackEntry ->
 
             val sheetId =
@@ -98,31 +103,31 @@ fun RewardSealNavHost(
                 },
             )
         }
-        composable(Route.EXCHANGEABLE_REWARD_LIST) {
+        composable(Route.EXCHANGEABLE_SHEET_LIST) {
             ExchangeableRewardListScreen(
                 onBackClick = {
                     navController.popBackStack()
                 },
             )
         }
-        composable(Route.COMPLETED_REWARD_LIST) {
+        composable(Route.COMPLETED_SHEET_LIST) {
             CompletedSheetListScreen(
-                onRewardClick = { completedRewardId ->
+                onRewardClick = { completedSheetId ->
                     navController.navigate(
-                        Route.completedRewardDetail(completedRewardId),
+                        Route.completedSheetDetail(completedSheetId),
                     )
                 },
             )
         }
-        composable(Route.COMPLETED_REWARD_DETAIL) { backStackEntry ->
-            val completedRewardId =
+        composable(Route.COMPLETED_SHEET_DETAIL) { backStackEntry ->
+            val completedSheetId =
                 backStackEntry.arguments
-                    ?.getString("completedRewardId")
+                    ?.getString("completedSheetId")
                     ?.toLong()
                     ?: 0L
 
             CompletedSheetDetailScreen(
-                completedRewardId = completedRewardId,
+                completedSheetId = completedSheetId,
             )
         }
     }

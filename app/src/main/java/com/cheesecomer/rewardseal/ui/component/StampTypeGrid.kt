@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.cheesecomer.rewardseal.model.StampType
@@ -54,7 +55,8 @@ private fun StampTypeGridItem(
         modifier =
             Modifier
                 .aspectRatio(1f)
-                .clickable(onClick = onClick),
+                .clickable(onClick = onClick)
+                .testTag(stampType.id),
         colors =
             CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant,

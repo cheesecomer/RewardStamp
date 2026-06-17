@@ -26,41 +26,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
 import kotlin.random.Random
-
-private const val CONNECTION_OFFSET_RATIO = 0.75f
-
-private fun connectionPoint(
-    point: Offset,
-    radius: Float,
-    isExit: Boolean,
-): Offset =
-    if (isExit) {
-        point + Offset(0f, radius * CONNECTION_OFFSET_RATIO)
-    } else {
-        point + Offset(0f, -radius * CONNECTION_OFFSET_RATIO)
-    }
-
-private const val POINT_OFFSET_RANGE = 40f
-
-private fun pointOffset(index: Int): Float {
-    val random = Random(index)
-
-    return random.nextFloat() * (POINT_OFFSET_RANGE * 2) - POINT_OFFSET_RANGE
-}
-
-private const val STAMP_OFFSET_RANGE = 15f
-
-private fun stampOffset(position: Int): Pair<Float, Float> {
-    val random = Random(position)
-
-    return Pair(
-        random.nextFloat() * (STAMP_OFFSET_RANGE * 2) - STAMP_OFFSET_RANGE,
-        random.nextFloat() * (STAMP_OFFSET_RANGE * 2) - STAMP_OFFSET_RANGE,
-    )
-}
 
 data class RewardBoardState(
     val title: String,
@@ -68,7 +37,7 @@ data class RewardBoardState(
     val goalCount: Int,
 )
 
-data class RewardBoardSize(
+internal data class RewardBoardSize(
     val topMarginCells: Int,
     val bottomMarginCells: Int,
     val goalCount: Int,
@@ -105,7 +74,7 @@ data class RewardBoardSize(
     }
 }
 
-data class RewardBoardLayout(
+internal data class RewardBoardLayout(
     val goalCount: Int,
     val cellHeight: Dp,
     val cellHeightPx: Float,
@@ -178,6 +147,87 @@ data class RewardBoardLayout(
     }
 }
 
+@ExcludeFromCoverage
+@Composable
+fun RewardBoardView(
+    board: RewardBoardState,
+    stamps: List<RewardStamp>,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val stampDrawables =
+        remember {
+            StampType.entries.associateWith { stampType ->
+                ContextCompat.getDrawable(context, stampType.iconRes)!!
+            }
+        }
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize(),
+    ) {
+        val boardSize =
+            RewardBoardSize.create(
+                this.maxHeight,
+                board.goalCount,
+            )
+        val scrollState = rememberScrollState()
+
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(scrollState),
+        ) {
+            Canvas(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(boardSize.boardHeight)
+                        .padding(horizontal = 24.dp),
+            ) {
+                val layout = RewardBoardLayout.create(size, boardSize)
+
+                drawBoardLines(layout)
+                drawBoardNodes(layout, board.currentCount)
+                drawBoardStamps(layout, stamps, stampDrawables)
+            }
+        }
+    }
+}
+
+private const val CONNECTION_OFFSET_RATIO = 0.75f
+private const val POINT_OFFSET_RANGE = 40f
+private const val STAMP_OFFSET_RANGE = 15f
+
+@ExcludeFromCoverage
+private fun connectionPoint(
+    point: Offset,
+    radius: Float,
+    isExit: Boolean,
+): Offset =
+    if (isExit) {
+        point + Offset(0f, radius * CONNECTION_OFFSET_RATIO)
+    } else {
+        point + Offset(0f, -radius * CONNECTION_OFFSET_RATIO)
+    }
+
+@ExcludeFromCoverage
+private fun pointOffset(index: Int): Float {
+    val random = Random(index)
+
+    return random.nextFloat() * (POINT_OFFSET_RANGE * 2) - POINT_OFFSET_RANGE
+}
+
+@ExcludeFromCoverage
+private fun stampOffset(position: Int): Pair<Float, Float> {
+    val random = Random(position)
+
+    return Pair(
+        random.nextFloat() * (STAMP_OFFSET_RANGE * 2) - STAMP_OFFSET_RANGE,
+        random.nextFloat() * (STAMP_OFFSET_RANGE * 2) - STAMP_OFFSET_RANGE,
+    )
+}
+
+@ExcludeFromCoverage
 private fun DrawScope.drawBoardLines(layout: RewardBoardLayout) {
     for (i in 0 until layout.points.lastIndex) {
         val startCenter = layout.points[i]
@@ -241,9 +291,10 @@ private fun DrawScope.drawBoardLines(layout: RewardBoardLayout) {
     }
 }
 
-val GoalNodeColor = Color(0xFFFFD54F)
-val StampedNodeColor = Color(0xFFFF8A80)
+private val GoalNodeColor = Color(0xFFFFD54F)
+private val StampedNodeColor = Color(0xFFFF8A80)
 
+@ExcludeFromCoverage
 private fun DrawScope.drawBoardNodes(
     layout: RewardBoardLayout,
     currentCount: Int,
@@ -273,6 +324,7 @@ private fun DrawScope.drawBoardNodes(
     }
 }
 
+@ExcludeFromCoverage
 private fun DrawScope.drawBoardStamps(
     layout: RewardBoardLayout,
     stamps: List<RewardStamp>,
@@ -331,52 +383,6 @@ private fun DrawScope.drawBoardStamps(
 
                     canvas.restore()
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun RewardBoardView(
-    board: RewardBoardState,
-    stamps: List<RewardStamp>,
-    modifier: Modifier = Modifier,
-) {
-    val context = LocalContext.current
-    val stampDrawables =
-        remember {
-            StampType.entries.associateWith { stampType ->
-                ContextCompat.getDrawable(context, stampType.iconRes)!!
-            }
-        }
-    BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        val boardSize =
-            RewardBoardSize.create(
-                this.maxHeight,
-                board.goalCount,
-            )
-        val scrollState = rememberScrollState()
-
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(scrollState),
-        ) {
-            Canvas(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .height(boardSize.boardHeight)
-                        .padding(horizontal = 24.dp),
-            ) {
-                val layout = RewardBoardLayout.create(size, boardSize)
-
-                drawBoardLines(layout)
-                drawBoardNodes(layout, board.currentCount)
-                drawBoardStamps(layout, stamps, stampDrawables)
             }
         }
     }

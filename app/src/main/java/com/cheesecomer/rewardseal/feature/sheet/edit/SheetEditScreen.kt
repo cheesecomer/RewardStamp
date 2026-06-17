@@ -25,10 +25,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.feature.sheet.edit.RewardMilestoneUiState
 
+@ExcludeFromCoverage
 @Composable
 private fun sheetEditViewModel(): SheetEditViewModel {
     val application =
@@ -43,7 +47,7 @@ private fun sheetEditViewModel(): SheetEditViewModel {
 }
 
 @Composable
-fun GoalCountPicker(
+private fun GoalCountPicker(
     goalCount: Int,
     modifier: Modifier = Modifier,
     onPlusClick: () -> Unit = {},
@@ -69,7 +73,7 @@ fun GoalCountPicker(
                 TextButton(
                     onClick = {
                         if (goalCount > 1) {
-                            onMinusClick
+                            onMinusClick()
                         }
                     },
                 ) {
@@ -93,7 +97,7 @@ fun GoalCountPicker(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SheetEditScreenHeader(
+private fun SheetEditScreenHeader(
     sheetId: Long?,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
@@ -121,7 +125,7 @@ fun SheetEditScreenHeader(
 }
 
 @Composable
-fun TitleForm(
+private fun TitleForm(
     value: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
@@ -133,7 +137,10 @@ fun TitleForm(
             onValueChange = onValueChange,
             label = { Text("なにを がんばる？") },
             placeholder = { Text("はみがき") },
-            modifier = modifier.fillMaxWidth(),
+            modifier =
+                modifier
+                    .fillMaxWidth()
+                    .testTag("titleTextField"),
             singleLine = true,
         )
     } else {
@@ -146,21 +153,23 @@ fun TitleForm(
 }
 
 @Composable
-fun SheetEditScreen(
+internal fun SheetEditContent(
+    sheetId: Long?,
+    title: String,
+    goalCount: Int,
+    milestones: List<RewardMilestoneUiState>,
     modifier: Modifier = Modifier,
-    sheetId: Long? = null,
-    viewModel: SheetEditViewModel = sheetEditViewModel(),
+    canSave: Boolean = false,
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
+    onTitleUpdate: (String) -> Unit = {},
+    onIncrementGoalCount: () -> Unit = {},
+    onDecrementGoalCount: () -> Unit = {},
+    onRequiredCompletionsChange: (index: Int, value: String) -> Unit = { index, value -> },
+    onRewardChange: (index: Int, value: String) -> Unit = { index, value -> },
+    onAddMilestoneClick: () -> Unit = {},
+    onRemoveMilestoneClick: (index: Int) -> Unit = {},
 ) {
-    LaunchedEffect(sheetId) {
-        if (sheetId != null) {
-            viewModel.load(sheetId)
-        }
-    }
-
-    val uiState = viewModel.uiState
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -176,40 +185,74 @@ fun SheetEditScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TitleForm(
-                value = uiState.title,
-                onValueChange = { viewModel.updateTitle(it) },
+                value = title,
+                onValueChange = onTitleUpdate,
                 enabled = sheetId == null,
             )
 
             GoalCountPicker(
-                uiState.goalCount,
-                onPlusClick = {
-                    viewModel.incrementGoalCount()
-                },
-                onMinusClick = {
-                    viewModel.decrementGoalCount()
-                },
+                goalCount,
+                onPlusClick = onIncrementGoalCount,
+                onMinusClick = onDecrementGoalCount,
             )
 
             MilestoneFormList(
-                milestones = uiState.milestones,
-                onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
-                onRewardChange = viewModel::updateMilestoneReward,
-                onAddClick = viewModel::addMilestone,
-                onRemoveClick = viewModel::removeMilestone,
+                milestones = milestones,
+                onRequiredCompletionsChange = onRequiredCompletionsChange,
+                onRewardChange = onRewardChange,
+                onAddClick = onAddMilestoneClick,
+                onRemoveClick = onRemoveMilestoneClick,
             )
 
             Button(
-                onClick = {
-                    viewModel.save {
-                        onSaveClick()
-                    }
-                },
+                onClick = onSaveClick,
                 modifier = Modifier.fillMaxWidth(),
-                enabled = uiState.title.isNotBlank() && uiState.hasReward(),
+                enabled = canSave,
             ) {
                 Text("保存")
             }
         }
     }
+}
+
+@ExcludeFromCoverage
+@Composable
+fun SheetEditScreen(
+    modifier: Modifier = Modifier,
+    sheetId: Long? = null,
+    viewModel: SheetEditViewModel = sheetEditViewModel(),
+    onSaveClick: () -> Unit = {},
+    onBackClick: () -> Unit = {},
+) {
+    LaunchedEffect(sheetId) {
+        if (sheetId != null) {
+            viewModel.load(sheetId)
+        }
+    }
+
+    SheetEditContent(
+        sheetId = sheetId,
+        title = viewModel.uiState.title,
+        goalCount = viewModel.uiState.goalCount,
+        milestones = viewModel.uiState.milestones,
+        modifier = modifier,
+        canSave = viewModel.canSave(),
+        onSaveClick = {
+            viewModel.save {
+                onSaveClick()
+            }
+        },
+        onBackClick = onBackClick,
+        onTitleUpdate = { viewModel.updateTitle(it) },
+        onIncrementGoalCount = {
+            viewModel.incrementGoalCount()
+        },
+        onDecrementGoalCount = {
+            viewModel.decrementGoalCount()
+        },
+        onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
+        onRewardChange = viewModel::updateMilestoneReward,
+        onAddMilestoneClick = viewModel::addMilestone,
+        onRemoveMilestoneClick = viewModel::removeMilestone,
+    )
 }

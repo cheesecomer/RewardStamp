@@ -33,6 +33,6 @@ class ExchangeableRewardRepository(
 
     suspend fun exchangeReward(
         sheetId: Long,
-        take: Int,
-    ) = completedRewardSheetRepository.markRewardReceived(sheetId, take)
+        exchangeCount: Int,
+    ) = completedRewardSheetRepository.markRewardReceived(sheetId, exchangeCount)
 }

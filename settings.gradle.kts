@@ -22,10 +22,10 @@ gitHooks {
     }
 
     hook("pre-push") {
-        tasks("assembleDebug")
+        tasks("clean", "assembleDebug", "koverVerifyDebug")
     }
 
-    createHooks()
+    createHooks(true)
 }
 
 dependencyResolutionManagement {

@@ -27,6 +27,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.ExchangeableSheet
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.ui.component.dialog.ChoiceRewardDialog
@@ -45,20 +46,24 @@ private fun exchangeableRewardListViewModel(): ExchangeableRewardListViewModel {
 }
 
 @Composable
-fun RewardDialog(
+internal fun RewardDialog(
     sheet: ExchangeableSheet,
+    modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit = {},
     onRewardSelect: (RewardMilestone) -> Unit = {},
 ) {
     if (sheet.exchangeableMilestones.size == 1) {
+        val milestone = sheet.exchangeableMilestones[0]
         ExchangeDialog(
-            milestone = sheet.exchangeableMilestones[0],
+            milestone = milestone,
+            modifier = modifier,
             onDismissRequest = onDismissRequest,
-            onRewardSelect = onRewardSelect,
+            onRewardSelect = { onRewardSelect(milestone) },
         )
     } else {
         ChoiceRewardDialog(
             milestones = sheet.exchangeableMilestones,
+            modifier = modifier,
             onDismissRequest = onDismissRequest,
             onRewardSelect = onRewardSelect,
         )
@@ -67,7 +72,7 @@ fun RewardDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExchangeableRewardListScreenHeader(
+private fun ExchangeableRewardListScreenHeader(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
 ) {
@@ -90,7 +95,7 @@ fun ExchangeableRewardListScreenHeader(
 }
 
 @Composable
-fun ExchangeableRewardListItem(
+private fun ExchangeableRewardListItem(
     sheet: ExchangeableSheet,
     modifier: Modifier = Modifier,
     onRewardReceiveClick: () -> Unit = { },
@@ -133,15 +138,13 @@ fun ExchangeableRewardListItem(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ExchangeableRewardListScreen(
+internal fun ExchangeableRewardListContent(
+    sheets: List<ExchangeableSheet>,
     modifier: Modifier = Modifier,
-    viewModel: ExchangeableRewardListViewModel = exchangeableRewardListViewModel(),
     onBackClick: () -> Unit = {},
+    onRewardSelect: (Long, RewardMilestone) -> Unit = { _, _ -> },
 ) {
-    val uiState = viewModel.uiState
-    val sheets = uiState.sheets
     var showExchangeDialog by remember { mutableLongStateOf(0L) }
     if (showExchangeDialog != 0L) {
         val sheet = sheets.find { it.id == showExchangeDialog }!!
@@ -151,11 +154,10 @@ fun ExchangeableRewardListScreen(
                 showExchangeDialog = 0L
             },
             onRewardSelect = { milestone ->
-                viewModel.receiveReward(sheet.id, milestone)
+                onRewardSelect(sheet.id, milestone)
             },
         )
     }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -188,4 +190,22 @@ fun ExchangeableRewardListScreen(
             }
         }
     }
+}
+
+@ExcludeFromCoverage
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ExchangeableRewardListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: ExchangeableRewardListViewModel = exchangeableRewardListViewModel(),
+    onBackClick: () -> Unit = {},
+) {
+    ExchangeableRewardListContent(
+        sheets = viewModel.uiState.sheets,
+        modifier = modifier,
+        onBackClick = onBackClick,
+        onRewardSelect = { sheetId, milestone ->
+            viewModel.receiveReward(sheetId, milestone)
+        },
+    )
 }

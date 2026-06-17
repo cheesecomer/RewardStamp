@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
@@ -33,6 +34,7 @@ import com.cheesecomer.rewardseal.ui.component.RewardBoardView
 import com.cheesecomer.rewardseal.ui.component.dialog.DeleteSheetDialog
 import com.cheesecomer.rewardseal.ui.component.dialog.SelectStampDialog
 
+@ExcludeFromCoverage
 @Composable
 private fun CompletedSheetActions(
     sheet: RewardSheet,
@@ -166,6 +168,7 @@ private fun ProgressSheet(
     }
 }
 
+@ExcludeFromCoverage
 @Composable
 private fun sheetDetailViewModel(): SheetDetailViewModel {
     val application =
@@ -182,7 +185,7 @@ private fun sheetDetailViewModel(): SheetDetailViewModel {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SheetDetailHeader(
+private fun SheetDetailHeader(
     sheet: RewardSheet,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
@@ -205,6 +208,72 @@ fun SheetDetailHeader(
     )
 }
 
+@Composable
+private fun SheetNotFound(modifier: Modifier = Modifier) {
+    Scaffold(
+        modifier = modifier,
+    ) { innerPadding ->
+        Text(
+            text = "見つかりません",
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp),
+        )
+    }
+}
+
+@Composable
+internal fun SheetDetailContent(
+    sheetId: Long,
+    sheet: RewardSheet?,
+    stamps: List<RewardStamp>,
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
+    onStampTypeSelect: (StampType) -> Unit = {},
+    onRestartClick: () -> Unit = {},
+    onRestartWithEditClick: (sheetId: Long) -> Unit = {},
+) {
+    if (sheet == null) {
+        SheetNotFound(modifier = modifier)
+    } else {
+        Scaffold(
+            modifier = modifier,
+            topBar = {
+                SheetDetailHeader(sheet, onBackClick = onBackClick)
+            },
+        ) { innerPadding ->
+            Column(
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .padding(16.dp),
+            ) {
+                if (sheet.isCompleted) {
+                    CompletedSheetActions(
+                        sheet = sheet,
+                        onRestartClick = onRestartClick,
+                        onRestartWithEditClick = {
+                            onRestartWithEditClick(sheetId)
+                        },
+                    )
+                } else {
+                    ProgressSheet(
+                        sheet = sheet,
+                        stamps = stamps,
+                        onEditRequest = onEditClick,
+                        onDeleteRequest = onDeleteClick,
+                        onStampTypeSelect = onStampTypeSelect,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@ExcludeFromCoverage
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SheetDetailScreen(
@@ -220,53 +289,29 @@ fun SheetDetailScreen(
         viewModel.load(sheetId)
     }
 
-    val uiState = viewModel.uiState
-    val sheet = uiState.sheet
-    if (sheet == null) {
-        Text("見つかりません")
-        return
-    }
-
-    Scaffold(
+    SheetDetailContent(
+        sheetId = sheetId,
+        sheet = viewModel.uiState.sheet,
+        stamps = viewModel.uiState.stamps,
         modifier = modifier,
-        topBar = {
-            SheetDetailHeader(sheet, onBackClick = onBackClick)
-        },
-    ) { innerPadding ->
-        Column(
-            modifier =
-                Modifier
-                    .padding(innerPadding)
-                    .padding(16.dp),
-        ) {
-            if (sheet.isCompleted) {
-                CompletedSheetActions(
-                    sheet = sheet,
-                    onRestartClick = {
-                        viewModel.restart(sheetId)
-                    },
-                    onRestartWithEditClick = {
-                        onRestartWithEditClick(sheetId)
-                    },
-                )
-            } else {
-                ProgressSheet(
-                    sheet = sheet,
-                    stamps = uiState.stamps,
-                    onEditRequest = onEditClick,
-                    onDeleteRequest = {
-                        viewModel.delete(sheetId) {
-                            onDeleteClick()
-                        }
-                    },
-                    onStampTypeSelect = { stampType ->
-                        viewModel.increment(
-                            sheetId = sheetId,
-                            stampType = stampType,
-                        )
-                    },
-                )
+        onBackClick = onBackClick,
+        onEditClick = onEditClick,
+        onDeleteClick = {
+            viewModel.delete(sheetId) {
+                onDeleteClick()
             }
-        }
-    }
+        },
+        onStampTypeSelect = { stampType ->
+            viewModel.increment(
+                sheetId = sheetId,
+                stampType = stampType,
+            )
+        },
+        onRestartClick = {
+            viewModel.restart(sheetId)
+        },
+        onRestartWithEditClick = {
+            onRestartWithEditClick(sheetId)
+        },
+    )
 }

@@ -19,10 +19,6 @@ class RewardStampRepository(
         dao.insert(stamp.toEntity())
     }
 
-    suspend fun deleteBySheetId(sheetId: Long) {
-        dao.deleteBySheetId(sheetId)
-    }
-
     suspend fun attachToCompletedRewardSheet(
         sheetId: Long,
         completedRewardSheetId: Long,

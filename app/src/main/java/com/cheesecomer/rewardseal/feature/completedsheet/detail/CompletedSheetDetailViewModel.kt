@@ -8,15 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
-import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import kotlinx.coroutines.launch
 
 class CompletedSheetDetailViewModel(
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardStampRepository: RewardStampRepository,
 ) : ViewModel() {
+    @ExcludeFromCoverage
     companion object {
         fun factory(
             completedRewardSheetRepository: CompletedRewardSheetRepository,
@@ -37,14 +38,11 @@ class CompletedSheetDetailViewModel(
     )
         private set
 
-    var reward by mutableStateOf<CompletedRewardSheet?>(null)
-        private set
-
     fun load(completedRewardSheetId: Long) {
         viewModelScope.launch {
             uiState =
                 uiState.copy(
-                    reward = completedRewardSheetRepository.findById(completedRewardSheetId),
+                    sheet = completedRewardSheetRepository.findById(completedRewardSheetId),
                     stamps = rewardStampRepository.findByCompletedRewardSheetId(completedRewardSheetId),
                 )
         }

@@ -30,11 +30,11 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Run ktlint
-        run: ./gradlew ktlintCheck
-
-      - name: Run detekt
-        run: ./gradlew detekt
-
-      - name: Build debug
-        run: ./gradlew assembleDebug
+      - name: Verify
+        run: |
+          ./gradlew \
+            ktlintCheck \
+            detekt \
+            testDebugUnitTest \
+            koverVerifyDebug \
+            assembleDebug

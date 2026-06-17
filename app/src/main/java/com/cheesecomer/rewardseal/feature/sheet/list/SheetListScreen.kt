@@ -24,8 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.RewardSheet
 
+@ExcludeFromCoverage
 @Composable
 private fun sheetListViewModel(): SheetListViewModel {
     val application =
@@ -40,7 +42,7 @@ private fun sheetListViewModel(): SheetListViewModel {
 }
 
 @Composable
-fun EmptyList(
+private fun EmptyList(
     modifier: Modifier = Modifier,
     completedRewardCount: Int = 0,
 ) {
@@ -86,7 +88,7 @@ fun EmptyList(
 }
 
 @Composable
-fun SheetListItem(
+private fun SheetListItem(
     sheet: RewardSheet,
     modifier: Modifier = Modifier,
     onSheetClick: (Long) -> Unit = {},
@@ -114,7 +116,7 @@ fun SheetListItem(
 }
 
 @Composable
-fun FloatingCreateSheetButton(
+private fun FloatingCreateSheetButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
@@ -125,27 +127,6 @@ fun FloatingCreateSheetButton(
         Icon(
             imageVector = Icons.Default.Add,
             contentDescription = "シートを作る",
-        )
-    }
-}
-
-@Composable
-private fun ExchangeableRewardBanner(
-    rewardCount: Int,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    if (rewardCount <= 0) return
-
-    Card(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick),
-    ) {
-        Text(
-            text = "交換できるごほうびはあります：${rewardCount}件",
-            modifier = Modifier.padding(16.dp),
         )
     }
 }
@@ -173,21 +154,16 @@ private fun NavigationCard(
 }
 
 @Composable
-fun SheetListScreen(
+internal fun SheetListContent(
+    sheets: List<RewardSheet>,
+    exchangeableSheetCount: Int,
+    completedSheetCount: Int,
+    onSheetClick: (Long) -> Unit,
+    onUnreceivedRewardsClick: () -> Unit,
+    onCompletedRewardsClick: () -> Unit,
+    onCreateSheetClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SheetListViewModel = sheetListViewModel(),
-    onSheetClick: (Long) -> Unit = {},
-    onUnreceivedRewardsClick: () -> Unit = {},
-    onCompletedRewardsClick: () -> Unit = {},
-    onCreateSheetClick: () -> Unit = {},
 ) {
-    val sheets = viewModel.sheets
-    val completedRewardCount = viewModel.completedSheetCount
-
-    LaunchedEffect(Unit) {
-        viewModel.reload()
-    }
-
     Scaffold(
         modifier = modifier,
         floatingActionButton = {
@@ -209,30 +185,61 @@ fun SheetListScreen(
             )
 
             NavigationCard(
-                text = "交換できるごほうびはあります：${viewModel.exchangeableSheetCount}件",
-                visible = viewModel.exchangeableSheetCount > 0,
+                text = "交換できるごほうびはあります：${exchangeableSheetCount}件",
+                visible = exchangeableSheetCount > 0,
                 onClick = onUnreceivedRewardsClick,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
 
             NavigationCard(
                 text = "これまでのがんばりを見る",
-                visible = viewModel.completedSheetCount > 0,
+                visible = completedSheetCount > 0,
                 onClick = onCompletedRewardsClick,
                 modifier = Modifier.padding(vertical = 8.dp),
             )
 
             if (sheets.isEmpty()) {
-                EmptyList(completedRewardCount = completedRewardCount)
+                EmptyList(
+                    completedRewardCount = completedSheetCount,
+                )
             } else {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                 ) {
                     items(sheets) { sheet ->
-                        SheetListItem(sheet, onSheetClick = onSheetClick)
+                        SheetListItem(
+                            sheet = sheet,
+                            onSheetClick = onSheetClick,
+                        )
                     }
                 }
             }
         }
     }
+}
+
+@ExcludeFromCoverage
+@Composable
+fun SheetListScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SheetListViewModel = sheetListViewModel(),
+    onSheetClick: (Long) -> Unit = {},
+    onUnreceivedRewardsClick: () -> Unit = {},
+    onCompletedRewardsClick: () -> Unit = {},
+    onCreateSheetClick: () -> Unit = {},
+) {
+    LaunchedEffect(Unit) {
+        viewModel.reload()
+    }
+
+    SheetListContent(
+        modifier = modifier,
+        sheets = viewModel.sheets,
+        exchangeableSheetCount = viewModel.exchangeableSheetCount,
+        completedSheetCount = viewModel.completedSheetCount,
+        onSheetClick = onSheetClick,
+        onUnreceivedRewardsClick = onUnreceivedRewardsClick,
+        onCompletedRewardsClick = onCompletedRewardsClick,
+        onCreateSheetClick = onCreateSheetClick,
+    )
 }

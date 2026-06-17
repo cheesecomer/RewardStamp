@@ -4,8 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.navigation.RewardSealNavHost
 
+@ExcludeFromCoverage
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val navController = rememberNavController()

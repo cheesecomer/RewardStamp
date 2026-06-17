@@ -143,4 +143,6 @@ SQLite
 ./gradlew ktlintCheck
 ./gradlew detekt
 ./gradlew assembleDebug
+./gradlew testDebugUnitTest
+./gradlew koverHtmlReportDebug
 ```

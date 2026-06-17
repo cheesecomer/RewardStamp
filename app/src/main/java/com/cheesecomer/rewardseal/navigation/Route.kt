@@ -1,17 +1,18 @@
 package com.cheesecomer.rewardseal.navigation
 
 object Route {
-    const val SHEET_LIST = "sheet_list"
-    const val SHEET_EDIT = "sheet_edit"
-    const val SHEET_EDIT_WITH_ID = "sheet_edit/{sheetId}"
-    const val SHEET_DETAIL = "sheet_detail/{sheetId}"
-    const val EXCHANGEABLE_REWARD_LIST = "exchangeable_reward_list"
-    const val COMPLETED_REWARD_LIST = "completed_reward_list"
-    const val COMPLETED_REWARD_DETAIL = "completed_reward_detail/{completedRewardId}"
+    const val SHEET_LIST = "sheets"
+    const val SHEET_NEW = "sheets/new"
+    const val SHEET_EDIT = "sheets/{sheetId}/edit"
+    const val SHEET_DETAIL = "sheets/{sheetId}"
 
-    fun sheetDetail(sheetId: Long): String = "sheet_detail/$sheetId"
+    const val EXCHANGEABLE_SHEET_LIST = "sheets/exchangeable"
+    const val COMPLETED_SHEET_LIST = "sheets/completed"
+    const val COMPLETED_SHEET_DETAIL = "sheets/completed/{completedSheetId}"
 
-    fun sheetEdit(sheetId: Long): String = "sheet_edit/$sheetId"
+    fun sheetDetail(sheetId: Long): String = "sheets/$sheetId"
 
-    fun completedRewardDetail(completedRewardId: Long): String = "completed_reward_detail/$completedRewardId"
+    fun sheetEdit(sheetId: Long): String = "sheets/$sheetId/edit"
+
+    fun completedSheetDetail(completedSheetId: Long): String = "sheets/completed/$completedSheetId"
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.ExchangeableRewardRepository
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import kotlinx.coroutines.launch
@@ -15,6 +16,7 @@ import kotlinx.coroutines.launch
 class ExchangeableRewardListViewModel(
     private val exchangeableRewardRepository: ExchangeableRewardRepository,
 ) : ViewModel() {
+    @ExcludeFromCoverage
     companion object {
         fun factory(exchangeableRewardRepository: ExchangeableRewardRepository): ViewModelProvider.Factory =
             viewModelFactory {
@@ -33,12 +35,16 @@ class ExchangeableRewardListViewModel(
         reload()
     }
 
+    private suspend fun reloadUiState() {
+        uiState =
+            uiState.copy(
+                sheets = exchangeableRewardRepository.findAll(),
+            )
+    }
+
     fun reload() {
         viewModelScope.launch {
-            uiState =
-                uiState.copy(
-                    sheets = exchangeableRewardRepository.findAll(),
-                )
+            reloadUiState()
         }
     }
 
@@ -52,7 +58,7 @@ class ExchangeableRewardListViewModel(
                 id,
                 milestone.requiredCompletions,
             )
-            reload()
+            reloadUiState()
             onCompleted()
         }
     }
