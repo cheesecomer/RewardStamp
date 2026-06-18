@@ -33,4 +33,48 @@ class RouteTest {
         assertThat(Route.COMPLETED_SHEET_DETAIL)
             .isEqualTo("sheets/completed/{completedSheetId}")
     }
+
+    @Test
+    fun bottomTabReturnsSheetsForSheetRoutes() {
+        listOf(
+            Route.SHEET_LIST,
+            Route.SHEET_NEW,
+            Route.SHEET_EDIT,
+            Route.SHEET_DETAIL,
+        ).forEach { route ->
+            assertThat(Route.bottomTab(route))
+                .isEqualTo(BottomTab.Sheets)
+        }
+    }
+
+    @Test
+    fun bottomTabReturnsRewardsForExchangeableSheetList() {
+        assertThat(Route.bottomTab(Route.EXCHANGEABLE_SHEET_LIST))
+            .isEqualTo(BottomTab.Rewards)
+    }
+
+    @Test
+    fun bottomTabReturnsHistoryForCompletedSheetRoutes() {
+        listOf(
+            Route.COMPLETED_SHEET_DETAIL,
+            Route.COMPLETED_SHEET_LIST,
+        ).forEach { route ->
+            assertThat(Route.bottomTab(route))
+                .isEqualTo(BottomTab.History)
+        }
+    }
+
+    @Test
+    fun bottomTabReturnsSettingsForSettingsRoute() {
+        assertThat(Route.bottomTab(Route.SETTINGS))
+            .isEqualTo(BottomTab.Settings)
+    }
+
+    @Test
+    fun bottomTabReturnsNullForUnknownRoute() {
+        assertThat(Route.bottomTab("unknown"))
+            .isNull()
+        assertThat(Route.bottomTab(null))
+            .isNull()
+    }
 }

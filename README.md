@@ -145,4 +145,5 @@ SQLite
 ./gradlew assembleDebug
 ./gradlew testDebugUnitTest
 ./gradlew koverHtmlReportDebug
+./gradlew koverVerifyDebug
 ```

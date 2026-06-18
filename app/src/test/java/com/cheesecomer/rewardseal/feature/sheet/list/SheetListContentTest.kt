@@ -25,11 +25,8 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
-                    exchangeableSheetCount = 0,
                     completedSheetCount = 0,
                     onSheetClick = {},
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
                     onCreateSheetClick = {},
                 )
             }
@@ -45,11 +42,8 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
-                    exchangeableSheetCount = 0,
                     completedSheetCount = 1,
                     onSheetClick = {},
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
                     onCreateSheetClick = {},
                 )
             }
@@ -72,39 +66,16 @@ class SheetListContentTest {
                                 goalCount = 10,
                             ),
                         ),
-                    exchangeableSheetCount = 0,
                     completedSheetCount = 0,
                     onSheetClick = {},
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
                     onCreateSheetClick = {},
                 )
             }
         }
 
-        composeTestRule.onNodeWithText("ごほうびシール").assertIsDisplayed()
+        composeTestRule.onNodeWithText("ごほうびスタンプ").assertIsDisplayed()
         composeTestRule.onNodeWithText("はみがき").assertIsDisplayed()
         composeTestRule.onNodeWithText("3 / 10").assertIsDisplayed()
-    }
-
-    @Test
-    fun displaysNavigationCardsWhenCountsExist() {
-        composeTestRule.setContent {
-            RewardSealTheme {
-                SheetListContent(
-                    sheets = emptyList(),
-                    exchangeableSheetCount = 2,
-                    completedSheetCount = 1,
-                    onSheetClick = {},
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
-                    onCreateSheetClick = {},
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("交換できるごほうびはあります：2件").assertIsDisplayed()
-        composeTestRule.onNodeWithText("これまでのがんばりを見る").assertIsDisplayed()
     }
 
     @Test
@@ -115,11 +86,8 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = listOf(rewardSheet(id = 123L, title = "はみがき")),
-                    exchangeableSheetCount = 0,
                     completedSheetCount = 0,
                     onSheetClick = { clickedSheetId = it },
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
                     onCreateSheetClick = {},
                 )
             }
@@ -131,32 +99,6 @@ class SheetListContentTest {
     }
 
     @Test
-    fun clickNavigationCards_callsCallbacks() {
-        var clickedExchangeable = false
-        var clickedCompleted = false
-
-        composeTestRule.setContent {
-            RewardSealTheme {
-                SheetListContent(
-                    sheets = emptyList(),
-                    exchangeableSheetCount = 1,
-                    completedSheetCount = 1,
-                    onSheetClick = {},
-                    onUnreceivedRewardsClick = { clickedExchangeable = true },
-                    onCompletedRewardsClick = { clickedCompleted = true },
-                    onCreateSheetClick = {},
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithText("交換できるごほうびはあります：1件").performClick()
-        composeTestRule.onNodeWithText("これまでのがんばりを見る").performClick()
-
-        assertThat(clickedExchangeable).isTrue()
-        assertThat(clickedCompleted).isTrue()
-    }
-
-    @Test
     fun clickFloatingActionButton_callsCallback() {
         var clicked = false
 
@@ -164,11 +106,8 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
-                    exchangeableSheetCount = 0,
                     completedSheetCount = 0,
                     onSheetClick = {},
-                    onUnreceivedRewardsClick = {},
-                    onCompletedRewardsClick = {},
                     onCreateSheetClick = { clicked = true },
                 )
             }

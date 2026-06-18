@@ -24,7 +24,6 @@ class SheetDetailContentTest {
     fun displaysNotFoundMessageWhenSheetIsNull() {
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet = null,
                 stamps = emptyList(),
             )
@@ -39,7 +38,6 @@ class SheetDetailContentTest {
     fun displaysProgressSheet() {
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet =
                     rewardSheet(
                         id = 1L,
@@ -76,7 +74,6 @@ class SheetDetailContentTest {
     fun disablesStampButtonWhenSheetIsCompleted() {
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet =
                     rewardSheet(
                         id = 1L,
@@ -97,7 +94,6 @@ class SheetDetailContentTest {
     fun displaysCompletedSheetActions() {
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet =
                     rewardSheet(
                         id = 1L,
@@ -132,7 +128,6 @@ class SheetDetailContentTest {
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
                 onBackClick = {
@@ -154,7 +149,6 @@ class SheetDetailContentTest {
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
                 onEditClick = {
@@ -176,7 +170,6 @@ class SheetDetailContentTest {
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet =
                     rewardSheet(
                         id = 1L,
@@ -200,11 +193,10 @@ class SheetDetailContentTest {
 
     @Test
     fun clickRestartWithEdit_callsCallbackWithSheetId() {
-        var clickedSheetId: Long? = null
+        var onRestartWithEditClickCalled = false
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 123L,
                 sheet =
                     rewardSheet(
                         id = 123L,
@@ -213,9 +205,7 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
-                onRestartWithEditClick = { sheetId ->
-                    clickedSheetId = sheetId
-                },
+                onRestartWithEditClick = { onRestartWithEditClickCalled = true },
             )
         }
 
@@ -223,7 +213,7 @@ class SheetDetailContentTest {
             .onNodeWithText("ごほうびや回数を変えてがんばる")
             .performClick()
 
-        assertThat(clickedSheetId).isEqualTo(123L)
+        assertThat(onRestartWithEditClickCalled).isTrue()
     }
 
     @Test
@@ -232,7 +222,6 @@ class SheetDetailContentTest {
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet =
                     rewardSheet(
                         id = 1L,
@@ -264,7 +253,6 @@ class SheetDetailContentTest {
 
         composeTestRule.setContent {
             SheetDetailContent(
-                sheetId = 1L,
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
                 onDeleteClick = {

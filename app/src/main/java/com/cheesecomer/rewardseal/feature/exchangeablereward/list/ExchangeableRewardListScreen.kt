@@ -6,14 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -72,25 +68,12 @@ internal fun RewardDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ExchangeableRewardListScreenHeader(
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
-) {
+private fun ExchangeableRewardListScreenHeader(modifier: Modifier = Modifier) {
     CenterAlignedTopAppBar(
         title = {
             Text("交換できるごほうび")
         },
         modifier = modifier,
-        navigationIcon = {
-            IconButton(
-                onClick = onBackClick,
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "戻る",
-                )
-            }
-        },
     )
 }
 
@@ -142,7 +125,6 @@ private fun ExchangeableRewardListItem(
 internal fun ExchangeableRewardListContent(
     sheets: List<ExchangeableSheet>,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
     onRewardSelect: (Long, RewardMilestone) -> Unit = { _, _ -> },
 ) {
     var showExchangeDialog by remember { mutableLongStateOf(0L) }
@@ -161,7 +143,7 @@ internal fun ExchangeableRewardListContent(
     Scaffold(
         modifier = modifier,
         topBar = {
-            ExchangeableRewardListScreenHeader(onBackClick = onBackClick)
+            ExchangeableRewardListScreenHeader()
         },
     ) { innerPadding ->
         Column(
@@ -198,12 +180,10 @@ internal fun ExchangeableRewardListContent(
 fun ExchangeableRewardListScreen(
     modifier: Modifier = Modifier,
     viewModel: ExchangeableRewardListViewModel = exchangeableRewardListViewModel(),
-    onBackClick: () -> Unit = {},
 ) {
     ExchangeableRewardListContent(
         sheets = viewModel.uiState.sheets,
         modifier = modifier,
-        onBackClick = onBackClick,
         onRewardSelect = { sheetId, milestone ->
             viewModel.receiveReward(sheetId, milestone)
         },

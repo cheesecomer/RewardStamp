@@ -5,20 +5,14 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
-import com.cheesecomer.rewardseal.feature.completedsheet.detail.CompletedSheetDetailScreen
-import com.cheesecomer.rewardseal.feature.completedsheet.list.CompletedSheetListScreen
-import com.cheesecomer.rewardseal.feature.exchangeablereward.list.ExchangeableRewardListScreen
-import com.cheesecomer.rewardseal.feature.sheet.detail.SheetDetailScreen
-import com.cheesecomer.rewardseal.feature.sheet.edit.SheetEditScreen
-import com.cheesecomer.rewardseal.feature.sheet.list.SheetListScreen
 
-@ExcludeFromCoverage
 @Suppress("LongMethod")
 @Composable
 fun RewardSealNavHost(
     navController: NavHostController,
+    navigator: Navigator,
     modifier: Modifier = Modifier,
+    screenFactory: ScreenFactory = RewardSealScreenFactory,
 ) {
     NavHost(
         navController = navController,
@@ -26,32 +20,17 @@ fun RewardSealNavHost(
         modifier = modifier,
     ) {
         composable(Route.SHEET_LIST) { backStackEntry ->
-            SheetListScreen(
-                onSheetClick = { sheetId ->
-                    navController.navigate(
-                        Route.sheetDetail(sheetId),
-                    )
-                },
-                onUnreceivedRewardsClick = {
-                    navController.navigate(Route.EXCHANGEABLE_SHEET_LIST)
-                },
-                onCompletedRewardsClick = {
-                    navController.navigate(Route.COMPLETED_SHEET_LIST)
-                },
-                onCreateSheetClick = {
-                    navController.navigate(Route.SHEET_NEW)
-                },
+            screenFactory.SheetList(
+                onSheetClick = navigator::toSheetDetail,
+                onCreateSheetClick = navigator::toSheetNew,
             )
         }
 
         composable(Route.SHEET_NEW) {
-            SheetEditScreen(
-                onSaveClick = {
-                    navController.popBackStack()
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                },
+            screenFactory.SheetEdit(
+                sheetId = null,
+                onSaveClick = navigator::back,
+                onBackClick = navigator::back,
             )
         }
 
@@ -64,7 +43,7 @@ fun RewardSealNavHost(
                     ?.getString("sheetId")
                     ?.toLong()
                     ?: 0L
-            SheetEditScreen(
+            screenFactory.SheetEdit(
                 sheetId = sheetId,
                 onSaveClick = {
                     navController.popBackStack(
@@ -72,9 +51,7 @@ fun RewardSealNavHost(
                         inclusive = false,
                     )
                 },
-                onBackClick = {
-                    navController.popBackStack()
-                },
+                onBackClick = navigator::back,
             )
         }
         composable(
@@ -87,36 +64,20 @@ fun RewardSealNavHost(
                     ?.toLong()
                     ?: 0L
 
-            SheetDetailScreen(
+            screenFactory.SheetDetail(
                 sheetId = sheetId,
-                onDeleteClick = {
-                    navController.popBackStack()
-                },
-                onRestartWithEditClick = { id ->
-                    navController.navigate(Route.sheetEdit(id))
-                },
-                onBackClick = {
-                    navController.popBackStack()
-                },
-                onEditClick = {
-                    navController.navigate(Route.sheetEdit(sheetId))
-                },
+                onDeleteClick = navigator::back,
+                onRestartWithEditClick = { navigator.toSheetEdit(sheetId) },
+                onBackClick = navigator::back,
+                onEditClick = { navigator.toSheetEdit(sheetId) },
             )
         }
         composable(Route.EXCHANGEABLE_SHEET_LIST) {
-            ExchangeableRewardListScreen(
-                onBackClick = {
-                    navController.popBackStack()
-                },
-            )
+            screenFactory.ExchangeableRewardList()
         }
         composable(Route.COMPLETED_SHEET_LIST) {
-            CompletedSheetListScreen(
-                onRewardClick = { completedSheetId ->
-                    navController.navigate(
-                        Route.completedSheetDetail(completedSheetId),
-                    )
-                },
+            screenFactory.CompletedSheetList(
+                onRewardClick = navigator::toCompletedSheetDetail,
             )
         }
         composable(Route.COMPLETED_SHEET_DETAIL) { backStackEntry ->
@@ -126,9 +87,12 @@ fun RewardSealNavHost(
                     ?.toLong()
                     ?: 0L
 
-            CompletedSheetDetailScreen(
+            screenFactory.CompletedSheetDetail(
                 completedSheetId = completedSheetId,
             )
+        }
+        composable(Route.SETTINGS) {
+            screenFactory.Settings()
         }
     }
 }

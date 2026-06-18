@@ -10,6 +10,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
@@ -131,41 +133,28 @@ private fun FloatingCreateSheetButton(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun NavigationCard(
-    text: String,
-    visible: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    if (!visible) return
-
-    Card(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .clickable(onClick = onClick),
-    ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(16.dp),
-        )
-    }
+private fun SheetListScreenHeader(modifier: Modifier = Modifier) {
+    CenterAlignedTopAppBar(
+        title = {
+            Text("ごほうびスタンプ")
+        },
+        modifier = modifier,
+    )
 }
 
 @Composable
 internal fun SheetListContent(
     sheets: List<RewardSheet>,
-    exchangeableSheetCount: Int,
     completedSheetCount: Int,
     onSheetClick: (Long) -> Unit,
-    onUnreceivedRewardsClick: () -> Unit,
-    onCompletedRewardsClick: () -> Unit,
     onCreateSheetClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         modifier = modifier,
+        topBar = { SheetListScreenHeader() },
         floatingActionButton = {
             FloatingCreateSheetButton(
                 onClick = onCreateSheetClick,
@@ -178,26 +167,6 @@ internal fun SheetListContent(
                     .padding(innerPadding)
                     .padding(16.dp),
         ) {
-            Text(
-                text = "ごほうびシール",
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            NavigationCard(
-                text = "交換できるごほうびはあります：${exchangeableSheetCount}件",
-                visible = exchangeableSheetCount > 0,
-                onClick = onUnreceivedRewardsClick,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
-
-            NavigationCard(
-                text = "これまでのがんばりを見る",
-                visible = completedSheetCount > 0,
-                onClick = onCompletedRewardsClick,
-                modifier = Modifier.padding(vertical = 8.dp),
-            )
-
             if (sheets.isEmpty()) {
                 EmptyList(
                     completedRewardCount = completedSheetCount,
@@ -224,8 +193,6 @@ fun SheetListScreen(
     modifier: Modifier = Modifier,
     viewModel: SheetListViewModel = sheetListViewModel(),
     onSheetClick: (Long) -> Unit = {},
-    onUnreceivedRewardsClick: () -> Unit = {},
-    onCompletedRewardsClick: () -> Unit = {},
     onCreateSheetClick: () -> Unit = {},
 ) {
     LaunchedEffect(Unit) {
@@ -235,11 +202,8 @@ fun SheetListScreen(
     SheetListContent(
         modifier = modifier,
         sheets = viewModel.sheets,
-        exchangeableSheetCount = viewModel.exchangeableSheetCount,
         completedSheetCount = viewModel.completedSheetCount,
         onSheetClick = onSheetClick,
-        onUnreceivedRewardsClick = onUnreceivedRewardsClick,
-        onCompletedRewardsClick = onCompletedRewardsClick,
         onCreateSheetClick = onCreateSheetClick,
     )
 }

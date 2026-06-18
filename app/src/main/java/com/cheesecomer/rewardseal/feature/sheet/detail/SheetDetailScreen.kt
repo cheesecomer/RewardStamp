@@ -225,7 +225,6 @@ private fun SheetNotFound(modifier: Modifier = Modifier) {
 
 @Composable
 internal fun SheetDetailContent(
-    sheetId: Long,
     sheet: RewardSheet?,
     stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
@@ -234,7 +233,7 @@ internal fun SheetDetailContent(
     onDeleteClick: () -> Unit = {},
     onStampTypeSelect: (StampType) -> Unit = {},
     onRestartClick: () -> Unit = {},
-    onRestartWithEditClick: (sheetId: Long) -> Unit = {},
+    onRestartWithEditClick: () -> Unit = {},
 ) {
     if (sheet == null) {
         SheetNotFound(modifier = modifier)
@@ -255,9 +254,7 @@ internal fun SheetDetailContent(
                     CompletedSheetActions(
                         sheet = sheet,
                         onRestartClick = onRestartClick,
-                        onRestartWithEditClick = {
-                            onRestartWithEditClick(sheetId)
-                        },
+                        onRestartWithEditClick = onRestartWithEditClick,
                     )
                 } else {
                     ProgressSheet(
@@ -282,7 +279,7 @@ fun SheetDetailScreen(
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
-    onRestartWithEditClick: (sheetId: Long) -> Unit = {},
+    onRestartWithEditClick: () -> Unit = {},
     viewModel: SheetDetailViewModel = sheetDetailViewModel(),
 ) {
     LaunchedEffect(sheetId) {
@@ -290,7 +287,6 @@ fun SheetDetailScreen(
     }
 
     SheetDetailContent(
-        sheetId = sheetId,
         sheet = viewModel.uiState.sheet,
         stamps = viewModel.uiState.stamps,
         modifier = modifier,
@@ -311,7 +307,7 @@ fun SheetDetailScreen(
             viewModel.restart(sheetId)
         },
         onRestartWithEditClick = {
-            onRestartWithEditClick(sheetId)
+            onRestartWithEditClick()
         },
     )
 }
