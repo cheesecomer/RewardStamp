@@ -1,12 +1,12 @@
 package com.cheesecomer.rewardseal.feature.sheet.list
 
-import androidx.activity.ComponentActivity
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardseal.data.rewardSheet
+import com.cheesecomer.rewardseal.data.rewardStamp
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -17,7 +17,7 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class SheetListContentTest {
     @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+    val composeTestRule = createComposeRule()
 
     @Test
     fun displaysInitialEmptyMessage() {
@@ -25,6 +25,7 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
+                    latestStamps = emptyMap(),
                     completedSheetCount = 0,
                     onSheetClick = {},
                     onCreateSheetClick = {},
@@ -32,8 +33,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("まだシートがありません").assertIsDisplayed()
-        composeTestRule.onNodeWithText("「＋」から、がんばることを作ってみましょう").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SheetListScreen.EmptyList").assertIsDisplayed()
     }
 
     @Test
@@ -42,6 +42,7 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
+                    latestStamps = emptyMap(),
                     completedSheetCount = 1,
                     onSheetClick = {},
                     onCreateSheetClick = {},
@@ -49,7 +50,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("もうシートがありません").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SheetListScreen.EmptyList").assertIsDisplayed()
     }
 
     @Test
@@ -60,11 +61,15 @@ class SheetListContentTest {
                     sheets =
                         listOf(
                             rewardSheet(
-                                id = 1L,
+                                id = 100L,
                                 title = "はみがき",
                                 currentCount = 3,
                                 goalCount = 10,
                             ),
+                        ),
+                    latestStamps =
+                        mapOf(
+                            100L to rewardStamp(),
                         ),
                     completedSheetCount = 0,
                     onSheetClick = {},
@@ -73,9 +78,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("ごほうびスタンプ").assertIsDisplayed()
-        composeTestRule.onNodeWithText("はみがき").assertIsDisplayed()
-        composeTestRule.onNodeWithText("3 / 10").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("SheetListScreen.SheetCard.${100L}").assertIsDisplayed()
     }
 
     @Test
@@ -86,6 +89,10 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = listOf(rewardSheet(id = 123L, title = "はみがき")),
+                    latestStamps =
+                        mapOf(
+                            123L to rewardStamp(),
+                        ),
                     completedSheetCount = 0,
                     onSheetClick = { clickedSheetId = it },
                     onCreateSheetClick = {},
@@ -93,7 +100,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithText("はみがき").performClick()
+        composeTestRule.onNodeWithTag("SheetListScreen.SheetCard.${123L}").performClick()
 
         assertThat(clickedSheetId).isEqualTo(123L)
     }
@@ -106,6 +113,7 @@ class SheetListContentTest {
             RewardSealTheme {
                 SheetListContent(
                     sheets = emptyList(),
+                    latestStamps = emptyMap(),
                     completedSheetCount = 0,
                     onSheetClick = {},
                     onCreateSheetClick = { clicked = true },

@@ -4,7 +4,9 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardseal.data.rewardStamp
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
+import com.cheesecomer.rewardseal.data.source.database.dao.RewardSheetDao
 import com.cheesecomer.rewardseal.data.source.database.dao.RewardStampDao
+import com.cheesecomer.rewardseal.data.source.database.rewardSheetEntity
 import com.cheesecomer.rewardseal.data.source.database.rewardStampEntity
 import com.cheesecomer.rewardseal.model.StampType
 import com.google.common.truth.Truth.assertThat
@@ -14,11 +16,14 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.time.LocalDateTime
+import kotlin.collections.plus
 
 @RunWith(RobolectricTestRunner::class)
 class RewardStampRepositoryTest {
     private lateinit var database: AppDatabase
     private lateinit var dao: RewardStampDao
+    private lateinit var sheetDao: RewardSheetDao
     private lateinit var repository: RewardStampRepository
 
     @Before
@@ -32,6 +37,7 @@ class RewardStampRepositoryTest {
                 .build()
 
         dao = database.rewardStampDao()
+        sheetDao = database.rewardSheetDao()
         repository = RewardStampRepository(dao)
     }
 
@@ -140,5 +146,108 @@ class RewardStampRepositoryTest {
             assertThat(
                 repository.findByCompletedRewardSheetId(10L),
             ).hasSize(2)
+        }
+
+    @Test
+    fun findLatestStamp_returnsNewestStamp() =
+        runTest {
+            var stampIds = emptyArray<Long>()
+            val sheetIds =
+                arrayOf(
+                    sheetDao.insert(rewardSheetEntity()).also {
+                        dao.insert(
+                            rewardStampEntity(
+                                sheetId = it,
+                                position = 0,
+                            ),
+                        )
+                    },
+                    sheetDao.insert(rewardSheetEntity()).also {
+                        dao
+                            .insert(
+                                rewardStampEntity(
+                                    sheetId = it,
+                                    position = 0,
+                                ),
+                            ).also { stampId ->
+                                stampIds = stampIds + arrayOf(stampId)
+                            }
+                    },
+                )
+            dao
+                .insert(
+                    rewardStampEntity(
+                        sheetId = sheetIds[0],
+                        completedRewardSheetId = null,
+                    ),
+                ).also { stampId ->
+                    stampIds = stampIds + arrayOf(stampId)
+                }
+
+            val actual = repository.findLatestByEachSheet()
+
+            assertThat(actual.keys).hasSize(2)
+            assertThat(actual.keys).containsExactly(*sheetIds)
+            assertThat(actual.values.map { it.id }).containsExactly(*stampIds)
+        }
+
+    @Test
+    fun findLatestStamp_returnsEmpty_whenNoStampExists() =
+        runTest {
+            val actual = repository.findLatestByEachSheet()
+
+            assertThat(actual.keys).hasSize(0)
+        }
+
+    @Test
+    fun findLatestStamp_returnsEmpty_whenDeletedSheetOnly() =
+        runTest {
+            val actual = repository.findLatestByEachSheet()
+
+            sheetDao.insert(rewardSheetEntity(deletedAt = LocalDateTime.now())).also {
+                dao.insert(
+                    rewardStampEntity(
+                        sheetId = it,
+                        position = 0,
+                    ),
+                )
+            }
+
+            assertThat(actual.keys).hasSize(0)
+        }
+
+    @Test
+    fun findLatestStamp_ignoresCompletedSheetStamps() =
+        runTest {
+            sheetDao.insert(rewardSheetEntity()).also {
+                dao.insert(
+                    rewardStampEntity(
+                        sheetId = it,
+                        completedRewardSheetId = 1L,
+                        position = 0,
+                    ),
+                )
+            }
+
+            var stampIds = emptyArray<Long>()
+            val sheetIds =
+                arrayOf(
+                    sheetDao.insert(rewardSheetEntity()).also {
+                        dao
+                            .insert(
+                                rewardStampEntity(
+                                    sheetId = it,
+                                    completedRewardSheetId = null,
+                                    position = 0,
+                                ),
+                            ).also { sheetId -> stampIds = stampIds + arrayOf(sheetId) }
+                    },
+                )
+
+            val actual = repository.findLatestByEachSheet()
+
+            assertThat(actual.keys).hasSize(1)
+            assertThat(actual.keys).containsExactly(*sheetIds)
+            assertThat(actual.values.map { it.id }).containsExactly(*stampIds)
         }
 }

@@ -29,6 +29,7 @@ import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.ui.component.dialog.ChoiceRewardDialog
 import com.cheesecomer.rewardseal.ui.component.dialog.ExchangeDialog
 
+@ExcludeFromCoverage
 @Composable
 private fun exchangeableRewardListViewModel(): ExchangeableRewardListViewModel {
     val application =

@@ -25,4 +25,6 @@ class RewardStampRepository(
     ) {
         dao.attachToCompletedRewardSheet(sheetId, completedRewardSheetId)
     }
+
+    suspend fun findLatestByEachSheet() = dao.findLatestByEachSheet().associate { it.sheetId to it.toModel() }
 }

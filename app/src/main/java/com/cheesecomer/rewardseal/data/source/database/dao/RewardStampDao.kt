@@ -28,6 +28,26 @@ interface RewardStampDao {
     )
     suspend fun findByCompletedRewardSheetId(completedRewardSheetId: Long): List<RewardStampEntity>
 
+    @Query(
+        """
+    SELECT *
+    FROM reward_stamps
+    WHERE id IN (
+        SELECT id
+        FROM reward_stamps AS rs
+        WHERE rs.sheetId = reward_stamps.sheetId
+        ORDER BY
+            rs.stampedAt DESC,
+            rs.position DESC,
+            rs.id DESC
+        LIMIT 1
+    )
+      AND sheetId IN (SELECT id FROM reward_sheets WHERE deletedAt IS NULL)
+      AND completedRewardSheetId IS NULL
+    """,
+    )
+    suspend fun findLatestByEachSheet(): List<RewardStampEntity>
+
     @Insert
     suspend fun insert(entity: RewardStampEntity): Long
 

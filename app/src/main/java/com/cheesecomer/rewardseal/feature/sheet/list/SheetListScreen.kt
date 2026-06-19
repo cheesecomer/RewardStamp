@@ -1,20 +1,21 @@
 package com.cheesecomer.rewardseal.feature.sheet.list
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,11 +24,22 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.cheesecomer.rewardseal.R
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.RewardSheet
+import com.cheesecomer.rewardseal.model.RewardStamp
+import com.cheesecomer.rewardseal.model.StampType
+import com.cheesecomer.rewardseal.navigation.BottomTab
+import com.cheesecomer.rewardseal.ui.component.RewardSealBottomBar
+import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
+import java.time.LocalDateTime
 
 @ExcludeFromCoverage
 @Composable
@@ -39,6 +51,7 @@ private fun sheetListViewModel(): SheetListViewModel {
             SheetListViewModel.factory(
                 application.rewardSheetRepository,
                 application.completedRewardSheetRepository,
+                application.rewardStampRepository,
             ),
     )
 }
@@ -48,72 +61,39 @@ private fun EmptyList(
     modifier: Modifier = Modifier,
     completedRewardCount: Int = 0,
 ) {
-    if (completedRewardCount > 0) {
-        Column(
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Image(
+            painter = painterResource(R.drawable.img_teddy_bear),
+            contentDescription = null,
+            alpha = 0.65f,
+        )
+        Spacer(modifier = Modifier.size(20.dp))
+        if (completedRewardCount > 0) {
             Text(
                 text = "もうシートがありません",
                 style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
             )
-
-            Text(
-                text = "「＋」から、がんばることを作ってみましょう",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-    } else {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 48.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
+        } else {
             Text(
                 text = "まだシートがありません",
                 style = MaterialTheme.typography.titleLarge,
-            )
-
-            Text(
-                text = "「＋」から、がんばることを作ってみましょう",
-                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold,
             )
         }
-    }
-}
+        Text(
+            text = "右下の「＋」から",
+            style = MaterialTheme.typography.bodyMedium,
+        )
 
-@Composable
-private fun SheetListItem(
-    sheet: RewardSheet,
-    modifier: Modifier = Modifier,
-    onSheetClick: (Long) -> Unit = {},
-) {
-    Card(
-        modifier =
-            modifier
-                .fillMaxWidth()
-                .padding(12.dp)
-                .clickable {
-                    onSheetClick(sheet.id)
-                },
-    ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = sheet.title, style = MaterialTheme.typography.titleLarge)
-            LinearProgressIndicator(
-                progress = { sheet.currentCount.toFloat() / sheet.goalCount },
-            )
-            Text(
-                text = "${sheet.currentCount} / ${sheet.goalCount}",
-                style = MaterialTheme.typography.bodyLarge,
-            )
-        }
+        Text(
+            text = "シートを作ってみましょう！",
+            style = MaterialTheme.typography.bodyMedium,
+        )
     }
 }
 
@@ -147,6 +127,7 @@ private fun SheetListScreenHeader(modifier: Modifier = Modifier) {
 @Composable
 internal fun SheetListContent(
     sheets: List<RewardSheet>,
+    latestStamps: Map<Long, RewardStamp>,
     completedSheetCount: Int,
     onSheetClick: (Long) -> Unit,
     onCreateSheetClick: () -> Unit,
@@ -170,15 +151,25 @@ internal fun SheetListContent(
             if (sheets.isEmpty()) {
                 EmptyList(
                     completedRewardCount = completedSheetCount,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 80.dp)
+                            .testTag("SheetListScreen.EmptyList"),
                 )
             } else {
                 LazyColumn(
                     modifier = Modifier.weight(1f),
                 ) {
                     items(sheets) { sheet ->
-                        SheetListItem(
+                        SheetCard(
                             sheet = sheet,
-                            onSheetClick = onSheetClick,
+                            lastStampType = latestStamps[sheet.id]?.stampType,
+                            modifier =
+                                Modifier
+                                    .clickable { onSheetClick(sheet.id) }
+                                    .padding(12.dp)
+                                    .testTag("SheetListScreen.SheetCard.${sheet.id}"),
                         )
                     }
                 }
@@ -202,8 +193,78 @@ fun SheetListScreen(
     SheetListContent(
         modifier = modifier,
         sheets = viewModel.sheets,
+        latestStamps = viewModel.latestStamps,
         completedSheetCount = viewModel.completedSheetCount,
         onSheetClick = onSheetClick,
         onCreateSheetClick = onCreateSheetClick,
     )
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Suppress("MagicNumber")
+@Composable
+private fun EmptySheetListContentPreview() {
+    RewardSealTheme {
+        Scaffold(
+            bottomBar = {
+                RewardSealBottomBar(
+                    selectedTab = BottomTab.Sheets,
+                )
+            },
+        ) { innerPadding ->
+            SheetListContent(
+                sheets = emptyList(),
+                latestStamps = emptyMap(),
+                completedSheetCount = 0,
+                onSheetClick = {},
+                onCreateSheetClick = {},
+                modifier = Modifier.padding(innerPadding),
+            )
+        }
+    }
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Suppress("MagicNumber")
+@Composable
+private fun SheetListContentPreview() {
+    RewardSealTheme {
+        Scaffold(
+            bottomBar = {
+                RewardSealBottomBar(
+                    selectedTab = BottomTab.Sheets,
+                )
+            },
+        ) { innerPadding ->
+            SheetListContent(
+                sheets =
+                    listOf(
+                        RewardSheet(
+                            id = 1L,
+                            title = "おてつだい",
+                            goalCount = 10,
+                            currentCount = 9,
+                        ),
+                    ),
+                latestStamps =
+                    mapOf(
+                        1L to
+                            RewardStamp(
+                                id = 1L,
+                                sheetId = 1,
+                                completedRewardSheetId = null,
+                                position = 0,
+                                stampedAt = LocalDateTime.now().minusSeconds(10 - 0.toLong()),
+                                stampType = StampType.Star,
+                            ),
+                    ),
+                completedSheetCount = 0,
+                onSheetClick = {},
+                onCreateSheetClick = {},
+                modifier = Modifier.padding(innerPadding),
+            )
+        }
+    }
 }

@@ -12,24 +12,29 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.model.RewardSheet
+import com.cheesecomer.rewardseal.model.RewardStamp
 import kotlinx.coroutines.launch
 
 class SheetListViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
+    private val stampRepository: RewardStampRepository,
 ) : ViewModel() {
     @ExcludeFromCoverage
     companion object {
         fun factory(
             rewardSheetRepository: RewardSheetRepository,
             completedRewardSheetRepository: CompletedRewardSheetRepository,
+            stampRepository: RewardStampRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
                     SheetListViewModel(
                         rewardSheetRepository,
                         completedRewardSheetRepository,
+                        stampRepository,
                     )
                 }
             }
@@ -39,6 +44,8 @@ class SheetListViewModel(
         emptyList(),
     )
         private set
+
+    var latestStamps by mutableStateOf<Map<Long, RewardStamp>>(emptyMap())
 
     var exchangeableSheetCount by mutableIntStateOf(0)
         private set
@@ -56,8 +63,7 @@ class SheetListViewModel(
             sheets = rewardSheetRepository.findAll()
             exchangeableSheetCount = rewardSheetRepository.countExchangeable()
             completedSheetCount = completedRewardSheetRepository.countAll()
-
-            sheets.forEach { android.util.Log.d("SheetListViewModel", "${it.id}:${it.title}") }
+            latestStamps = stampRepository.findLatestByEachSheet()
         }
     }
 }

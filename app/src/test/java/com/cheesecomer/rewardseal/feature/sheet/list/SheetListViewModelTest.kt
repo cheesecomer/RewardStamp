@@ -5,7 +5,9 @@ import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardseal.data.completedRewardSheet
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.data.rewardSheet
+import com.cheesecomer.rewardseal.data.rewardStamp
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
@@ -26,6 +28,7 @@ class SheetListViewModelTest {
     private lateinit var database: AppDatabase
     private lateinit var rewardSheetRepository: RewardSheetRepository
     private lateinit var completedRewardSheetRepository: CompletedRewardSheetRepository
+    private lateinit var rewardStampRepository: RewardStampRepository
 
     @Before
     fun setUp() {
@@ -47,6 +50,11 @@ class SheetListViewModelTest {
         completedRewardSheetRepository =
             CompletedRewardSheetRepository(
                 dao = database.completedRewardSheetDao(),
+            )
+
+        rewardStampRepository =
+            RewardStampRepository(
+                dao = database.rewardStampDao(),
             )
     }
 
@@ -91,16 +99,22 @@ class SheetListViewModelTest {
                 ),
             )
 
+            rewardStampRepository.save(
+                rewardStamp(sheetId = exchangeableSheetId),
+            )
+
             val viewModel =
                 SheetListViewModel(
                     rewardSheetRepository = rewardSheetRepository,
                     completedRewardSheetRepository = completedRewardSheetRepository,
+                    stampRepository = rewardStampRepository,
                 )
 
             assertThat(viewModel.sheets.map { it.title })
                 .containsExactly("はみがき", "おかたづけ")
             assertThat(viewModel.exchangeableSheetCount).isEqualTo(1)
             assertThat(viewModel.completedSheetCount).isEqualTo(2)
+            assertThat(viewModel.latestStamps.keys).containsExactly(exchangeableSheetId)
         }
 
     @Test
@@ -110,6 +124,7 @@ class SheetListViewModelTest {
                 SheetListViewModel(
                     rewardSheetRepository = rewardSheetRepository,
                     completedRewardSheetRepository = completedRewardSheetRepository,
+                    stampRepository = rewardStampRepository,
                 )
 
             val sheetId =

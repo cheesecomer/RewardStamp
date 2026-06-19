@@ -14,6 +14,13 @@
 
 ## スクリーンショット
 
+### シート一覧
+
+<p align="center">
+  <img src="docs/images/sheet-list.png" alt="シート一覧" width="320">
+  <img src="docs/images/sheet-empty-list.png" alt="シート一覧（初期）" width="320">
+</p>
+
 ### シート詳細
 
 <p align="center">

@@ -133,6 +133,8 @@ kover {
                     "*.R$*",
                     "*.Manifest",
                     "*.Manifest$*",
+                    "*ComposableSingletons*",
+                    "**/*Preview*.*",
                 )
             }
         }
