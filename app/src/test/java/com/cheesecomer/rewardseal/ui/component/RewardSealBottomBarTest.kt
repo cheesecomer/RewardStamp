@@ -1,14 +1,11 @@
 package com.cheesecomer.rewardseal.ui.component
-import androidx.compose.material3.Text
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.cheesecomer.rewardseal.navigation.Route
+import com.cheesecomer.rewardseal.navigation.BottomTab
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,11 +19,9 @@ class RewardSealBottomBarTest {
     @Test
     fun showsBottomNavigationItems() {
         composeTestRule.setContent {
-            val navController = rememberNavController()
-
             RewardSealTheme {
                 RewardSealBottomBar(
-                    navController = navController,
+                    selectedTab = BottomTab.Sheets,
                 )
             }
         }
@@ -39,25 +34,19 @@ class RewardSealBottomBarTest {
 
     @Test
     fun navigatesToRewardsWhenRewardTabClicked() {
+        var shouldRewardList = false
         composeTestRule.setContent {
-            val navController = rememberNavController()
-
             RewardSealTheme {
-                NavHost(
-                    navController = navController,
-                    startDestination = Route.SHEET_LIST,
-                ) {
-                    composable(Route.SHEET_LIST) {
-                        RewardSealBottomBar(navController)
-                    }
-                    composable(Route.EXCHANGEABLE_SHEET_LIST) {
-                        Text("交換画面")
-                    }
-                }
+                RewardSealBottomBar(
+                    selectedTab = BottomTab.Sheets,
+                    onTabClick = {
+                        shouldRewardList = it == BottomTab.Rewards
+                    },
+                )
             }
         }
 
         composeTestRule.onNodeWithText("ごほうび").performClick()
-        composeTestRule.onNodeWithText("交換画面").assertIsDisplayed()
+        assertThat(shouldRewardList).isTrue()
     }
 }

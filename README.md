@@ -12,6 +12,14 @@
 
 親子で達成感を共有しながら、楽しく習慣づくりをサポートします。
 
+## スクリーンショット
+
+### シート詳細
+
+<p align="center">
+  <img src="docs/images/sheet-detail.png" alt="シート詳細" width="320">
+</p>
+
 ## Getting Started
 
 リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。

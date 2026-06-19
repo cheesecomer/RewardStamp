@@ -8,36 +8,63 @@ import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme =
     darkColorScheme(
-        primary = Purple80,
-        secondary = PurpleGrey80,
-        tertiary = Pink80,
+        primary = SheetPrimary,
+        onPrimary = Color.White,
+        primaryContainer = SheetPrimaryContainer,
+        onPrimaryContainer = SheetText,
+        secondary = SheetPrimary,
+        onSecondary = Color.White,
+        secondaryContainer = SheetPrimaryContainer,
+        onSecondaryContainer = SheetText,
+        background = SheetBackground,
+        onBackground = SheetText,
+        surface = SheetCard,
+        onSurface = SheetText,
+        surfaceVariant = SheetPrimaryContainer,
+        onSurfaceVariant = SheetText,
+        outline = SheetBorder,
     )
 
 private val LightColorScheme =
     lightColorScheme(
-        primary = Purple40,
-        secondary = PurpleGrey40,
-        tertiary = Pink40,
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-     */
+        primary = SheetPrimary,
+        onPrimary = Color.White,
+        primaryContainer = SheetPrimaryContainer,
+        onPrimaryContainer = SheetText,
+        secondary = SheetPrimary,
+        onSecondary = Color.White,
+        secondaryContainer = SheetPrimaryContainer,
+        onSecondaryContainer = SheetText,
+        tertiary = SheetPrimary,
+        onTertiary = Color.White,
+        tertiaryContainer = SheetPrimaryContainer,
+        onTertiaryContainer = SheetText,
+        background = SheetBackground,
+        onBackground = SheetText,
+        surface = SheetBackground,
+        onSurface = SheetText,
+        surfaceVariant = SheetPrimaryContainer,
+        onSurfaceVariant = SheetText,
+        surfaceContainer = SheetCard,
+        surfaceContainerHigh = SheetCard,
+        surfaceContainerHighest = SheetCard,
+        surfaceContainerLow = SheetBackground,
+        surfaceContainerLowest = SheetBackground,
+        outline = SheetBorder,
+        outlineVariant = SheetDivider,
+        surfaceTint = SheetPrimary,
     )
 
 @Composable
 fun RewardSealTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colorScheme =

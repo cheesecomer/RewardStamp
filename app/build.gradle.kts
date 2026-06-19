@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.test.logger)
     alias(libs.plugins.kover)
+
+    alias(libs.plugins.paparazzi)
 }
 
 android {
@@ -17,7 +19,7 @@ android {
     }
 
     namespace = "com.cheesecomer.rewardseal"
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.cheesecomer.rewardseal"

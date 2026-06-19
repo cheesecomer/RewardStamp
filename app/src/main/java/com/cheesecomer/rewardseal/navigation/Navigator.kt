@@ -12,9 +12,26 @@ interface Navigator {
 
     fun toSheetEdit(sheetId: Long)
 
+    fun toExchangeableRewardList()
+
+    fun toCompletedSheetList()
+
     fun toCompletedSheetDetail(completedSheetId: Long)
 
+    fun toSettings()
+
     fun back()
+}
+
+@ExcludeFromCoverage
+private fun NavController.navigateTopLevel(route: String) {
+    navigate(route) {
+        popUpTo(Route.SHEET_LIST) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
 }
 
 @ExcludeFromCoverage
@@ -22,9 +39,7 @@ class NavControllerNavigator(
     private val navController: NavController,
 ) : Navigator {
     override fun toSheetList() {
-        navController.navigate(Route.SHEET_LIST) {
-            launchSingleTop = true
-        }
+        navController.navigateTopLevel(Route.SHEET_LIST)
     }
 
     override fun toSheetNew() {
@@ -39,8 +54,20 @@ class NavControllerNavigator(
         navController.navigate(Route.sheetEdit(sheetId))
     }
 
+    override fun toExchangeableRewardList() {
+        navController.navigateTopLevel(Route.EXCHANGEABLE_SHEET_LIST)
+    }
+
+    override fun toCompletedSheetList() {
+        navController.navigateTopLevel(Route.COMPLETED_SHEET_LIST)
+    }
+
     override fun toCompletedSheetDetail(completedSheetId: Long) {
         navController.navigate(Route.completedSheetDetail(completedSheetId))
+    }
+
+    override fun toSettings() {
+        navController.navigateTopLevel(Route.SETTINGS)
     }
 
     override fun back() {

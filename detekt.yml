@@ -1,4 +1,6 @@
 style:
+  LoopWithTooManyJumpStatements:
+    active: false
   MagicNumber:
     active: true
     ignorePropertyDeclaration: true

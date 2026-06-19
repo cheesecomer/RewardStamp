@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +25,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
@@ -29,10 +34,12 @@ import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
-import com.cheesecomer.rewardseal.ui.component.RewardBoardState
-import com.cheesecomer.rewardseal.ui.component.RewardBoardView
+import com.cheesecomer.rewardseal.navigation.BottomTab
+import com.cheesecomer.rewardseal.ui.component.RewardSealBottomBar
 import com.cheesecomer.rewardseal.ui.component.dialog.DeleteSheetDialog
 import com.cheesecomer.rewardseal.ui.component.dialog.SelectStampDialog
+import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
+import java.time.LocalDateTime
 
 @ExcludeFromCoverage
 @Composable
@@ -105,69 +112,6 @@ private fun SheetDetailDialogs(
     }
 }
 
-@Composable
-private fun ProgressSheet(
-    sheet: RewardSheet,
-    stamps: List<RewardStamp>,
-    onEditRequest: () -> Unit,
-    onDeleteRequest: () -> Unit,
-    onStampTypeSelect: (StampType) -> Unit,
-) {
-    var activeDialog by remember { mutableStateOf<SheetDetailDialog?>(null) }
-
-    SheetDetailDialogs(
-        activeDialog = activeDialog,
-        onDismissRequest = {
-            activeDialog = null
-        },
-        onDeleteRequest = {
-            activeDialog = null
-            onDeleteRequest()
-        },
-        onStampTypeSelect = { stampType ->
-            activeDialog = null
-            onStampTypeSelect(stampType)
-        },
-    )
-
-    Column {
-        Text("${sheet.currentCount} / ${sheet.goalCount}")
-        Button(
-            onClick = {
-                activeDialog = SheetDetailDialog.Stamp
-            },
-            enabled = sheet.currentCount < sheet.goalCount,
-        ) {
-            Text("スタンプを押す")
-        }
-
-        Button(
-            onClick = onEditRequest,
-        ) {
-            Text("編集")
-        }
-
-        Button(
-            onClick = {
-                activeDialog = SheetDetailDialog.Delete
-            },
-        ) {
-            Text("削除")
-        }
-
-        RewardBoardView(
-            board =
-                RewardBoardState(
-                    title = sheet.title,
-                    currentCount = sheet.currentCount,
-                    goalCount = sheet.goalCount,
-                ),
-            stamps = stamps,
-            modifier = Modifier.weight(1f),
-        )
-    }
-}
-
 @ExcludeFromCoverage
 @Composable
 private fun sheetDetailViewModel(): SheetDetailViewModel {
@@ -189,7 +133,10 @@ private fun SheetDetailHeader(
     sheet: RewardSheet,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
+    onEditClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {},
 ) {
+    var showMenu by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {
@@ -202,6 +149,41 @@ private fun SheetDetailHeader(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "戻る",
+                )
+            }
+        },
+        actions = {
+            IconButton(
+                modifier = Modifier.testTag("SheetDetailScreen.MenuButton"),
+                onClick = {
+                    showMenu = true
+                },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MoreVert,
+                    contentDescription = "メニュー",
+                )
+            }
+
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false },
+            ) {
+                DropdownMenuItem(
+                    text = { Text("編集") },
+                    modifier = Modifier.testTag("SheetDetailScreen.Menu.EditButton"),
+                    onClick = {
+                        showMenu = false
+                        onEditClick()
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text("削除") },
+                    modifier = Modifier.testTag("SheetDetailScreen.Menu.DeleteButton"),
+                    onClick = {
+                        showMenu = false
+                        onDeleteClick()
+                    },
                 )
             }
         },
@@ -235,13 +217,35 @@ internal fun SheetDetailContent(
     onRestartClick: () -> Unit = {},
     onRestartWithEditClick: () -> Unit = {},
 ) {
+    var activeDialog by remember { mutableStateOf<SheetDetailDialog?>(null) }
     if (sheet == null) {
         SheetNotFound(modifier = modifier)
     } else {
+        SheetDetailDialogs(
+            activeDialog = activeDialog,
+            onDismissRequest = {
+                activeDialog = null
+            },
+            onDeleteRequest = {
+                activeDialog = null
+                onDeleteClick()
+            },
+            onStampTypeSelect = { stampType ->
+                activeDialog = null
+                onStampTypeSelect(stampType)
+            },
+        )
         Scaffold(
             modifier = modifier,
             topBar = {
-                SheetDetailHeader(sheet, onBackClick = onBackClick)
+                SheetDetailHeader(
+                    sheet,
+                    onBackClick = onBackClick,
+                    onEditClick = onEditClick,
+                    onDeleteClick = {
+                        activeDialog = SheetDetailDialog.Delete
+                    },
+                )
             },
         ) { innerPadding ->
             Column(
@@ -260,9 +264,9 @@ internal fun SheetDetailContent(
                     ProgressSheet(
                         sheet = sheet,
                         stamps = stamps,
-                        onEditRequest = onEditClick,
-                        onDeleteRequest = onDeleteClick,
-                        onStampTypeSelect = onStampTypeSelect,
+                        onStampTypeSelect = {
+                            activeDialog = SheetDetailDialog.Stamp
+                        },
                     )
                 }
             }
@@ -310,4 +314,53 @@ fun SheetDetailScreen(
             onRestartWithEditClick()
         },
     )
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Suppress("MagicNumber")
+@Composable
+private fun SheetDetailContentPreview() {
+    val rewardStamp: (Int) -> RewardStamp = { position ->
+        RewardStamp(
+            id = position.toLong(),
+            sheetId = 1,
+            completedRewardSheetId = null,
+            position = position,
+            stampedAt = LocalDateTime.now().minusSeconds(10 - position.toLong()),
+            stampType = StampType.Star,
+        )
+    }
+    RewardSealTheme {
+        Scaffold(
+            bottomBar = {
+                RewardSealBottomBar(
+                    selectedTab = BottomTab.Sheets,
+                )
+            },
+        ) { innerPadding ->
+            SheetDetailContent(
+                sheet =
+                    RewardSheet(
+                        id = 0,
+                        title = "おてつだい",
+                        goalCount = 10,
+                        currentCount = 9,
+                    ),
+                stamps =
+                    listOf(
+                        rewardStamp(0),
+                        rewardStamp(1),
+                        rewardStamp(2),
+                        rewardStamp(3),
+                        rewardStamp(4),
+                        rewardStamp(5),
+                        rewardStamp(6),
+                        rewardStamp(7),
+                        rewardStamp(8),
+                    ),
+                modifier = Modifier.padding(innerPadding),
+            )
+        }
+    }
 }

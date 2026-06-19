@@ -1,6 +1,7 @@
 package com.cheesecomer.rewardseal.model
 
 import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 data class RewardStamp(
     val id: Long,
@@ -9,4 +10,6 @@ data class RewardStamp(
     val position: Int,
     val stampType: StampType,
     val stampedAt: LocalDateTime,
-)
+) {
+    val randomSeed = this.stampedAt.toEpochSecond(ZoneOffset.ofHours(0))
+}

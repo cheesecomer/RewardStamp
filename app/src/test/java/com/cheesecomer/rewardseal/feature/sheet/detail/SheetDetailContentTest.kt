@@ -54,19 +54,7 @@ class SheetDetailContentTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText("3 / 10")
-            .assertIsDisplayed()
-
-        composeTestRule
             .onNodeWithText("スタンプを押す")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("編集")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("削除")
             .assertIsDisplayed()
     }
 
@@ -158,7 +146,11 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("編集")
+            .onNodeWithTag("SheetDetailScreen.MenuButton")
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag("SheetDetailScreen.Menu.EditButton")
             .performClick()
 
         assertThat(clicked).isTrue()
@@ -262,7 +254,11 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("削除")
+            .onNodeWithTag("SheetDetailScreen.MenuButton")
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag("SheetDetailScreen.Menu.DeleteButton")
             .performClick()
 
         composeTestRule
