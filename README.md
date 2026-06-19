@@ -21,6 +21,24 @@
   <img src="docs/images/sheet-empty-list.png" alt="シート一覧（初期）" width="320">
 </p>
 
+### シート登録
+
+<p align="center">
+  <img src="docs/images/sheet-new.png" alt="シート詳細" width="320">
+</p>
+
+#### ごほうび登録
+
+<p align="center">
+  <img src="docs/images/add-milestone-dialog.png" alt="シート詳細" width="320">
+</p>
+
+### シート編集
+
+<p align="center">
+  <img src="docs/images/sheet-edit.png" alt="シート詳細" width="320">
+</p>
+
 ### シート詳細
 
 <p align="center">

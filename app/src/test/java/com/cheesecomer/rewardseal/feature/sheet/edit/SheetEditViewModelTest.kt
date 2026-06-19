@@ -101,17 +101,17 @@ class SheetEditViewModelTest {
     fun addMilestone_addsMilestone() =
         runTest {
             val viewModel = createViewModel()
+            viewModel.createMilestone(rewardMilestone().toUiState())
 
-            viewModel.addMilestone()
-
-            assertThat(viewModel.uiState.milestones).hasSize(2)
+            assertThat(viewModel.uiState.milestones).hasSize(1)
         }
 
     @Test
     fun removeMilestone_removesMilestone() =
         runTest {
             val viewModel = createViewModel()
-            viewModel.addMilestone()
+            viewModel.createMilestone(rewardMilestone().toUiState())
+            viewModel.createMilestone(rewardMilestone().toUiState())
 
             viewModel.removeMilestone(0)
 
@@ -119,29 +119,19 @@ class SheetEditViewModelTest {
         }
 
     @Test
-    fun updateMilestoneRequiredCompletions_updatesRequiredCompletions() =
+    fun updateMilestone_updatesRequiredCompletions() =
         runTest {
             val viewModel = createViewModel()
+            val milestone = rewardMilestone().toUiState()
 
-            viewModel.updateMilestoneRequiredCompletions(
+            viewModel.createMilestone(milestone)
+            viewModel.updateMilestone(
                 index = 0,
-                value = "3",
+                value = milestone.copy(requiredCompletions = "3", reward = "アイス"),
             )
 
             assertThat(viewModel.uiState.milestones[0].requiredCompletions)
                 .isEqualTo("3")
-        }
-
-    @Test
-    fun updateMilestoneReward_updatesReward() =
-        runTest {
-            val viewModel = createViewModel()
-
-            viewModel.updateMilestoneReward(
-                index = 0,
-                value = "アイス",
-            )
-
             assertThat(viewModel.uiState.milestones[0].reward)
                 .isEqualTo("アイス")
         }
@@ -208,11 +198,7 @@ class SheetEditViewModelTest {
     fun canSave_returnsFalseWhenTitleIsBlank() =
         runTest {
             val viewModel = createViewModel()
-
-            viewModel.updateMilestoneReward(
-                index = 0,
-                value = "アイス",
-            )
+            viewModel.createMilestone(rewardMilestone().toUiState())
 
             assertThat(viewModel.canSave()).isFalse()
         }
@@ -223,6 +209,7 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.updateTitle("はみがき")
+            viewModel.createMilestone(rewardMilestone(reward = "").toUiState())
 
             assertThat(viewModel.canSave()).isFalse()
         }
@@ -233,14 +220,7 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.updateTitle("はみがき")
-            viewModel.updateMilestoneReward(
-                index = 0,
-                value = "アイス",
-            )
-            viewModel.updateMilestoneRequiredCompletions(
-                index = 0,
-                value = "abc",
-            )
+            viewModel.createMilestone(rewardMilestone().toUiState().copy(requiredCompletions = ""))
 
             assertThat(viewModel.canSave()).isFalse()
         }
@@ -251,10 +231,7 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.updateTitle("はみがき")
-            viewModel.updateMilestoneReward(
-                index = 0,
-                value = "アイス",
-            )
+            viewModel.createMilestone(rewardMilestone().toUiState())
 
             assertThat(viewModel.canSave()).isTrue()
         }
@@ -279,13 +256,11 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
 
             viewModel.updateTitle("はみがき")
-            viewModel.updateMilestoneReward(
-                index = 0,
-                value = "アイス",
-            )
-            viewModel.updateMilestoneRequiredCompletions(
-                index = 0,
-                value = "3",
+            viewModel.createMilestone(
+                rewardMilestone(
+                    requiredCompletions = 3,
+                    reward = "アイス",
+                ).toUiState(),
             )
 
             var saved = false

@@ -81,10 +81,10 @@ class SheetEditViewModel(
             )
     }
 
-    fun addMilestone() {
+    fun createMilestone(milestone: RewardMilestoneUiState) {
         uiState =
             uiState.copy(
-                milestones = uiState.milestones + RewardMilestoneUiState(),
+                milestones = uiState.milestones + milestone,
             )
     }
 
@@ -98,36 +98,18 @@ class SheetEditViewModel(
             )
     }
 
-    fun updateMilestoneRequiredCompletions(
+    fun updateMilestone(
         index: Int,
-        value: String,
+        value: RewardMilestoneUiState,
     ) {
         uiState =
             uiState.copy(
                 milestones =
                     uiState.milestones.mapIndexed { i, milestone ->
-                        if (i == index) {
+                        if (index == i) {
                             milestone.copy(
-                                requiredCompletions = value,
-                            )
-                        } else {
-                            milestone
-                        }
-                    },
-            )
-    }
-
-    fun updateMilestoneReward(
-        index: Int,
-        value: String,
-    ) {
-        uiState =
-            uiState.copy(
-                milestones =
-                    uiState.milestones.mapIndexed { i, milestone ->
-                        if (i == index) {
-                            milestone.copy(
-                                reward = value,
+                                reward = value.reward,
+                                requiredCompletions = value.requiredCompletions,
                             )
                         } else {
                             milestone

@@ -23,12 +23,7 @@ data class SheetEditUiState(
     val sheetId: Long = 0,
     val title: String = "",
     val goalCount: Int = 10,
-    val milestones: List<RewardMilestoneUiState> =
-        listOf(
-            RewardMilestoneUiState(
-                requiredCompletions = "1",
-            ),
-        ),
+    val milestones: List<RewardMilestoneUiState> = emptyList(),
 ) {
-    fun canSave(): Boolean = title.isNotBlank() && milestones.all { it.isValid() }
+    fun canSave(): Boolean = title.isNotBlank() && milestones.isNotEmpty() && milestones.all { it.isValid() }
 }

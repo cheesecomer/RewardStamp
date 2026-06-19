@@ -2,35 +2,38 @@ package com.cheesecomer.rewardseal.feature.sheet.edit
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
-import com.cheesecomer.rewardseal.feature.sheet.edit.RewardMilestoneUiState
+import com.cheesecomer.rewardseal.ui.RewardSealTextFieldDefaults
+import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 
 @ExcludeFromCoverage
 @Composable
@@ -46,55 +49,6 @@ private fun sheetEditViewModel(): SheetEditViewModel {
     )
 }
 
-@Composable
-private fun GoalCountPicker(
-    goalCount: Int,
-    modifier: Modifier = Modifier,
-    onPlusClick: () -> Unit = {},
-    onMinusClick: () -> Unit = {},
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text(
-                text = "何回がんばる？",
-                style = MaterialTheme.typography.titleMedium,
-            )
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextButton(
-                    onClick = {
-                        if (goalCount > 1) {
-                            onMinusClick()
-                        }
-                    },
-                ) {
-                    Text("−")
-                }
-
-                Text(
-                    text = "$goalCount 回",
-                    style = MaterialTheme.typography.headlineSmall,
-                )
-
-                TextButton(
-                    onClick = onPlusClick,
-                ) {
-                    Text("＋")
-                }
-            }
-        }
-    }
-}
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SheetEditScreenHeader(
@@ -103,14 +57,14 @@ private fun SheetEditScreenHeader(
     onBackClick: () -> Unit = {},
 ) {
     CenterAlignedTopAppBar(
+        modifier = modifier,
         title = {
             if (sheetId == null) {
                 Text("シートを作る")
             } else {
-                Text("ごほうびや回数を変える")
+                Text("シートを編集")
             }
         },
-        modifier = modifier,
         navigationIcon = {
             IconButton(
                 onClick = onBackClick,
@@ -125,30 +79,43 @@ private fun SheetEditScreenHeader(
 }
 
 @Composable
-private fun TitleForm(
-    value: String,
+private fun SheetNameSection(
+    title: String,
+    onTitleChange: (String) -> Unit,
+    canEdit: Boolean,
     modifier: Modifier = Modifier,
-    enabled: Boolean = true,
-    onValueChange: (String) -> Unit = {},
 ) {
-    if (enabled) {
-        OutlinedTextField(
-            value = value,
-            onValueChange = onValueChange,
-            label = { Text("なにを がんばる？") },
-            placeholder = { Text("はみがき") },
-            modifier =
-                modifier
-                    .fillMaxWidth()
-                    .testTag("titleTextField"),
-            singleLine = true,
+    Column(
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        SheetEditSectionTitle(
+            text = "なにを がんばる？",
+            modifier = Modifier.padding(start = 16.dp),
         )
-    } else {
-        Text(
-            modifier = modifier,
-            text = "${value}をがんばる",
-            style = MaterialTheme.typography.titleLarge,
-        )
+        Spacer(modifier = Modifier.size(8.dp))
+        if (canEdit) {
+            OutlinedTextField(
+                value = title,
+                onValueChange = onTitleChange,
+                placeholder = { Text("はみがき") },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .testTag("SheetEditScreen.TitleTextField"),
+                singleLine = true,
+                colors = RewardSealTextFieldDefaults.colors(),
+            )
+        } else {
+            Text(
+                text = title,
+                modifier =
+                    Modifier
+                        .padding(start = 16.dp, bottom = 16.dp)
+                        .testTag("SheetEditScreen.TitleLabel"),
+                fontSize = 25.sp,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
@@ -162,12 +129,11 @@ internal fun SheetEditContent(
     canSave: Boolean = false,
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onTitleUpdate: (String) -> Unit = {},
+    onTitleChange: (String) -> Unit = {},
     onIncrementGoalCount: () -> Unit = {},
     onDecrementGoalCount: () -> Unit = {},
-    onRequiredCompletionsChange: (index: Int, value: String) -> Unit = { index, value -> },
-    onRewardChange: (index: Int, value: String) -> Unit = { index, value -> },
-    onAddMilestoneClick: () -> Unit = {},
+    onCreateMilestoneClick: (RewardMilestoneUiState) -> Unit = {},
+    onUpdateMilestoneClick: (index: Int, RewardMilestoneUiState) -> Unit = { _, _ -> },
     onRemoveMilestoneClick: (index: Int) -> Unit = {},
 ) {
     Scaffold(
@@ -176,40 +142,50 @@ internal fun SheetEditContent(
             SheetEditScreenHeader(sheetId, onBackClick = onBackClick)
         },
     ) { innerPadding ->
-        Column(
+        LazyColumn(
             modifier =
                 Modifier
                     .padding(innerPadding)
-                    .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .testTag("SheetEditScreen.List"),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            TitleForm(
-                value = title,
-                onValueChange = onTitleUpdate,
-                enabled = sheetId == null,
-            )
+            item {
+                SheetNameSection(
+                    title = title,
+                    onTitleChange = onTitleChange,
+                    canEdit = sheetId == null,
+                )
+            }
 
-            GoalCountPicker(
-                goalCount,
-                onPlusClick = onIncrementGoalCount,
-                onMinusClick = onDecrementGoalCount,
-            )
+            item {
+                GoalCountPicker(
+                    goalCount,
+                    onPlusClick = onIncrementGoalCount,
+                    onMinusClick = onDecrementGoalCount,
+                )
+            }
 
-            MilestoneFormList(
-                milestones = milestones,
-                onRequiredCompletionsChange = onRequiredCompletionsChange,
-                onRewardChange = onRewardChange,
-                onAddClick = onAddMilestoneClick,
-                onRemoveClick = onRemoveMilestoneClick,
-            )
+            item {
+                RewardMilestonesSection(
+                    milestones = milestones,
+                    onRemoveClick = onRemoveMilestoneClick,
+                    onCreateClick = onCreateMilestoneClick,
+                    onUpdateClick = onUpdateMilestoneClick,
+                )
+            }
 
-            Button(
-                onClick = onSaveClick,
-                modifier = Modifier.fillMaxWidth(),
-                enabled = canSave,
-            ) {
-                Text("保存")
+            item {
+                Button(
+                    onClick = onSaveClick,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .testTag("SheetEditScreen.Save"),
+                    enabled = canSave,
+                ) {
+                    Text("保存")
+                }
             }
         }
     }
@@ -243,16 +219,41 @@ fun SheetEditScreen(
             }
         },
         onBackClick = onBackClick,
-        onTitleUpdate = { viewModel.updateTitle(it) },
+        onTitleChange = { viewModel.updateTitle(it) },
         onIncrementGoalCount = {
             viewModel.incrementGoalCount()
         },
         onDecrementGoalCount = {
             viewModel.decrementGoalCount()
         },
-        onRequiredCompletionsChange = viewModel::updateMilestoneRequiredCompletions,
-        onRewardChange = viewModel::updateMilestoneReward,
-        onAddMilestoneClick = viewModel::addMilestone,
+        onUpdateMilestoneClick = viewModel::updateMilestone,
+        onCreateMilestoneClick = viewModel::createMilestone,
         onRemoveMilestoneClick = viewModel::removeMilestone,
     )
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Suppress("MagicNumber")
+@Composable
+private fun SheetEditScreenPreview() {
+    RewardSealTheme {
+        SheetEditContent(
+            sheetId = 1L,
+            title = "おかたずけ",
+            goalCount = 1,
+            milestones =
+                listOf(
+                    RewardMilestoneUiState(
+                        requiredCompletions = "1",
+                        reward = "スーパーカップ",
+                    ),
+                    RewardMilestoneUiState(
+                        requiredCompletions = "2",
+                        reward = "ハーゲンダッツ",
+                    ),
+                ),
+            modifier = Modifier.fillMaxHeight(),
+        )
+    }
 }

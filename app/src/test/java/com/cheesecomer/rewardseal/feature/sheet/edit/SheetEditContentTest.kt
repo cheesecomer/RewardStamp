@@ -3,12 +3,14 @@ package com.cheesecomer.rewardseal.feature.sheet.edit
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
+import androidx.compose.ui.test.hasTestTag
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
+import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
 import com.cheesecomer.rewardseal.data.rewardMilestone
 import com.google.common.truth.Truth.assertThat
@@ -36,9 +38,8 @@ class SheetEditContentTest {
                         ).toUiState(),
                     ),
                 canSave = false,
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
@@ -48,8 +49,12 @@ class SheetEditContentTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText("なにを がんばる？")
-            .assertIsDisplayed()
+            .onNodeWithTag("SheetEditScreen.TitleTextField")
+            .assertExists()
+
+        composeTestRule
+            .onNodeWithTag("SheetEditScreen.TitleLabel")
+            .assertDoesNotExist()
     }
 
     @Test
@@ -66,20 +71,23 @@ class SheetEditContentTest {
                         ).toUiState(),
                     ),
                 canSave = false,
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
 
         composeTestRule
-            .onNodeWithText("ごほうびや回数を変える")
+            .onNodeWithText("シートを編集")
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithText("はみがきをがんばる")
-            .assertIsDisplayed()
+            .onNodeWithTag("SheetEditScreen.TitleTextField")
+            .assertDoesNotExist()
+
+        composeTestRule
+            .onNodeWithTag("SheetEditScreen.TitleLabel")
+            .assertExists()
     }
 
     @Test
@@ -96,16 +104,18 @@ class SheetEditContentTest {
                         ).toUiState(),
                     ),
                 canSave = false,
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
+        composeTestRule
+            .onNodeWithTag("SheetEditScreen.List")
+            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
 
         composeTestRule
-            .onNodeWithText("保存")
-            .performScrollTo()
+            .onNodeWithTag("SheetEditScreen.Save")
+            .assertExists()
             .assertIsDisplayed()
             .assertIsNotEnabled()
     }
@@ -119,15 +129,18 @@ class SheetEditContentTest {
                 goalCount = 10,
                 milestones = listOf(),
                 canSave = true,
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
+        composeTestRule
+            .onNodeWithTag("SheetEditScreen.List")
+            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
 
         composeTestRule
-            .onNodeWithText("保存")
+            .onNodeWithTag("SheetEditScreen.Save")
+            .assertExists()
             .performScrollTo()
             .assertIsDisplayed()
             .assertIsEnabled()
@@ -145,15 +158,18 @@ class SheetEditContentTest {
                 milestones = listOf(),
                 canSave = true,
                 onSaveClick = { saved = true },
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
+        composeTestRule
+            .onNodeWithTag("SheetEditScreen.List")
+            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
 
         composeTestRule
-            .onNodeWithText("保存")
+            .onNodeWithTag("SheetEditScreen.Save")
+            .assertExists()
             .performScrollTo()
             .assertIsDisplayed()
             .performClick()
@@ -178,9 +194,8 @@ class SheetEditContentTest {
                     ),
                 canSave = false,
                 onBackClick = { back = true },
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
@@ -209,9 +224,8 @@ class SheetEditContentTest {
                     ),
                 canSave = false,
                 onBackClick = { },
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {
                     addMilestone = true
                 },
                 onRemoveMilestoneClick = {},
@@ -222,6 +236,18 @@ class SheetEditContentTest {
             .onNodeWithTag("MilestoneFormList.addMilestoneButton")
             .performScrollTo()
             .assertIsDisplayed()
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredCompletions")
+            .performTextInput("1")
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.Reward")
+            .performTextInput("アイス")
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
             .performClick()
 
         assertThat(addMilestone).isTrue()
@@ -243,16 +269,15 @@ class SheetEditContentTest {
                         ).toUiState(),
                     ),
                 canSave = false,
-                onTitleUpdate = { title = it },
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onTitleChange = { title = it },
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
 
         composeTestRule
-            .onNodeWithTag("titleTextField")
+            .onNodeWithTag("SheetEditScreen.TitleTextField")
             .performTextInput("おかたづけ")
 
         assertThat(title).isEqualTo("おかたづけ")
@@ -277,15 +302,14 @@ class SheetEditContentTest {
                 canSave = false,
                 onIncrementGoalCount = { plus = true },
                 onDecrementGoalCount = { minus = true },
-                onRequiredCompletionsChange = { _, _ -> },
-                onRewardChange = { _, _ -> },
-                onAddMilestoneClick = {},
+                onUpdateMilestoneClick = { _, _ -> },
+                onCreateMilestoneClick = {},
                 onRemoveMilestoneClick = {},
             )
         }
 
         composeTestRule
-            .onNodeWithText("＋")
+            .onNodeWithTag("GoalCountPicker.IncrementButton")
             .performClick()
 
         assertThat(plus).isTrue()
@@ -293,7 +317,7 @@ class SheetEditContentTest {
         plus = false
 
         composeTestRule
-            .onNodeWithText("−")
+            .onNodeWithTag("GoalCountPicker.DecrementButton")
             .performClick()
 
         assertThat(plus).isFalse()
