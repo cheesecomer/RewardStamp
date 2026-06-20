@@ -27,10 +27,11 @@ interface Navigator {
 private fun NavController.navigateTopLevel(route: String) {
     navigate(route) {
         popUpTo(Route.SHEET_LIST) {
-            saveState = true
+            saveState = false
+            inclusive = false
         }
         launchSingleTop = true
-        restoreState = true
+        restoreState = false
     }
 }
 

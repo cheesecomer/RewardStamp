@@ -24,25 +24,29 @@
 ### シート登録
 
 <p align="center">
-  <img src="docs/images/sheet-new.png" alt="シート詳細" width="320">
-</p>
-
-#### ごほうび登録
-
-<p align="center">
-  <img src="docs/images/add-milestone-dialog.png" alt="シート詳細" width="320">
+  <img src="docs/images/sheet-new.png" alt="シート登録" width="320">
+  <img src="docs/images/add-milestone-dialog.png" alt="ごほうび登録" width="320">
 </p>
 
 ### シート編集
 
 <p align="center">
-  <img src="docs/images/sheet-edit.png" alt="シート詳細" width="320">
+  <img src="docs/images/sheet-edit.png" alt="シート変更" width="320">
 </p>
 
 ### シート詳細
 
 <p align="center">
   <img src="docs/images/sheet-detail.png" alt="シート詳細" width="320">
+</p>
+
+### ごほうび交換
+
+<p align="center">
+  <img src="docs/images/exchangeable.png" alt="ごほうび交換" width="320">
+  <img src="docs/images/exchangeable-empty.png" alt="ごほうび交換（データなし）" width="320">
+  <img src="docs/images/exchangeable-dialog-single.png" alt="ごほうび交換（データなし）" width="320">
+  <img src="docs/images/exchangeable-dialog-multi.png" alt="ごほうび交換（データなし）" width="320">
 </p>
 
 ## Getting Started

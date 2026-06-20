@@ -18,7 +18,7 @@ import java.time.LocalDateTime
 @RunWith(RobolectricTestRunner::class)
 class ExchangeableRewardRepositoryTest {
     private lateinit var database: AppDatabase
-    private lateinit var repository: ExchangeableRewardRepository
+    private lateinit var repository: ExchangeableSheetRepository
     private lateinit var completedRewardSheetRepository: CompletedRewardSheetRepository
 
     private val now = LocalDateTime.parse("2026-06-16T17:07:48.429")
@@ -50,7 +50,7 @@ class ExchangeableRewardRepositoryTest {
             )
 
         repository =
-            ExchangeableRewardRepository(
+            ExchangeableSheetRepository(
                 rewardSheetRepository = rewardSheetRepository,
                 completedRewardSheetRepository = completedRewardSheetRepository,
                 rewardMilestoneRepository = rewardMilestoneRepository,
@@ -88,14 +88,14 @@ class ExchangeableRewardRepositoryTest {
             database.rewardMilestoneDao().insert(
                 rewardMilestoneEntity(
                     sheetId = sheetId,
-                    requiredCompletions = 1,
+                    requiredSheetCount = 1,
                     reward = "シール",
                 ),
             )
             database.rewardMilestoneDao().insert(
                 rewardMilestoneEntity(
                     sheetId = sheetId,
-                    requiredCompletions = 3,
+                    requiredSheetCount = 3,
                     reward = "アイス",
                 ),
             )
@@ -105,12 +105,12 @@ class ExchangeableRewardRepositoryTest {
             assertThat(result).hasSize(1)
 
             val sheet = result.single()
-            assertThat(sheet.id).isEqualTo(sheetId)
-            assertThat(sheet.title).isEqualTo("はみがき")
-            assertThat(sheet.unconsumedCompletedCount).isEqualTo(2)
+            assertThat(sheet.rewardSheet.id).isEqualTo(sheetId)
+            assertThat(sheet.rewardSheet.title).isEqualTo("はみがき")
+            assertThat(sheet.exchangeableSheetCount).isEqualTo(2)
             assertThat(sheet.exchangeableMilestones.map { it.reward })
                 .containsExactly("シール")
-            assertThat(sheet.nextMilestone!!.reward).isEqualTo("アイス")
+            assertThat(sheet.closestMilestone!!.reward).isEqualTo("アイス")
         }
 
     @Test

@@ -41,13 +41,13 @@ fun completedRewardSheet(
 fun rewardMilestone(
     id: Long = 0L,
     sheetId: Long = 1,
-    requiredCompletions: Int = 1,
+    requiredSheetCount: Int = 1,
     reward: String = "アイス",
 ): RewardMilestone =
     RewardMilestone(
         id = id,
         sheetId = sheetId,
-        requiredCompletions = requiredCompletions,
+        requiredSheetCount = requiredSheetCount,
         reward = reward,
     )
 
@@ -75,16 +75,19 @@ fun exchangeableSheet(
     exchangeableMilestones: List<RewardMilestone> =
         listOf(
             rewardMilestone(
-                requiredCompletions = 1,
+                requiredSheetCount = 1,
                 reward = "アイス",
             ),
         ),
     nextMilestone: RewardMilestone? = null,
 ): ExchangeableSheet =
     ExchangeableSheet(
-        id = id,
-        title = title,
-        unconsumedCompletedCount = unconsumedCompletedCount,
+        rewardSheet =
+            rewardSheet(
+                id = id,
+                title = title,
+            ),
+        exchangeableSheetCount = unconsumedCompletedCount,
         exchangeableMilestones = exchangeableMilestones,
-        nextMilestone = nextMilestone,
+        closestMilestone = nextMilestone,
     )

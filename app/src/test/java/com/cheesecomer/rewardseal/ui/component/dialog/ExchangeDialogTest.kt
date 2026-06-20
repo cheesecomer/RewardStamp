@@ -1,8 +1,9 @@
 package com.cheesecomer.rewardseal.ui.component.dialog
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardseal.data.rewardMilestone
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
@@ -32,10 +33,9 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("交換しますか？").assertIsDisplayed()
-        composeTestRule.onNodeWithText("アイス と交換しますか？").assertIsDisplayed()
-        composeTestRule.onNodeWithText("交換する").assertIsDisplayed()
-        composeTestRule.onNodeWithText("キャンセル").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("ExchangeDialog.Background").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").assertIsEnabled().assertIsDisplayed()
+        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").assertIsDisplayed()
     }
 
     @Test
@@ -58,7 +58,7 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("交換する").performClick()
+        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").performClick()
 
         assertThat(dismissed).isTrue()
         assertThat(selectedMilestone).isEqualTo(milestone)
@@ -80,7 +80,7 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("キャンセル").performClick()
+        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").performClick()
 
         assertThat(dismissed).isTrue()
     }

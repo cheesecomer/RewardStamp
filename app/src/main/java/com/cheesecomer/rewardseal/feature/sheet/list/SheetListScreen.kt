@@ -67,7 +67,7 @@ private fun EmptyList(
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Image(
-            painter = painterResource(R.drawable.img_teddy_bear),
+            painter = painterResource(R.drawable.img_teddy_bear_sheet),
             contentDescription = null,
             alpha = 0.65f,
         )

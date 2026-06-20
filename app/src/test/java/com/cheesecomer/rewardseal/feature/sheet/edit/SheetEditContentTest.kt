@@ -34,8 +34,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onUpdateMilestoneClick = { _, _ -> },
@@ -67,8 +67,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onUpdateMilestoneClick = { _, _ -> },
@@ -100,8 +100,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onUpdateMilestoneClick = { _, _ -> },
@@ -189,8 +189,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onBackClick = { back = true },
@@ -219,8 +219,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onBackClick = { },
@@ -239,7 +239,7 @@ class SheetEditContentTest {
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredCompletions")
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
             .performTextInput("1")
 
         composeTestRule
@@ -265,8 +265,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onTitleChange = { title = it },
@@ -296,8 +296,8 @@ class SheetEditContentTest {
                 milestones =
                     listOf(
                         rewardMilestone(
-                            requiredCompletions = 1,
-                        ).toUiState(),
+                            requiredSheetCount = 1,
+                        ),
                     ),
                 canSave = false,
                 onIncrementGoalCount = { plus = true },

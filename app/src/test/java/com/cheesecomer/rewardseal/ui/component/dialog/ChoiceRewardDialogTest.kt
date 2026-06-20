@@ -1,8 +1,10 @@
 package com.cheesecomer.rewardseal.ui.component.dialog
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardseal.data.rewardMilestone
 import com.cheesecomer.rewardseal.model.RewardMilestone
@@ -26,11 +28,13 @@ class ChoiceRewardDialogTest {
                     milestones =
                         listOf(
                             rewardMilestone(
-                                requiredCompletions = 1,
+                                id = 1L,
+                                requiredSheetCount = 1,
                                 reward = "シール",
                             ),
                             rewardMilestone(
-                                requiredCompletions = 3,
+                                id = 2L,
+                                requiredSheetCount = 3,
                                 reward = "アイス",
                             ),
                         ),
@@ -40,17 +44,18 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("ごほうびを選んでね").assertIsDisplayed()
-        composeTestRule.onNodeWithText("シール（1枚）").assertIsDisplayed()
-        composeTestRule.onNodeWithText("アイス（3枚）").assertIsDisplayed()
-        composeTestRule.onNodeWithText("キャンセル").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.1").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").assertIsDisplayed()
+        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").assertIsNotEnabled()
+        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").assertIsEnabled()
     }
 
     @Test
-    fun clickReward_dismissesAndSelectsReward() {
+    fun clickReward_enableConfirmButtonAndNotDismissesAndNotSelectsReward() {
         val milestone =
             rewardMilestone(
-                requiredCompletions = 3,
+                id = 2L,
+                requiredSheetCount = 3,
                 reward = "アイス",
             )
 
@@ -63,7 +68,8 @@ class ChoiceRewardDialogTest {
                     milestones =
                         listOf(
                             rewardMilestone(
-                                requiredCompletions = 1,
+                                id = 1L,
+                                requiredSheetCount = 1,
                                 reward = "シール",
                             ),
                             milestone,
@@ -78,7 +84,48 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("アイス（3枚）").performClick()
+        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").performClick()
+
+        assertThat(dismissed).isFalse()
+        assertThat(selectedMilestone).isNull()
+    }
+
+    @Test
+    fun clickConfirm_dismissesAndSelectsReward() {
+        val milestone =
+            rewardMilestone(
+                id = 2L,
+                requiredSheetCount = 3,
+                reward = "アイス",
+            )
+
+        var dismissed = false
+        var selectedMilestone: RewardMilestone? = null
+
+        composeTestRule.setContent {
+            RewardSealTheme {
+                ChoiceRewardDialog(
+                    milestones =
+                        listOf(
+                            rewardMilestone(
+                                id = 1L,
+                                requiredSheetCount = 1,
+                                reward = "シール",
+                            ),
+                            milestone,
+                        ),
+                    onRewardSelect = {
+                        selectedMilestone = it
+                    },
+                    onDismissRequest = {
+                        dismissed = true
+                    },
+                )
+            }
+        }
+
+        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").performClick()
+        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").performClick()
 
         assertThat(dismissed).isTrue()
         assertThat(selectedMilestone).isEqualTo(milestone)
@@ -105,7 +152,7 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithText("キャンセル").performClick()
+        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").performClick()
 
         assertThat(dismissed).isTrue()
     }

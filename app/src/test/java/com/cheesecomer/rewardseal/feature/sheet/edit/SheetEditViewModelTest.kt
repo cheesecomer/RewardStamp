@@ -101,7 +101,7 @@ class SheetEditViewModelTest {
     fun addMilestone_addsMilestone() =
         runTest {
             val viewModel = createViewModel()
-            viewModel.createMilestone(rewardMilestone().toUiState())
+            viewModel.createMilestone(rewardMilestone())
 
             assertThat(viewModel.uiState.milestones).hasSize(1)
         }
@@ -110,8 +110,8 @@ class SheetEditViewModelTest {
     fun removeMilestone_removesMilestone() =
         runTest {
             val viewModel = createViewModel()
-            viewModel.createMilestone(rewardMilestone().toUiState())
-            viewModel.createMilestone(rewardMilestone().toUiState())
+            viewModel.createMilestone(rewardMilestone())
+            viewModel.createMilestone(rewardMilestone())
 
             viewModel.removeMilestone(0)
 
@@ -119,19 +119,19 @@ class SheetEditViewModelTest {
         }
 
     @Test
-    fun updateMilestone_updatesRequiredCompletions() =
+    fun updateMilestone_updatesRequiredSheetCount() =
         runTest {
             val viewModel = createViewModel()
-            val milestone = rewardMilestone().toUiState()
+            val milestone = rewardMilestone()
 
             viewModel.createMilestone(milestone)
             viewModel.updateMilestone(
                 index = 0,
-                value = milestone.copy(requiredCompletions = "3", reward = "アイス"),
+                value = milestone.copy(requiredSheetCount = 3, reward = "アイス"),
             )
 
-            assertThat(viewModel.uiState.milestones[0].requiredCompletions)
-                .isEqualTo("3")
+            assertThat(viewModel.uiState.milestones[0].requiredSheetCount)
+                .isEqualTo(3)
             assertThat(viewModel.uiState.milestones[0].reward)
                 .isEqualTo("アイス")
         }
@@ -155,13 +155,13 @@ class SheetEditViewModelTest {
                         rewardMilestone(
                             id = 0,
                             sheetId = sheetId,
-                            requiredCompletions = 1,
+                            requiredSheetCount = 1,
                             reward = "シール",
                         ),
                         rewardMilestone(
                             id = 0,
                             sheetId = sheetId,
-                            requiredCompletions = 3,
+                            requiredSheetCount = 3,
                             reward = "アイス",
                         ),
                     ),
@@ -195,45 +195,33 @@ class SheetEditViewModelTest {
         }
 
     @Test
-    fun canSave_returnsFalseWhenTitleIsBlank() =
-        runTest {
-            val viewModel = createViewModel()
-            viewModel.createMilestone(rewardMilestone().toUiState())
-
-            assertThat(viewModel.canSave()).isFalse()
-        }
-
-    @Test
-    fun canSave_returnsFalseWhenMilestoneRewardIsBlank() =
-        runTest {
-            val viewModel = createViewModel()
-
-            viewModel.updateTitle("はみがき")
-            viewModel.createMilestone(rewardMilestone(reward = "").toUiState())
-
-            assertThat(viewModel.canSave()).isFalse()
-        }
-
-    @Test
-    fun canSave_returnsFalseWhenRequiredCompletionsIsInvalid() =
-        runTest {
-            val viewModel = createViewModel()
-
-            viewModel.updateTitle("はみがき")
-            viewModel.createMilestone(rewardMilestone().toUiState().copy(requiredCompletions = ""))
-
-            assertThat(viewModel.canSave()).isFalse()
-        }
-
-    @Test
     fun canSave_returnsTrueWhenUiStateIsValid() =
         runTest {
             val viewModel = createViewModel()
 
             viewModel.updateTitle("はみがき")
-            viewModel.createMilestone(rewardMilestone().toUiState())
+            viewModel.createMilestone(rewardMilestone())
 
             assertThat(viewModel.canSave()).isTrue()
+        }
+
+    @Test
+    fun canSave_returnsFalseWhenTitleIsBlank() =
+        runTest {
+            val viewModel = createViewModel()
+            viewModel.createMilestone(rewardMilestone())
+            viewModel.updateTitle("")
+
+            assertThat(viewModel.canSave()).isFalse()
+        }
+
+    @Test
+    fun canSave_returnsFalseWhenMilestonesIsEmpty() =
+        runTest {
+            val viewModel = createViewModel()
+            viewModel.updateTitle("はみがき")
+
+            assertThat(viewModel.canSave()).isFalse()
         }
 
     @Test
@@ -258,9 +246,9 @@ class SheetEditViewModelTest {
             viewModel.updateTitle("はみがき")
             viewModel.createMilestone(
                 rewardMilestone(
-                    requiredCompletions = 3,
+                    requiredSheetCount = 3,
                     reward = "アイス",
-                ).toUiState(),
+                ),
             )
 
             var saved = false
@@ -277,7 +265,7 @@ class SheetEditViewModelTest {
             assertThat(savedSheet.title).isEqualTo("はみがき")
             assertThat(savedSheet.goalCount).isEqualTo(10)
             assertThat(milestones).hasSize(1)
-            assertThat(milestones.single().requiredCompletions).isEqualTo(3)
+            assertThat(milestones.single().requiredSheetCount).isEqualTo(3)
             assertThat(milestones.single().reward).isEqualTo("アイス")
         }
 

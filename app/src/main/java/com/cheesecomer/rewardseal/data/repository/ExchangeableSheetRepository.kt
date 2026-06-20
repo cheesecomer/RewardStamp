@@ -2,7 +2,7 @@ package com.cheesecomer.rewardseal.data.repository
 
 import com.cheesecomer.rewardseal.model.ExchangeableSheet
 
-class ExchangeableRewardRepository(
+class ExchangeableSheetRepository(
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardMilestoneRepository: RewardMilestoneRepository,
@@ -11,22 +11,21 @@ class ExchangeableRewardRepository(
         rewardSheetRepository
             .findExchangeable()
             .map { sheet ->
-                val completedCount =
+                val exchangeableSheetCount =
                     completedRewardSheetRepository.countExchangeableBySheetId(sheet.id)
 
                 ExchangeableSheet(
-                    id = sheet.id,
-                    title = sheet.title,
-                    unconsumedCompletedCount = completedCount,
+                    rewardSheet = sheet,
+                    exchangeableSheetCount = exchangeableSheetCount,
                     exchangeableMilestones =
-                        rewardMilestoneRepository.findExchangeableBySheetId(
+                        rewardMilestoneRepository.findExchangeableMilestonesBySheetId(
                             sheetId = sheet.id,
-                            completedCount = completedCount,
+                            exchangeableSheetCount = exchangeableSheetCount,
                         ),
-                    nextMilestone =
-                        rewardMilestoneRepository.findNext(
+                    closestMilestone =
+                        rewardMilestoneRepository.findClosest(
                             sheetId = sheet.id,
-                            completedCount = completedCount,
+                            exchangeableSheetCount = exchangeableSheetCount,
                         ),
                 )
             }

@@ -26,7 +26,7 @@ interface RewardSheetDao {
                 GROUP BY sheetId
             )  as completed_reward_sheets
                 ON  completed_reward_sheets.sheetId = reward_milestones.sheetId 
-                AND reward_milestones.requiredCompletions <= completed_reward_sheets.completionCount
+                AND reward_milestones.requiredSheetCount <= completed_reward_sheets.completionCount
         )
     """,
     )

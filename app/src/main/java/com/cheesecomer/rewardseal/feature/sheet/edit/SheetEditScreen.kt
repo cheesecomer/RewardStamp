@@ -20,8 +20,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -32,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.ui.RewardSealTextFieldDefaults
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 
@@ -124,7 +123,7 @@ internal fun SheetEditContent(
     sheetId: Long?,
     title: String,
     goalCount: Int,
-    milestones: List<RewardMilestoneUiState>,
+    milestones: List<RewardMilestone>,
     modifier: Modifier = Modifier,
     canSave: Boolean = false,
     onSaveClick: () -> Unit = {},
@@ -132,8 +131,8 @@ internal fun SheetEditContent(
     onTitleChange: (String) -> Unit = {},
     onIncrementGoalCount: () -> Unit = {},
     onDecrementGoalCount: () -> Unit = {},
-    onCreateMilestoneClick: (RewardMilestoneUiState) -> Unit = {},
-    onUpdateMilestoneClick: (index: Int, RewardMilestoneUiState) -> Unit = { _, _ -> },
+    onCreateMilestoneClick: (RewardMilestone) -> Unit = {},
+    onUpdateMilestoneClick: (index: Int, RewardMilestone) -> Unit = { _, _ -> },
     onRemoveMilestoneClick: (index: Int) -> Unit = {},
 ) {
     Scaffold(
@@ -244,12 +243,16 @@ private fun SheetEditScreenPreview() {
             goalCount = 1,
             milestones =
                 listOf(
-                    RewardMilestoneUiState(
-                        requiredCompletions = "1",
+                    RewardMilestone(
+                        id = 0L,
+                        sheetId = 1L,
+                        requiredSheetCount = 1,
                         reward = "スーパーカップ",
                     ),
-                    RewardMilestoneUiState(
-                        requiredCompletions = "2",
+                    RewardMilestone(
+                        id = 0L,
+                        sheetId = 1L,
+                        requiredSheetCount = 2,
                         reward = "ハーゲンダッツ",
                     ),
                 ),

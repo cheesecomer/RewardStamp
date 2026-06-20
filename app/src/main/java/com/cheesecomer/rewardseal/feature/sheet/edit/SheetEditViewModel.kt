@@ -51,7 +51,7 @@ class SheetEditViewModel(
                     sheetId = sheetId,
                     title = sheet.title,
                     goalCount = sheet.goalCount,
-                    milestones = milestoneRepository.findBySheetId(sheetId).map { it.toUiState() },
+                    milestones = milestoneRepository.findBySheetId(sheetId),
                 )
         }
     }
@@ -81,7 +81,7 @@ class SheetEditViewModel(
             )
     }
 
-    fun createMilestone(milestone: RewardMilestoneUiState) {
+    fun createMilestone(milestone: RewardMilestone) {
         uiState =
             uiState.copy(
                 milestones = uiState.milestones + milestone,
@@ -100,7 +100,7 @@ class SheetEditViewModel(
 
     fun updateMilestone(
         index: Int,
-        value: RewardMilestoneUiState,
+        value: RewardMilestone,
     ) {
         uiState =
             uiState.copy(
@@ -109,7 +109,7 @@ class SheetEditViewModel(
                         if (index == i) {
                             milestone.copy(
                                 reward = value.reward,
-                                requiredCompletions = value.requiredCompletions,
+                                requiredSheetCount = value.requiredSheetCount,
                             )
                         } else {
                             milestone
@@ -143,7 +143,7 @@ class SheetEditViewModel(
                     RewardMilestone(
                         id = it.id,
                         sheetId = sheetId,
-                        requiredCompletions = it.requiredCompletions.toInt(),
+                        requiredSheetCount = it.requiredSheetCount.toInt(),
                         reward = it.reward,
                     )
                 }

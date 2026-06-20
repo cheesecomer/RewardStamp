@@ -1,10 +1,10 @@
-package com.cheesecomer.rewardseal.feature.exchangeablereward.list
+package com.cheesecomer.rewardseal.feature.exchangeablesheet.list
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardseal.data.completedRewardSheet
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
-import com.cheesecomer.rewardseal.data.repository.ExchangeableRewardRepository
+import com.cheesecomer.rewardseal.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.rewardMilestone
@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import java.util.concurrent.Executor
 
 @RunWith(RobolectricTestRunner::class)
-class ExchangeableRewardListViewModelTest {
+class ExchangeableSheetListViewModelTest {
     private val directExecutor =
         Executor { command ->
             command.run()
@@ -31,7 +31,7 @@ class ExchangeableRewardListViewModelTest {
     private lateinit var rewardSheetRepository: RewardSheetRepository
     private lateinit var completedRewardSheetRepository: CompletedRewardSheetRepository
     private lateinit var rewardMilestoneRepository: RewardMilestoneRepository
-    private lateinit var exchangeableRewardRepository: ExchangeableRewardRepository
+    private lateinit var exchangeableSheetRepository: ExchangeableSheetRepository
 
     private val now = LocalDateTime.parse("2026-06-16T12:00:00")
 
@@ -63,8 +63,8 @@ class ExchangeableRewardListViewModelTest {
                 dao = database.rewardMilestoneDao(),
             )
 
-        exchangeableRewardRepository =
-            ExchangeableRewardRepository(
+        exchangeableSheetRepository =
+            ExchangeableSheetRepository(
                 rewardSheetRepository = rewardSheetRepository,
                 completedRewardSheetRepository = completedRewardSheetRepository,
                 rewardMilestoneRepository = rewardMilestoneRepository,
@@ -86,12 +86,12 @@ class ExchangeableRewardListViewModelTest {
             assertThat(viewModel.uiState.sheets).hasSize(1)
 
             val sheet = viewModel.uiState.sheets.single()
-            assertThat(sheet.id).isEqualTo(sheetId)
-            assertThat(sheet.title).isEqualTo("はみがき")
-            assertThat(sheet.unconsumedCompletedCount).isEqualTo(1)
+            assertThat(sheet.rewardSheet.id).isEqualTo(sheetId)
+            assertThat(sheet.rewardSheet.title).isEqualTo("はみがき")
+            assertThat(sheet.exchangeableSheetCount).isEqualTo(1)
             assertThat(sheet.exchangeableMilestones.map { it.reward })
                 .containsExactly("アイス")
-            assertThat(sheet.nextMilestone).isNull()
+            assertThat(sheet.closestMilestone).isNull()
         }
 
     @Test
@@ -109,6 +109,7 @@ class ExchangeableRewardListViewModelTest {
             assertThat(
                 viewModel.uiState.sheets
                     .single()
+                    .rewardSheet
                     .id,
             ).isEqualTo(sheetId)
         }
@@ -127,7 +128,7 @@ class ExchangeableRewardListViewModelTest {
                 milestone =
                     rewardMilestone(
                         sheetId = sheetId,
-                        requiredCompletions = 1,
+                        requiredSheetCount = 1,
                         reward = "アイス",
                     ),
             ) {
@@ -166,7 +167,7 @@ class ExchangeableRewardListViewModelTest {
                     rewardMilestone(
                         id = 0,
                         sheetId = sheetId,
-                        requiredCompletions = 1,
+                        requiredSheetCount = 1,
                         reward = "アイス",
                     ),
                 ),
@@ -175,8 +176,8 @@ class ExchangeableRewardListViewModelTest {
         return sheetId
     }
 
-    private fun createViewModel(): ExchangeableRewardListViewModel =
-        ExchangeableRewardListViewModel(
-            exchangeableRewardRepository = exchangeableRewardRepository,
+    private fun createViewModel(): ExchangeableSheetListViewModel =
+        ExchangeableSheetListViewModel(
+            exchangeableRewardRepository = exchangeableSheetRepository,
         )
 }

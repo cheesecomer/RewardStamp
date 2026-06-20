@@ -10,18 +10,18 @@ class RewardMilestoneRepository(
 ) {
     suspend fun findBySheetId(sheetId: Long): List<RewardMilestone> = dao.findBySheetId(sheetId).map { it.toModel() }
 
-    suspend fun findExchangeableBySheetId(
+    suspend fun findExchangeableMilestonesBySheetId(
         sheetId: Long,
-        completedCount: Int,
+        exchangeableSheetCount: Int,
     ): List<RewardMilestone> =
-        dao.findExchangeableBySheetId(sheetId, completedCount).map {
+        dao.findExchangeableMilestonesBySheetId(sheetId, exchangeableSheetCount).map {
             it.toModel()
         }
 
-    suspend fun findNext(
+    suspend fun findClosest(
         sheetId: Long,
-        completedCount: Int,
-    ): RewardMilestone? = dao.findNext(sheetId, completedCount)?.toModel()
+        exchangeableSheetCount: Int,
+    ): RewardMilestone? = dao.findClosest(sheetId, exchangeableSheetCount)?.toModel()
 
     suspend fun saveAll(
         sheetId: Long,

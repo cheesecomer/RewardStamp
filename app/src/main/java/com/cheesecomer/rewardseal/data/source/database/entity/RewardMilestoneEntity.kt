@@ -8,6 +8,6 @@ data class RewardMilestoneEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val sheetId: Long,
-    val requiredCompletions: Int,
+    val requiredSheetCount: Int,
     val reward: String,
 )

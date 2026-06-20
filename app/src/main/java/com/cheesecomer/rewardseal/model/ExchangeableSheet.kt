@@ -1,9 +1,8 @@
 package com.cheesecomer.rewardseal.model
 
 data class ExchangeableSheet(
-    val id: Long,
-    val title: String,
-    val unconsumedCompletedCount: Int,
+    val rewardSheet: RewardSheet,
+    val exchangeableSheetCount: Int,
     val exchangeableMilestones: List<RewardMilestone>,
-    val nextMilestone: RewardMilestone?,
+    val closestMilestone: RewardMilestone?,
 )

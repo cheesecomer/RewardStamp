@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5d6e27af5fc9d60d67f34e7260ddb851",
+    "identityHash": "33f1027a8afb2674daf931c0a6ef2bc8",
     "entities": [
       {
         "tableName": "reward_sheets",
@@ -141,7 +141,7 @@
       },
       {
         "tableName": "reward_milestones",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sheetId` INTEGER NOT NULL, `requiredCompletions` INTEGER NOT NULL, `reward` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sheetId` INTEGER NOT NULL, `requiredSheetCount` INTEGER NOT NULL, `reward` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -156,8 +156,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "requiredCompletions",
-            "columnName": "requiredCompletions",
+            "fieldPath": "requiredSheetCount",
+            "columnName": "requiredSheetCount",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -178,7 +178,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d6e27af5fc9d60d67f34e7260ddb851')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33f1027a8afb2674daf931c0a6ef2bc8')"
     ]
   }
 }

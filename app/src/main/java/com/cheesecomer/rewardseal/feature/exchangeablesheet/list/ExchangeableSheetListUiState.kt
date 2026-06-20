@@ -1,7 +1,7 @@
-package com.cheesecomer.rewardseal.feature.exchangeablereward.list
+package com.cheesecomer.rewardseal.feature.exchangeablesheet.list
 
 import com.cheesecomer.rewardseal.model.ExchangeableSheet
 
-data class ExchangeableRewardListUiState(
+data class ExchangeableSheetListUiState(
     val sheets: List<ExchangeableSheet> = emptyList(),
 )

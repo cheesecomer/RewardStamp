@@ -46,14 +46,14 @@ class RewardMilestoneRepositoryTest {
                 dao.insert(
                     rewardMilestoneEntity(
                         sheetId = 1L,
-                        requiredCompletions = 1,
+                        requiredSheetCount = 1,
                         reward = "残す",
                     ),
                 )
             dao.insert(
                 rewardMilestoneEntity(
                     sheetId = 1L,
-                    requiredCompletions = 2,
+                    requiredSheetCount = 2,
                     reward = "消す",
                 ),
             )
@@ -65,7 +65,7 @@ class RewardMilestoneRepositoryTest {
                         rewardMilestone(
                             id = keepId,
                             sheetId = 1L,
-                            requiredCompletions = 1,
+                            requiredSheetCount = 1,
                             reward = "残す",
                         ),
                     ),
@@ -83,7 +83,7 @@ class RewardMilestoneRepositoryTest {
                 dao.insert(
                     rewardMilestoneEntity(
                         sheetId = 1L,
-                        requiredCompletions = 1,
+                        requiredSheetCount = 1,
                         reward = "変更前",
                     ),
                 )
@@ -95,7 +95,7 @@ class RewardMilestoneRepositoryTest {
                         rewardMilestone(
                             id = id,
                             sheetId = 1L,
-                            requiredCompletions = 3,
+                            requiredSheetCount = 3,
                             reward = "変更後",
                         ),
                     ),
@@ -104,7 +104,7 @@ class RewardMilestoneRepositoryTest {
             val result = repository.findBySheetId(1L).single()
 
             assertThat(result.id).isEqualTo(id)
-            assertThat(result.requiredCompletions).isEqualTo(3)
+            assertThat(result.requiredSheetCount).isEqualTo(3)
             assertThat(result.reward).isEqualTo("変更後")
         }
 
@@ -118,7 +118,7 @@ class RewardMilestoneRepositoryTest {
                         rewardMilestone(
                             id = 0L,
                             sheetId = 1L,
-                            requiredCompletions = 1,
+                            requiredSheetCount = 1,
                             reward = "新規",
                         ),
                     ),

@@ -42,13 +42,13 @@ fun completedRewardSheetEntity(
 fun rewardMilestoneEntity(
     id: Long = 0L,
     sheetId: Long = 1,
-    requiredCompletions: Int = 1,
+    requiredSheetCount: Int = 1,
     reward: String = "アイス",
 ): RewardMilestoneEntity =
     RewardMilestoneEntity(
         id = id,
         sheetId = sheetId,
-        requiredCompletions = requiredCompletions,
+        requiredSheetCount = requiredSheetCount,
         reward = reward,
     )
 

@@ -4,7 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
-import com.cheesecomer.rewardseal.data.repository.ExchangeableRewardRepository
+import com.cheesecomer.rewardseal.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
@@ -36,8 +36,8 @@ class RewardSealApplication : Application() {
         RewardMilestoneRepository(database.rewardMilestoneDao())
     }
 
-    val exchangeableRewardRepository: ExchangeableRewardRepository by lazy {
-        ExchangeableRewardRepository(
+    val exchangeableSheetRepository: ExchangeableSheetRepository by lazy {
+        ExchangeableSheetRepository(
             rewardSheetRepository,
             completedRewardSheetRepository,
             rewardMilestoneRepository,

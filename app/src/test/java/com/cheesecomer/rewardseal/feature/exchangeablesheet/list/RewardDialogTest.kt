@@ -1,4 +1,4 @@
-package com.cheesecomer.rewardseal.feature.exchangeablereward.list
+package com.cheesecomer.rewardseal.feature.exchangeablesheet.list
 
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
@@ -26,7 +26,7 @@ class RewardDialogTest {
                             exchangeableMilestones =
                                 listOf(
                                     rewardMilestone(
-                                        requiredCompletions = 1,
+                                        requiredSheetCount = 1,
                                         reward = "アイス",
                                     ),
                                 ),
@@ -53,11 +53,11 @@ class RewardDialogTest {
                             exchangeableMilestones =
                                 listOf(
                                     rewardMilestone(
-                                        requiredCompletions = 1,
+                                        requiredSheetCount = 1,
                                         reward = "シール",
                                     ),
                                     rewardMilestone(
-                                        requiredCompletions = 3,
+                                        requiredSheetCount = 3,
                                         reward = "アイス",
                                     ),
                                 ),

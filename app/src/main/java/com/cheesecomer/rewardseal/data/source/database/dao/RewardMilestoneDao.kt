@@ -14,7 +14,7 @@ interface RewardMilestoneDao {
     SELECT *
     FROM reward_milestones
     WHERE sheetId = :sheetId
-    ORDER BY requiredCompletions ASC
+    ORDER BY requiredSheetCount ASC
     """,
     )
     suspend fun findBySheetId(sheetId: Long): List<RewardMilestoneEntity>
@@ -24,13 +24,13 @@ interface RewardMilestoneDao {
     SELECT *
     FROM reward_milestones
     WHERE sheetId = :sheetId
-      AND :requiredCompletions >= requiredCompletions
-    ORDER BY requiredCompletions ASC
+      AND :exchangeableSheetCount >= requiredSheetCount
+    ORDER BY requiredSheetCount ASC
     """,
     )
-    suspend fun findExchangeableBySheetId(
+    suspend fun findExchangeableMilestonesBySheetId(
         sheetId: Long,
-        requiredCompletions: Int,
+        exchangeableSheetCount: Int,
     ): List<RewardMilestoneEntity>
 
     @Query(
@@ -38,14 +38,14 @@ interface RewardMilestoneDao {
     SELECT *
     FROM reward_milestones
     WHERE sheetId = :sheetId
-      AND :requiredCompletions < requiredCompletions
-    ORDER BY requiredCompletions ASC
+      AND :exchangeableSheetCount < requiredSheetCount
+    ORDER BY requiredSheetCount ASC
     LIMIT 1
     """,
     )
-    suspend fun findNext(
+    suspend fun findClosest(
         sheetId: Long,
-        requiredCompletions: Int,
+        exchangeableSheetCount: Int,
     ): RewardMilestoneEntity?
 
     @Insert

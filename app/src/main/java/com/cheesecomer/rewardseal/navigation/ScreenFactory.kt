@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.feature.completedsheet.detail.CompletedSheetDetailScreen
 import com.cheesecomer.rewardseal.feature.completedsheet.list.CompletedSheetListScreen
-import com.cheesecomer.rewardseal.feature.exchangeablereward.list.ExchangeableRewardListScreen
+import com.cheesecomer.rewardseal.feature.exchangeablesheet.list.ExchangeableSheetListScreen
 import com.cheesecomer.rewardseal.feature.setting.SettingsScreen
 import com.cheesecomer.rewardseal.feature.sheet.detail.SheetDetailScreen
 import com.cheesecomer.rewardseal.feature.sheet.edit.SheetEditScreen
@@ -91,7 +91,7 @@ object RewardSealScreenFactory : ScreenFactory {
 
     @Composable
     override fun ExchangeableRewardList() {
-        ExchangeableRewardListScreen()
+        ExchangeableSheetListScreen()
     }
 
     @Composable

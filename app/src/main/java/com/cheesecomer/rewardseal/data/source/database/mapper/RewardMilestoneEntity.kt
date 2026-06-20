@@ -7,7 +7,7 @@ fun RewardMilestoneEntity.toModel(): RewardMilestone =
     RewardMilestone(
         id = id,
         sheetId = sheetId,
-        requiredCompletions = requiredCompletions,
+        requiredSheetCount = requiredSheetCount,
         reward = reward,
     )
 
@@ -15,6 +15,6 @@ fun RewardMilestone.toEntity(): RewardMilestoneEntity =
     RewardMilestoneEntity(
         id = id,
         sheetId = sheetId,
-        requiredCompletions = requiredCompletions,
+        requiredSheetCount = requiredSheetCount,
         reward = reward,
     )

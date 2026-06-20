@@ -15,7 +15,7 @@ class EntityTest {
         val entity =
             RewardMilestoneEntity(
                 sheetId = 1L,
-                requiredCompletions = 1,
+                requiredSheetCount = 1,
                 reward = "アイス",
             )
 

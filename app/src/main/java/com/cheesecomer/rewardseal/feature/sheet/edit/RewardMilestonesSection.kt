@@ -33,12 +33,13 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.ui.RewardSealTextFieldDefaults
 import com.cheesecomer.rewardseal.ui.theme.SheetBorder
 
 @Composable
 private fun RewardMilestoneRow(
-    milestone: RewardMilestoneUiState,
+    milestone: RewardMilestone,
     modifier: Modifier = Modifier,
     canEdit: Boolean = true,
     canRemove: Boolean = true,
@@ -53,7 +54,7 @@ private fun RewardMilestoneRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "${milestone.requiredCompletions}枚で",
+            text = "${milestone.requiredSheetCount}枚で",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -91,9 +92,9 @@ private fun RewardMilestoneRow(
 
 @Composable
 private fun RewardMilestoneDialogText(
-    requiredCompletions: String,
+    requiredSheetCount: String,
     reward: String,
-    onRequiredCompletionsChange: (String) -> Unit,
+    onRequiredSheetCountChange: (String) -> Unit,
     onRewardChange: (String) -> Unit,
 ) {
     val tagPrefix = "RewardMilestonesSection.RewardMilestoneDialog.Text"
@@ -104,9 +105,9 @@ private fun RewardMilestoneDialogText(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .testTag("$tagPrefix.RequiredCompletions"),
-            value = requiredCompletions,
-            onValueChange = onRequiredCompletionsChange,
+                    .testTag("$tagPrefix.RequiredSheetCount"),
+            value = requiredSheetCount,
+            onValueChange = onRequiredSheetCountChange,
             label = {
                 Text("必要な枚数")
             },
@@ -142,10 +143,10 @@ private fun RewardMilestoneDialogText(
 
 @Composable
 fun RewardMilestoneDialog(
-    requiredCompletions: String,
+    requiredSheetCount: String,
     reward: String,
     isEdit: Boolean,
-    onRequiredCompletionsChange: (String) -> Unit,
+    onRequiredSheetCountChange: (String) -> Unit,
     onRewardChange: (String) -> Unit,
     onDismissRequest: () -> Unit,
     onConfirmClick: () -> Unit,
@@ -161,16 +162,16 @@ fun RewardMilestoneDialog(
         },
         text = {
             RewardMilestoneDialogText(
-                requiredCompletions = requiredCompletions,
+                requiredSheetCount = requiredSheetCount,
                 reward = reward,
-                onRequiredCompletionsChange = onRequiredCompletionsChange,
+                onRequiredSheetCountChange = onRequiredSheetCountChange,
                 onRewardChange = onRewardChange,
             )
         },
         confirmButton = {
             TextButton(
                 enabled =
-                    requiredCompletions.isNotBlank() &&
+                    requiredSheetCount.isNotBlank() &&
                         reward.isNotBlank(),
                 onClick = onConfirmClick,
                 modifier = Modifier.testTag("$tagPrefix.Confirm"),
@@ -192,6 +193,28 @@ fun RewardMilestoneDialog(
 
 private const val NEW_MILESTONE_INDEX = -1
 
+private fun RewardMilestone.toUiState(): RewardMilestoneUiState =
+    RewardMilestoneUiState(
+        id = id,
+        requiredSheetCount = requiredSheetCount.toString(),
+        reward = reward,
+    )
+
+private data class RewardMilestoneUiState(
+    val id: Long = 0,
+    val sheetId: Long? = 0,
+    val requiredSheetCount: String = "",
+    val reward: String = "",
+) {
+    fun toModal() =
+        RewardMilestone(
+            id = id,
+            sheetId = sheetId ?: 0L,
+            requiredSheetCount = requiredSheetCount.toIntOrNull() ?: 0,
+            reward = reward,
+        )
+}
+
 private data class EditingRewardMilestone(
     val index: Int,
     val milestone: RewardMilestoneUiState,
@@ -204,19 +227,19 @@ private data class EditingRewardMilestone(
 private fun RewardMilestoneDialogHost(
     editingMilestone: EditingRewardMilestone?,
     onEditingMilestoneChange: (EditingRewardMilestone?) -> Unit,
-    onCreateClick: (RewardMilestoneUiState) -> Unit,
-    onUpdateClick: (index: Int, milestone: RewardMilestoneUiState) -> Unit,
+    onCreateClick: (RewardMilestone) -> Unit,
+    onUpdateClick: (index: Int, milestone: RewardMilestone) -> Unit,
 ) {
     val editing = editingMilestone ?: return
 
     RewardMilestoneDialog(
-        requiredCompletions = editing.milestone.requiredCompletions,
+        requiredSheetCount = editing.milestone.requiredSheetCount,
         reward = editing.milestone.reward,
         isEdit = !editing.isNew,
-        onRequiredCompletionsChange = {
+        onRequiredSheetCountChange = {
             onEditingMilestoneChange(
                 editing.copy(
-                    milestone = editing.milestone.copy(requiredCompletions = it),
+                    milestone = editing.milestone.copy(requiredSheetCount = it),
                 ),
             )
         },
@@ -232,9 +255,9 @@ private fun RewardMilestoneDialogHost(
         },
         onConfirmClick = {
             if (editing.isNew) {
-                onCreateClick(editing.milestone)
+                onCreateClick(editing.milestone.toModal())
             } else {
-                onUpdateClick(editing.index, editing.milestone)
+                onUpdateClick(editing.index, editing.milestone.toModal())
             }
 
             onEditingMilestoneChange(null)
@@ -263,7 +286,7 @@ private fun EmptyLabel() {
 
 @Composable
 private fun RewardMilestoneRows(
-    milestones: List<RewardMilestoneUiState>,
+    milestones: List<RewardMilestone>,
     onEditClick: (EditingRewardMilestone) -> Unit,
     onRemoveClick: (Int) -> Unit,
 ) {
@@ -275,7 +298,7 @@ private fun RewardMilestoneRows(
                 val editingMilestone =
                     EditingRewardMilestone(
                         index = index,
-                        milestone = milestone,
+                        milestone = milestone.toUiState(),
                     )
                 onEditClick(editingMilestone)
             },
@@ -289,10 +312,10 @@ private fun RewardMilestoneRows(
 
 @Composable
 fun RewardMilestonesSection(
-    milestones: List<RewardMilestoneUiState>,
-    onCreateClick: (RewardMilestoneUiState) -> Unit,
+    milestones: List<RewardMilestone>,
+    onCreateClick: (RewardMilestone) -> Unit,
     onRemoveClick: (Int) -> Unit,
-    onUpdateClick: (Int, RewardMilestoneUiState) -> Unit,
+    onUpdateClick: (Int, RewardMilestone) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var editingMilestone by remember {

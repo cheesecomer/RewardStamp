@@ -1,4 +1,4 @@
-package com.cheesecomer.rewardseal.feature.exchangeablereward.list
+package com.cheesecomer.rewardseal.feature.exchangeablesheet.list
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,25 +9,25 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
-import com.cheesecomer.rewardseal.data.repository.ExchangeableRewardRepository
+import com.cheesecomer.rewardseal.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import kotlinx.coroutines.launch
 
-class ExchangeableRewardListViewModel(
-    private val exchangeableRewardRepository: ExchangeableRewardRepository,
+class ExchangeableSheetListViewModel(
+    private val exchangeableRewardRepository: ExchangeableSheetRepository,
 ) : ViewModel() {
     @ExcludeFromCoverage
     companion object {
-        fun factory(exchangeableRewardRepository: ExchangeableRewardRepository): ViewModelProvider.Factory =
+        fun factory(exchangeableRewardRepository: ExchangeableSheetRepository): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
-                    ExchangeableRewardListViewModel(exchangeableRewardRepository)
+                    ExchangeableSheetListViewModel(exchangeableRewardRepository)
                 }
             }
     }
 
     var uiState by mutableStateOf(
-        ExchangeableRewardListUiState(),
+        ExchangeableSheetListUiState(),
     )
         private set
 
@@ -56,7 +56,7 @@ class ExchangeableRewardListViewModel(
         viewModelScope.launch {
             exchangeableRewardRepository.exchangeReward(
                 id,
-                milestone.requiredCompletions,
+                milestone.requiredSheetCount,
             )
             reloadUiState()
             onCompleted()
