@@ -2,9 +2,12 @@ package com.cheesecomer.rewardseal.feature.sheet.detail
 
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
+import com.cheesecomer.rewardseal.data.completedRewardSheet
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
+import com.cheesecomer.rewardseal.data.rewardMilestone
 import com.cheesecomer.rewardseal.data.rewardSheet
 import com.cheesecomer.rewardseal.data.rewardStamp
 import com.cheesecomer.rewardseal.data.source.database.AppDatabase
@@ -31,6 +34,8 @@ class SheetDetailViewModelTest {
     private lateinit var rewardSheetRepository: RewardSheetRepository
     private lateinit var completedRewardSheetRepository: CompletedRewardSheetRepository
     private lateinit var rewardStampRepository: RewardStampRepository
+
+    private lateinit var rewardMilestoneRepository: RewardMilestoneRepository
 
     private val now = LocalDateTime.parse("2026-06-16T12:00:00")
 
@@ -61,6 +66,11 @@ class SheetDetailViewModelTest {
             RewardStampRepository(
                 dao = database.rewardStampDao(),
             )
+
+        rewardMilestoneRepository =
+            RewardMilestoneRepository(
+                dao = database.rewardMilestoneDao(),
+            )
     }
 
     @After
@@ -78,6 +88,9 @@ class SheetDetailViewModelTest {
                         title = "はみがき",
                     ),
                 )
+            completedRewardSheetRepository.save(
+                completedRewardSheet(sheetId = sheetId),
+            )
 
             rewardStampRepository.save(
                 rewardStamp(
@@ -89,12 +102,29 @@ class SheetDetailViewModelTest {
                 ),
             )
 
+            rewardMilestoneRepository.saveAll(
+                sheetId,
+                listOf(
+                    rewardMilestone(requiredSheetCount = 1),
+                    rewardMilestone(requiredSheetCount = 2),
+                    rewardMilestone(requiredSheetCount = 3),
+                    rewardMilestone(requiredSheetCount = 4),
+                    rewardMilestone(requiredSheetCount = 5),
+                ),
+            )
+
             val viewModel = createViewModel()
 
             viewModel.load(sheetId)
 
             assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
             assertThat(viewModel.uiState.stamps).hasSize(1)
+            assertThat(viewModel.uiState.exchangeableRewards).hasSize(1)
+            assertThat(viewModel.uiState.exchangeableRewards.map { it.requiredSheetCount })
+                .containsExactly(1)
+            assertThat(viewModel.uiState.lockedRewards.map { it.requiredSheetCount })
+                .containsExactly(2, 3, 4, 5)
+            assertThat(viewModel.uiState.lockedRewards).hasSize(4)
             assertThat(
                 viewModel.uiState.stamps
                     .single()
@@ -214,6 +244,7 @@ class SheetDetailViewModelTest {
             rewardSheetRepository = rewardSheetRepository,
             completedRewardSheetRepository = completedRewardSheetRepository,
             rewardStampRepository = rewardStampRepository,
+            rewardMilestoneRepository = rewardMilestoneRepository,
             now = { now },
         )
 }

@@ -38,6 +38,7 @@
 
 <p align="center">
   <img src="docs/images/sheet-detail.png" alt="シート詳細" width="320">
+  <img src="docs/images/sheet-detail-congratulation.png" alt="シート詳細（完了）" width="320">
 </p>
 
 ### ごほうび交換

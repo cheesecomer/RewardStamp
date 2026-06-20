@@ -25,7 +25,7 @@ fun SheetEditSectionTitle(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_cherry_clossom_fill),
+            painter = painterResource(R.drawable.ic_cherry_blossom),
             contentDescription = null,
             modifier = Modifier.size(28.dp),
             tint = MaterialTheme.colorScheme.primary,

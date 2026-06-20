@@ -40,6 +40,20 @@ interface RewardMilestoneDao {
     WHERE sheetId = :sheetId
       AND :exchangeableSheetCount < requiredSheetCount
     ORDER BY requiredSheetCount ASC
+    """,
+    )
+    suspend fun findLockedMilestonesBySheetId(
+        sheetId: Long,
+        exchangeableSheetCount: Int,
+    ): List<RewardMilestoneEntity>
+
+    @Query(
+        """
+    SELECT *
+    FROM reward_milestones
+    WHERE sheetId = :sheetId
+      AND :exchangeableSheetCount < requiredSheetCount
+    ORDER BY requiredSheetCount ASC
     LIMIT 1
     """,
     )

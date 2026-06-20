@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardseal.data.repository.CompletedRewardSheetRepository
+import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
@@ -23,6 +24,7 @@ class SheetDetailViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardStampRepository: RewardStampRepository,
+    private val rewardMilestoneRepository: RewardMilestoneRepository,
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
     @ExcludeFromCoverage
@@ -31,6 +33,7 @@ class SheetDetailViewModel(
             rewardSheetRepository: RewardSheetRepository,
             completedRewardSheetRepository: CompletedRewardSheetRepository,
             rewardStampRepository: RewardStampRepository,
+            rewardMilestoneRepository: RewardMilestoneRepository,
         ): ViewModelProvider.Factory =
             viewModelFactory {
                 initializer {
@@ -38,6 +41,7 @@ class SheetDetailViewModel(
                         rewardSheetRepository,
                         completedRewardSheetRepository,
                         rewardStampRepository,
+                        rewardMilestoneRepository,
                     )
                 }
             }
@@ -50,10 +54,25 @@ class SheetDetailViewModel(
 
     fun load(sheetId: Long) {
         viewModelScope.launch {
+            val exchangeableSheetCount =
+                completedRewardSheetRepository
+                    .countExchangeableBySheetId(sheetId)
             uiState =
                 uiState.copy(
                     sheet = rewardSheetRepository.findById(sheetId),
                     stamps = rewardStampRepository.findBySheetId(sheetId),
+                    exchangeableRewards =
+                        rewardMilestoneRepository
+                            .findExchangeableMilestonesBySheetId(
+                                sheetId,
+                                exchangeableSheetCount,
+                            ),
+                    lockedRewards =
+                        rewardMilestoneRepository
+                            .findLockedMilestonesBySheetId(
+                                sheetId,
+                                exchangeableSheetCount,
+                            ),
                 )
         }
     }

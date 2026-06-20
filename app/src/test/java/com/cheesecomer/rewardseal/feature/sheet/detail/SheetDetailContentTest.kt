@@ -1,7 +1,6 @@
 package com.cheesecomer.rewardseal.feature.sheet.detail
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
@@ -26,6 +25,8 @@ class SheetDetailContentTest {
             SheetDetailContent(
                 sheet = null,
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
             )
         }
 
@@ -46,8 +47,14 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
             )
         }
+
+        composeTestRule
+            .onNodeWithTag("CongratulationDialog")
+            .assertDoesNotExist()
 
         composeTestRule
             .onNodeWithText("はみがき")
@@ -59,7 +66,7 @@ class SheetDetailContentTest {
     }
 
     @Test
-    fun disablesStampButtonWhenSheetIsCompleted() {
+    fun displaysStampButtonWhenSheetIsCompleted() {
         composeTestRule.setContent {
             SheetDetailContent(
                 sheet =
@@ -70,16 +77,18 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
             )
         }
 
         composeTestRule
             .onNodeWithText("スタンプを押す")
-            .assertIsNotDisplayed()
+            .assertIsDisplayed()
     }
 
     @Test
-    fun displaysCompletedSheetActions() {
+    fun displaysCongratulationDialog() {
         composeTestRule.setContent {
             SheetDetailContent(
                 sheet =
@@ -90,24 +99,14 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
             )
         }
 
         composeTestRule
-            .onNodeWithText("🎉 シートが満タンになりました！")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("はみがき を 10回 がんばってシートを満タンにしました。")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("もっとがんばる")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("ごほうびや回数を変えてがんばる")
-            .assertIsDisplayed()
+            .onNodeWithTag("CongratulationDialog")
+            .assertExists()
     }
 
     @Test
@@ -118,6 +117,8 @@ class SheetDetailContentTest {
             SheetDetailContent(
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onBackClick = {
                     clicked = true
                 },
@@ -139,6 +140,8 @@ class SheetDetailContentTest {
             SheetDetailContent(
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onEditClick = {
                     clicked = true
                 },
@@ -170,6 +173,8 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onRestartClick = {
                     clicked = true
                 },
@@ -177,7 +182,7 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("もっとがんばる")
+            .onNodeWithTag("CongratulationDialog.SureButton")
             .performClick()
 
         assertThat(clicked).isTrue()
@@ -197,12 +202,14 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onRestartWithEditClick = { onRestartWithEditClickCalled = true },
             )
         }
 
         composeTestRule
-            .onNodeWithText("ごほうびや回数を変えてがんばる")
+            .onNodeWithTag("CongratulationDialog.EditButton")
             .performClick()
 
         assertThat(onRestartWithEditClickCalled).isTrue()
@@ -222,6 +229,8 @@ class SheetDetailContentTest {
                         goalCount = 10,
                     ),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onStampTypeSelect = { stampType ->
                     selectedStampType = stampType
                 },
@@ -247,6 +256,8 @@ class SheetDetailContentTest {
             SheetDetailContent(
                 sheet = rewardSheet(id = 1L, title = "はみがき"),
                 stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 onDeleteClick = {
                     deleted = true
                 },

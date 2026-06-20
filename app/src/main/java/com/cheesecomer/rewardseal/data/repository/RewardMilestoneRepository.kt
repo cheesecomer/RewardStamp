@@ -18,6 +18,14 @@ class RewardMilestoneRepository(
             it.toModel()
         }
 
+    suspend fun findLockedMilestonesBySheetId(
+        sheetId: Long,
+        exchangeableSheetCount: Int,
+    ): List<RewardMilestone> =
+        dao.findLockedMilestonesBySheetId(sheetId, exchangeableSheetCount).map {
+            it.toModel()
+        }
+
     suspend fun findClosest(
         sheetId: Long,
         exchangeableSheetCount: Int,
@@ -33,7 +41,7 @@ class RewardMilestoneRepository(
         }
 
         rewardMilestones.forEach {
-            val entity = it.toEntity()
+            val entity = it.copy(sheetId = sheetId).toEntity()
             if (it.id == 0L) {
                 dao.insert(entity)
             } else {

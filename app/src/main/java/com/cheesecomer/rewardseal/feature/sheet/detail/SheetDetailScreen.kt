@@ -1,20 +1,16 @@
 package com.cheesecomer.rewardseal.feature.sheet.detail
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
@@ -40,46 +37,6 @@ import com.cheesecomer.rewardseal.ui.component.dialog.DeleteSheetDialog
 import com.cheesecomer.rewardseal.ui.component.dialog.SelectStampDialog
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 import java.time.LocalDateTime
-
-@ExcludeFromCoverage
-@Composable
-private fun CompletedSheetActions(
-    sheet: RewardSheet,
-    onRestartClick: () -> Unit,
-    onRestartWithEditClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        Text(
-            text = "\uD83C\uDF89 シートが満タンになりました！",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-
-        Text("${sheet.title} を ${sheet.goalCount}回 がんばってシートを満タンにしました。")
-
-        Text(
-            text = "ごほうび交換画面で、ためたシートとごほうびを交換できます。",
-            style = MaterialTheme.typography.bodyMedium,
-        )
-
-        Button(
-            onClick = onRestartClick,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text("もっとがんばる")
-        }
-
-        Button(
-            onClick = onRestartWithEditClick,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Text("ごほうびや回数を変えてがんばる")
-        }
-    }
-}
 
 private enum class SheetDetailDialog {
     Stamp,
@@ -123,6 +80,7 @@ private fun sheetDetailViewModel(): SheetDetailViewModel {
                 application.rewardSheetRepository,
                 application.completedRewardSheetRepository,
                 application.rewardStampRepository,
+                application.rewardMilestoneRepository,
             ),
     )
 }
@@ -209,6 +167,8 @@ private fun SheetNotFound(modifier: Modifier = Modifier) {
 internal fun SheetDetailContent(
     sheet: RewardSheet?,
     stamps: List<RewardStamp>,
+    exchangeableRewards: List<RewardMilestone>,
+    lockedRewards: List<RewardMilestone>,
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
@@ -235,6 +195,7 @@ internal fun SheetDetailContent(
                 onStampTypeSelect(stampType)
             },
         )
+
         Scaffold(
             modifier = modifier,
             topBar = {
@@ -248,27 +209,28 @@ internal fun SheetDetailContent(
                 )
             },
         ) { innerPadding ->
+            if (sheet.isCompleted) {
+                CongratulationDialog(
+                    onDismissRequest = onRestartClick,
+                    onEditButtonClick = onRestartWithEditClick,
+                    exchangeableRewards = exchangeableRewards,
+                    lockedRewards = lockedRewards,
+                    modifier = Modifier.testTag("CongratulationDialog"),
+                )
+            }
             Column(
                 modifier =
                     Modifier
                         .padding(innerPadding)
                         .padding(16.dp),
             ) {
-                if (sheet.isCompleted) {
-                    CompletedSheetActions(
-                        sheet = sheet,
-                        onRestartClick = onRestartClick,
-                        onRestartWithEditClick = onRestartWithEditClick,
-                    )
-                } else {
-                    ProgressSheet(
-                        sheet = sheet,
-                        stamps = stamps,
-                        onStampTypeSelect = {
-                            activeDialog = SheetDetailDialog.Stamp
-                        },
-                    )
-                }
+                ProgressSheet(
+                    sheet = sheet,
+                    stamps = stamps,
+                    onStampTypeSelect = {
+                        activeDialog = SheetDetailDialog.Stamp
+                    },
+                )
             }
         }
     }
@@ -293,6 +255,8 @@ fun SheetDetailScreen(
     SheetDetailContent(
         sheet = viewModel.uiState.sheet,
         stamps = viewModel.uiState.stamps,
+        exchangeableRewards = viewModel.uiState.exchangeableRewards,
+        lockedRewards = viewModel.uiState.lockedRewards,
         modifier = modifier,
         onBackClick = onBackClick,
         onEditClick = onEditClick,
@@ -301,16 +265,16 @@ fun SheetDetailScreen(
                 onDeleteClick()
             }
         },
-        onStampTypeSelect = { stampType ->
+        onStampTypeSelect = @ExcludeFromCoverage { stampType ->
             viewModel.increment(
                 sheetId = sheetId,
                 stampType = stampType,
             )
         },
-        onRestartClick = {
+        onRestartClick = @ExcludeFromCoverage {
             viewModel.restart(sheetId)
         },
-        onRestartWithEditClick = {
+        onRestartWithEditClick = @ExcludeFromCoverage {
             onRestartWithEditClick()
         },
     )
@@ -321,7 +285,7 @@ fun SheetDetailScreen(
 @Suppress("MagicNumber")
 @Composable
 private fun SheetDetailContentPreview() {
-    val rewardStamp: (Int) -> RewardStamp = { position ->
+    val rewardStamp: (Int) -> RewardStamp = @ExcludeFromCoverage { position ->
         RewardStamp(
             id = position.toLong(),
             sheetId = 1,
@@ -359,6 +323,8 @@ private fun SheetDetailContentPreview() {
                         rewardStamp(7),
                         rewardStamp(8),
                     ),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
                 modifier = Modifier.padding(innerPadding),
             )
         }
