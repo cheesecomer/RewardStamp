@@ -295,7 +295,7 @@ private fun SheetDetailContentPreview() {
             sheetId = 1,
             completedRewardSheetId = null,
             position = position,
-            stampedAt = LocalDateTime.now().minusSeconds(10 - position.toLong()),
+            stampedAt = LocalDateTime.now().minusDays(10 - position.toLong()),
             stampType = StampType.entries.random(),
         )
     }

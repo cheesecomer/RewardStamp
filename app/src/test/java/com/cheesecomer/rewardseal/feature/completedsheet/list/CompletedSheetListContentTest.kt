@@ -1,8 +1,9 @@
 package com.cheesecomer.rewardseal.feature.completedsheet.list
 
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardseal.data.completedRewardSheet
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
@@ -19,7 +20,27 @@ class CompletedSheetListContentTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun displaysCompletedSheets() {
+    fun displaysEmptyListWhenSheetsEmpty() {
+        composeTestRule.setContent {
+            RewardSealTheme {
+                CompletedSheetListContent(
+                    sheets =
+                        emptyList(),
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag("CompletedSheetListScreen.EmptyList")
+            .assertIsDisplayed()
+
+        composeTestRule
+            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid")
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun displaysCompletedSheetsWhenSheetsPresent() {
         composeTestRule.setContent {
             RewardSealTheme {
                 CompletedSheetListContent(
@@ -37,27 +58,46 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("これまでのがんばり")
-            .assertIsDisplayed()
+            .onNodeWithTag("CompletedSheetListScreen.EmptyList")
+            .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithText("達成したごほうび：1こ")
-            .assertIsDisplayed()
-
-        composeTestRule
-            .onNodeWithText("はみがき を 10回 がんばりました！")
+            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid")
             .assertIsDisplayed()
     }
 
     @Test
-    fun displaysConsumedLabelWhenRewardIsConsumed() {
+    fun notDisplaysConsumedBadgeWhenNotRewardIsConsumed() {
         composeTestRule.setContent {
             RewardSealTheme {
                 CompletedSheetListContent(
                     sheets =
                         listOf(
                             completedRewardSheet(
-                                id = 1L,
+                                id = 123L,
+                                title = "はみがき",
+                                goalCount = 10,
+                                consumedAt = null,
+                            ),
+                        ),
+                )
+            }
+        }
+
+        composeTestRule
+            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123.RewardReceivedBadge")
+            .isNotDisplayed()
+    }
+
+    @Test
+    fun displaysConsumedBadgeWhenRewardIsConsumed() {
+        composeTestRule.setContent {
+            RewardSealTheme {
+                CompletedSheetListContent(
+                    sheets =
+                        listOf(
+                            completedRewardSheet(
+                                id = 123L,
                                 title = "はみがき",
                                 goalCount = 10,
                                 consumedAt = LocalDateTime.parse("2026-06-16T12:00:00"),
@@ -68,27 +108,7 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("交換済み")
-            .assertIsDisplayed()
-    }
-
-    @Test
-    fun displaysSheetCount() {
-        composeTestRule.setContent {
-            RewardSealTheme {
-                CompletedSheetListContent(
-                    sheets =
-                        listOf(
-                            completedRewardSheet(id = 1L),
-                            completedRewardSheet(id = 2L),
-                            completedRewardSheet(id = 3L),
-                        ),
-                )
-            }
-        }
-
-        composeTestRule
-            .onNodeWithText("達成したごほうび：3こ")
+            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123.RewardReceivedBadge")
             .assertIsDisplayed()
     }
 
@@ -107,7 +127,7 @@ class CompletedSheetListContentTest {
                                 goalCount = 10,
                             ),
                         ),
-                    onRewardClick = { rewardId ->
+                    onSheetClick = { rewardId ->
                         clickedRewardId = rewardId
                     },
                 )
@@ -115,7 +135,7 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithText("はみがき を 10回 がんばりました！")
+            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123")
             .performClick()
 
         assertThat(clickedRewardId).isEqualTo(123L)
