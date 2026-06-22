@@ -57,6 +57,12 @@
   <img src="docs/images/completed-sheet-empty-list.png" alt="りれき一覧（データなし）" width="320">
 </p>
 
+### 履歴詳細
+
+<p align="center">
+  <img src="docs/images/completed-sheet-detail.png" alt="りれき詳細" width="320">
+</p>
+
 ## Getting Started
 
 リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。

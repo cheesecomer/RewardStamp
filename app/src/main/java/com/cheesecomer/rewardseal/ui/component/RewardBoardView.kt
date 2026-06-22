@@ -31,6 +31,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.withSave
 import com.cheesecomer.rewardseal.R
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.GoalStamp
 import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
@@ -43,7 +44,6 @@ import com.cheesecomer.rewardseal.ui.theme.StampInk
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.max
-import kotlin.math.min
 import kotlin.random.Random
 
 @Composable
@@ -51,7 +51,7 @@ fun RewardBoardView(
     board: RewardBoardState,
     stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
-    goalStampType: GoalStampType? = null,
+    goalStamp: GoalStamp? = null,
 ) {
     val pattern = boardPatterns[board.goalCount]
     if (pattern == null) {
@@ -81,7 +81,7 @@ fun RewardBoardView(
                 pattern = pattern,
                 stamps = stamps,
                 board = board,
-                goalStamp = goalStampType,
+                goalStamp = goalStamp,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -199,10 +199,11 @@ private fun Canvas.drawStampStampedAt(
     stampedAt: LocalDateTime,
     textSizePx: Float,
     center: Offset,
+    format: String = "M/d",
 ) {
     val dateText =
         stampedAt.format(
-            DateTimeFormatter.ofPattern("M/d"),
+            DateTimeFormatter.ofPattern(format),
         )
 
     val textPaint =
@@ -227,28 +228,37 @@ private fun Canvas.drawStampStampedAt(
     )
 }
 
-private const val GOAL_STAMP_SCALE = 0.9f
+private const val GOAL_STAMP_SCALE = 0.8f
 
 private fun DrawScope.drawGoalStamp(
     pointsByIndex: Map<Int, Offset>,
     metrics: BoardLayoutMetrics,
     goalStampDrawable: Drawable,
+    stampedAt: LocalDateTime,
 ) {
     drawIntoCanvas { canvas ->
         val nativeCanvas = canvas.nativeCanvas
         val center = pointsByIndex[pointsByIndex.size - 1]!!
 
         nativeCanvas.withSave {
+            val iconSizePx =
+                arrayOf(
+                    (size.width - center.x) * 2f * GOAL_STAMP_SCALE,
+                    (size.height - center.y) * 2f * GOAL_STAMP_SCALE,
+                    metrics.goalIconMaxSize.toPx(),
+                ).min()
             drawStampIcon(
                 goalStampDrawable,
                 center = center,
                 offset = Offset(x = 0f, y = 0f),
-                iconSizePx =
-                    arrayOf(
-                        (size.width - center.x) * 2f * GOAL_STAMP_SCALE,
-                        (size.height - center.y) * 2f * GOAL_STAMP_SCALE,
-                        metrics.goalIconMaxSize.toPx(),
-                    ).min(),
+                iconSizePx = iconSizePx,
+            )
+
+            drawStampStampedAt(
+                stampedAt,
+                19.sp.toPx(),
+                center + Offset(0f, iconSizePx / 2f + 12.dp.toPx()),
+                format = "y/M/d",
             )
         }
 
@@ -266,7 +276,7 @@ private fun DrawScope.drawStamps(
     metrics: BoardLayoutMetrics,
     stamps: List<RewardStamp>,
     stampDrawables: Map<StampType, Drawable>,
-    goalStampDrawable: Drawable?,
+    goalStamp: GoalStamp?,
 ) {
     val stampRadius = metrics.cellRadius.toPx()
     val iconSizePx = metrics.iconSize.toPx()
@@ -312,11 +322,12 @@ private fun DrawScope.drawStamps(
         }
     }
 
-    if (goalStampDrawable != null) {
+    if (goalStamp != null) {
         drawGoalStamp(
             pointsByIndex,
             metrics,
-            goalStampDrawable,
+            goalStamp.drawable,
+            goalStamp.stampedAt,
         )
     }
 }
@@ -372,7 +383,7 @@ private fun RewardBoardCanvas(
     pattern: List<List<Int>>,
     board: RewardBoardState,
     stamps: List<RewardStamp>,
-    goalStamp: GoalStampType?,
+    goalStamp: GoalStamp?,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -383,7 +394,6 @@ private fun RewardBoardCanvas(
                 ContextCompat.getDrawable(context, stampType.iconRes)!!
             }
         }
-    val goalStampDrawable = goalStamp?.let { ContextCompat.getDrawable(context, goalStamp.iconRes)!! }
     Canvas(
         modifier =
             modifier
@@ -424,7 +434,7 @@ private fun RewardBoardCanvas(
             stamps = stamps,
             metrics = metrics,
             stampDrawables = stampDrawables,
-            goalStampDrawable = goalStampDrawable,
+            goalStamp = goalStamp,
         )
     }
 }
@@ -445,6 +455,13 @@ private fun RewardBoardViewPreview() {
                 stampType = StampType.entries.random(),
             )
         }
+    val context = LocalContext.current
+    val goalStamp =
+        GoalStamp(
+            drawable = ContextCompat.getDrawable(context, GoalStampType.Bear6.iconRes)!!,
+            stampedAt = LocalDateTime.now(),
+        )
+
     RewardSealTheme {
         RewardBoardView(
             board =
@@ -462,7 +479,7 @@ private fun RewardBoardViewPreview() {
                     rewardStamp(4),
                     rewardStamp(5),
                 ),
-            goalStampType = GoalStampType.Bear6,
+            goalStamp = goalStamp,
         )
     }
 }

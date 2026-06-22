@@ -25,10 +25,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cheesecomer.rewardseal.R
+import com.cheesecomer.rewardseal.model.GoalStamp
 import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
@@ -38,6 +40,7 @@ import com.cheesecomer.rewardseal.ui.theme.Nikumaru
 import com.cheesecomer.rewardseal.ui.theme.SheetBorder
 import com.cheesecomer.rewardseal.ui.theme.SheetPrimary
 import com.cheesecomer.rewardseal.ui.theme.SheetText
+import java.time.LocalDateTime
 
 @Composable
 private fun StampButton(
@@ -249,7 +252,13 @@ fun ProgressSheet(
                     goalCount = sheet.goalCount,
                 ),
             stamps = stamps,
-            goalStampType = goalStampType,
+            goalStamp =
+                goalStampType?.let {
+                    GoalStamp(
+                        drawable = LocalContext.current.getDrawable(it.iconRes)!!,
+                        stampedAt = LocalDateTime.now(),
+                    )
+                },
             modifier = Modifier.weight(1f),
         )
         StampButton(
