@@ -43,6 +43,7 @@ import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 import com.cheesecomer.rewardstamp.ui.theme.SheetCard
@@ -89,8 +90,10 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.size(20.dp))
         Text(
             text = "がんばったシートはまだないよ",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            style =
+                MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = Nikumaru,
+                ),
         )
         Text(
             text = "最後までがんばると\nここにのこるよ♪",
