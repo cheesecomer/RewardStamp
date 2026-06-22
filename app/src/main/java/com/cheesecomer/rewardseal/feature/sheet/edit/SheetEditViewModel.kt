@@ -118,11 +118,16 @@ class SheetEditViewModel(
             )
     }
 
-    fun createRewardSheet(): RewardSheet =
+    suspend fun createRewardSheet(): RewardSheet =
         RewardSheet(
             id = uiState.sheetId,
             title = uiState.title,
-            currentCount = 0,
+            currentCount =
+                uiState.sheetId
+                    .takeIf { it != 0L }
+                    ?.let {
+                        rewardSheetRepository.findById(it)?.currentCount
+                    } ?: 0,
             goalCount = uiState.goalCount,
         )
 
@@ -143,7 +148,7 @@ class SheetEditViewModel(
                     RewardMilestone(
                         id = it.id,
                         sheetId = sheetId,
-                        requiredSheetCount = it.requiredSheetCount.toInt(),
+                        requiredSheetCount = it.requiredSheetCount,
                         reward = it.reward,
                     )
                 }
