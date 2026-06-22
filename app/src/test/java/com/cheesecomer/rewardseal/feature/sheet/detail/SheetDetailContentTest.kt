@@ -242,7 +242,7 @@ class SheetDetailContentTest {
             .performClick()
 
         composeTestRule
-            .onNodeWithTag(StampType.Hippopotamus.id)
+            .onNodeWithTag("StampPickerBottomSheet.StampGrid.${StampType.Hippopotamus.id}")
             .performClick()
 
         assertThat(selectedStampType).isEqualTo(StampType.Hippopotamus)

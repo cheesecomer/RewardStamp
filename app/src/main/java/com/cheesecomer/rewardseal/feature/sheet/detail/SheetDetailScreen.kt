@@ -35,7 +35,6 @@ import com.cheesecomer.rewardseal.model.StampType
 import com.cheesecomer.rewardseal.navigation.BottomTab
 import com.cheesecomer.rewardseal.ui.component.RewardSealBottomBar
 import com.cheesecomer.rewardseal.ui.component.dialog.DeleteSheetDialog
-import com.cheesecomer.rewardseal.ui.component.dialog.SelectStampDialog
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 import java.time.LocalDateTime
 
@@ -60,9 +59,9 @@ private fun SheetDetailDialogs(
         }
 
         SheetDetailDialog.Stamp -> {
-            SelectStampDialog(
-                onDismissRequest = onDismissRequest,
-                onStampTypeSelect = onStampTypeSelect,
+            StampPickerBottomSheet(
+                onDismiss = onDismissRequest,
+                onSelect = onStampTypeSelect,
             )
         }
 
