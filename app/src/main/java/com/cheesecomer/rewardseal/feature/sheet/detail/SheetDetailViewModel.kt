@@ -58,9 +58,10 @@ class SheetDetailViewModel(
             val exchangeableSheetCount =
                 completedRewardSheetRepository
                     .countExchangeableBySheetId(sheetId)
+            val sheet = rewardSheetRepository.findById(sheetId)
             uiState =
                 uiState.copy(
-                    sheet = rewardSheetRepository.findById(sheetId),
+                    sheet = sheet,
                     stamps = rewardStampRepository.findBySheetId(sheetId),
                     exchangeableRewards =
                         rewardMilestoneRepository
@@ -74,8 +75,14 @@ class SheetDetailViewModel(
                                 sheetId,
                                 exchangeableSheetCount,
                             ),
-                    goalStampType = null,
+                    goalStampType =
+                        sheet
+                            ?.takeIf { it.currentCount >= it.goalCount }
+                            ?.let { GoalStampType.entries.random() },
                 )
+            sheet
+                ?.takeIf { it.currentCount >= it.goalCount }
+                ?.let(::createCompletedRewardSheet)
         }
     }
 
@@ -108,11 +115,11 @@ class SheetDetailViewModel(
                     stamps = stamps,
                     goalStampType =
                         sheet
-                            ?.takeIf { it.currentCount == it.goalCount }
+                            ?.takeIf { it.currentCount >= it.goalCount }
                             ?.let { GoalStampType.entries.random() },
                 )
             sheet
-                ?.takeIf { it.currentCount == it.goalCount }
+                ?.takeIf { it.currentCount >= it.goalCount }
                 ?.let(::createCompletedRewardSheet)
         }
     }
@@ -136,6 +143,25 @@ class SheetDetailViewModel(
                 completedRewardSheetId = completedRewardSheetId,
             )
             rewardSheetRepository.restart(sheet.id)
+
+            val exchangeableSheetCount =
+                completedRewardSheetRepository
+                    .countExchangeableBySheetId(sheet.id)
+            uiState =
+                uiState.copy(
+                    exchangeableRewards =
+                        rewardMilestoneRepository
+                            .findExchangeableMilestonesBySheetId(
+                                sheet.id,
+                                exchangeableSheetCount,
+                            ),
+                    lockedRewards =
+                        rewardMilestoneRepository
+                            .findLockedMilestonesBySheetId(
+                                sheet.id,
+                                exchangeableSheetCount,
+                            ),
+                )
         }
     }
 
