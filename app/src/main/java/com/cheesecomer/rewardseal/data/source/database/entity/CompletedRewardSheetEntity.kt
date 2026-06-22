@@ -11,6 +11,7 @@ data class CompletedRewardSheetEntity(
     val sheetId: Long,
     val title: String,
     val goalCount: Int,
+    val stampTypeId: String,
     val completedAt: LocalDateTime,
     val consumedAt: LocalDateTime?,
 )

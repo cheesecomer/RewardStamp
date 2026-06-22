@@ -7,6 +7,7 @@ data class CompletedRewardSheet(
     val sheetId: Long,
     val title: String,
     val goalCount: Int,
+    val goalStampType: GoalStampType,
     val completedAt: LocalDateTime,
     val consumedAt: LocalDateTime?,
 )

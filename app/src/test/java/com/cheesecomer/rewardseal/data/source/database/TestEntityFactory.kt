@@ -4,6 +4,7 @@ import com.cheesecomer.rewardseal.data.source.database.entity.CompletedRewardShe
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardMilestoneEntity
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardSheetEntity
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardStampEntity
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.StampType
 import java.time.LocalDateTime
 
@@ -27,6 +28,7 @@ fun completedRewardSheetEntity(
     sheetId: Long = 1,
     title: String = "はみがき",
     goalCount: Int = 10,
+    stampTypeId: String = GoalStampType.Bear1.id,
     completedAt: LocalDateTime = LocalDateTime.now(),
     consumedAt: LocalDateTime? = null,
 ): CompletedRewardSheetEntity =
@@ -35,6 +37,7 @@ fun completedRewardSheetEntity(
         sheetId = sheetId,
         title = title,
         goalCount = goalCount,
+        stampTypeId = stampTypeId,
         completedAt = completedAt,
         consumedAt = consumedAt,
     )

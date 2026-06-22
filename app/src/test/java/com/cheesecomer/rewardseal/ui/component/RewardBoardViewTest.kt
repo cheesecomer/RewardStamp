@@ -5,6 +5,7 @@ import androidx.compose.ui.platform.testTag
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import com.cheesecomer.rewardseal.data.rewardStamp
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.StampType
 import com.cheesecomer.rewardseal.ui.theme.RewardSealTheme
 import org.junit.Rule
@@ -44,6 +45,7 @@ class RewardBoardViewTest {
                             rewardStamp(8, position = 7, stampedAt = now.plusDays(7L), stampType = StampType.Apple),
                             rewardStamp(9, position = 8, stampedAt = now.plusDays(8L), stampType = StampType.Paw),
                         ),
+                    goalStampType = GoalStampType.CherryBlossom9,
                 )
             }
         }

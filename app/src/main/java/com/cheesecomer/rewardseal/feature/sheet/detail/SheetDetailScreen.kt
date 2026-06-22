@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.cheesecomer.rewardseal.RewardSealApplication
 import com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
@@ -170,6 +171,7 @@ internal fun SheetDetailContent(
     exchangeableRewards: List<RewardMilestone>,
     lockedRewards: List<RewardMilestone>,
     modifier: Modifier = Modifier,
+    goalStampType: GoalStampType? = null,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
@@ -227,6 +229,7 @@ internal fun SheetDetailContent(
                 ProgressSheet(
                     sheet = sheet,
                     stamps = stamps,
+                    goalStampType = goalStampType,
                     onStampTypeSelect = {
                         activeDialog = SheetDetailDialog.Stamp
                     },
@@ -255,6 +258,7 @@ fun SheetDetailScreen(
     SheetDetailContent(
         sheet = viewModel.uiState.sheet,
         stamps = viewModel.uiState.stamps,
+        goalStampType = viewModel.uiState.goalStampType,
         exchangeableRewards = viewModel.uiState.exchangeableRewards,
         lockedRewards = viewModel.uiState.lockedRewards,
         modifier = modifier,
@@ -292,7 +296,7 @@ private fun SheetDetailContentPreview() {
             completedRewardSheetId = null,
             position = position,
             stampedAt = LocalDateTime.now().minusSeconds(10 - position.toLong()),
-            stampType = StampType.Star,
+            stampType = StampType.entries.random(),
         )
     }
     RewardSealTheme {
@@ -323,6 +327,7 @@ private fun SheetDetailContentPreview() {
                         rewardStamp(7),
                         rewardStamp(8),
                     ),
+                goalStampType = GoalStampType.Bear1,
                 exchangeableRewards = emptyList(),
                 lockedRewards = emptyList(),
                 modifier = Modifier.padding(innerPadding),

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "33f1027a8afb2674daf931c0a6ef2bc8",
+    "identityHash": "ac4fd9f296153970f1ede03180f05b1e",
     "entities": [
       {
         "tableName": "reward_sheets",
@@ -47,7 +47,7 @@
       },
       {
         "tableName": "completed_reward_sheets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sheetId` INTEGER NOT NULL, `title` TEXT NOT NULL, `goalCount` INTEGER NOT NULL, `completedAt` INTEGER NOT NULL, `consumedAt` INTEGER)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sheetId` INTEGER NOT NULL, `title` TEXT NOT NULL, `goalCount` INTEGER NOT NULL, `stampTypeId` TEXT NOT NULL, `completedAt` INTEGER NOT NULL, `consumedAt` INTEGER)",
         "fields": [
           {
             "fieldPath": "id",
@@ -71,6 +71,12 @@
             "fieldPath": "goalCount",
             "columnName": "goalCount",
             "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "stampTypeId",
+            "columnName": "stampTypeId",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -178,7 +184,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '33f1027a8afb2674daf931c0a6ef2bc8')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac4fd9f296153970f1ede03180f05b1e')"
     ]
   }
 }

@@ -4,6 +4,7 @@ import com.cheesecomer.rewardseal.data.source.database.entity.CompletedRewardShe
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardMilestoneEntity
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardSheetEntity
 import com.cheesecomer.rewardseal.data.source.database.entity.RewardStampEntity
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.StampType
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
@@ -56,6 +57,7 @@ class EntityTest {
                 sheetId = 1L,
                 title = "はみがき",
                 goalCount = 10,
+                stampTypeId = GoalStampType.Bear1.id,
                 completedAt = LocalDateTime.of(2026, 6, 19, 12, 0),
                 consumedAt = null,
             )

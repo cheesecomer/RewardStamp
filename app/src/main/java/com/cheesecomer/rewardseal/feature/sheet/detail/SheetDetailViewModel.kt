@@ -14,6 +14,7 @@ import com.cheesecomer.rewardseal.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardseal.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardseal.data.repository.RewardStampRepository
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
 import com.cheesecomer.rewardseal.model.StampType
@@ -73,6 +74,7 @@ class SheetDetailViewModel(
                                 sheetId,
                                 exchangeableSheetCount,
                             ),
+                    goalStampType = null,
                 )
         }
     }
@@ -104,6 +106,10 @@ class SheetDetailViewModel(
                 uiState.copy(
                     sheet = sheet,
                     stamps = stamps,
+                    goalStampType =
+                        sheet
+                            ?.takeIf { it.currentCount == it.goalCount }
+                            ?.let { GoalStampType.entries.random() },
                 )
             sheet
                 ?.takeIf { it.currentCount == it.goalCount }
@@ -120,6 +126,7 @@ class SheetDetailViewModel(
                         sheetId = sheet.id,
                         title = sheet.title,
                         goalCount = sheet.goalCount,
+                        goalStampType = uiState.goalStampType!!,
                         completedAt = now(),
                         consumedAt = null,
                     ),

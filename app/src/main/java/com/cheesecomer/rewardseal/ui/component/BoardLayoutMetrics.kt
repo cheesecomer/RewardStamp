@@ -9,6 +9,7 @@ data class BoardLayoutMetrics(
     val cellRadius: Dp,
     val goalCellRadius: Dp,
     val iconSize: Dp,
+    val goalIconMaxSize: Dp,
 ) {
     companion object {
         fun build(
@@ -38,12 +39,14 @@ data class BoardLayoutMetrics(
             val goalCellRadius = cellRadius * 1.55f
 
             val iconSize = cellRadius * 1.45f
+            val goalIconMaxSize = iconSize * 3f
 
             return BoardLayoutMetrics(
                 canvasHeight = canvasHeight,
                 rowHeight = rowHeight,
                 cellRadius = cellRadius,
                 iconSize = iconSize,
+                goalIconMaxSize = goalIconMaxSize,
                 goalCellRadius = goalCellRadius,
             )
         }

@@ -77,6 +77,7 @@ internal fun CompletedSheetDetailContent(
                         goalCount = sheet.goalCount,
                     ),
                 stamps = stamps,
+                goalStampType = sheet.goalStampType,
                 modifier = Modifier.weight(1f),
             )
         }

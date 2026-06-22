@@ -2,6 +2,7 @@ package com.cheesecomer.rewardseal.data
 
 import com.cheesecomer.rewardseal.model.CompletedRewardSheet
 import com.cheesecomer.rewardseal.model.ExchangeableSheet
+import com.cheesecomer.rewardseal.model.GoalStampType
 import com.cheesecomer.rewardseal.model.RewardMilestone
 import com.cheesecomer.rewardseal.model.RewardSheet
 import com.cheesecomer.rewardseal.model.RewardStamp
@@ -26,6 +27,7 @@ fun completedRewardSheet(
     sheetId: Long = 1,
     title: String = "はみがき",
     goalCount: Int = 10,
+    goalStampType: GoalStampType = GoalStampType.Bear1,
     completedAt: LocalDateTime = LocalDateTime.now(),
     consumedAt: LocalDateTime? = null,
 ): CompletedRewardSheet =
@@ -34,6 +36,7 @@ fun completedRewardSheet(
         sheetId = sheetId,
         title = title,
         goalCount = goalCount,
+        goalStampType = goalStampType,
         completedAt = completedAt,
         consumedAt = consumedAt,
     )
