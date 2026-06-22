@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -50,7 +51,7 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         Image(
             painter = painterResource(R.drawable.img_teddy_bear_exchange),
             contentDescription = null,
-            alpha = 0.65f,
+            modifier = Modifier.width(256.dp),
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(

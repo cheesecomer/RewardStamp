@@ -46,8 +46,15 @@
 <p align="center">
   <img src="docs/images/exchangeable.png" alt="ごほうび交換" width="320">
   <img src="docs/images/exchangeable-empty.png" alt="ごほうび交換（データなし）" width="320">
-  <img src="docs/images/exchangeable-dialog-single.png" alt="ごほうび交換（データなし）" width="320">
-  <img src="docs/images/exchangeable-dialog-multi.png" alt="ごほうび交換（データなし）" width="320">
+  <img src="docs/images/exchangeable-dialog-single.png" alt="ごほうび交換（交換ダイアログ）" width="320">
+  <img src="docs/images/exchangeable-dialog-multi.png" alt="ごほうび交換（ごほうび選択ダイアログ）" width="320">
+</p>
+
+### 履歴一覧
+
+<p align="center">
+  <img src="docs/images/completed-sheet-list.png" alt="りれき一覧" width="320">
+  <img src="docs/images/completed-sheet-empty-list.png" alt="りれき一覧（データなし）" width="320">
 </p>
 
 ## Getting Started
