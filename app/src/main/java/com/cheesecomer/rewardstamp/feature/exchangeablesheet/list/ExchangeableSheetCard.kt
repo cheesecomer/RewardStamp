@@ -36,6 +36,7 @@ import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 import com.cheesecomer.rewardstamp.ui.theme.SheetPrimary
@@ -92,9 +93,11 @@ private fun ClosestMilestoneHeadline(modifier: Modifier = Modifier) {
 
         Text(
             text = "つぎのごほうび",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = SheetSection,
+            style =
+                MaterialTheme.typography.titleSmall.copy(
+                    fontFamily = Nikumaru,
+                    color = SheetSection,
+                ),
         )
     }
 }
@@ -189,9 +192,11 @@ private fun ExchangeableMilestonesHeadline() {
 
         Text(
             text = "交換できるごほうび",
-            style = MaterialTheme.typography.titleSmall,
-            fontWeight = FontWeight.Bold,
-            color = SheetSection,
+            style =
+                MaterialTheme.typography.titleSmall.copy(
+                    fontFamily = Nikumaru,
+                    color = SheetSection,
+                ),
         )
     }
 }
@@ -236,7 +241,7 @@ private fun ExchangeButton(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
     ) {
-        Text("受け取った")
+        Text("交換する")
     }
 }
 

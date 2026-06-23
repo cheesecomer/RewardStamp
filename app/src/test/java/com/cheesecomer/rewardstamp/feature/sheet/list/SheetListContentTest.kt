@@ -26,24 +26,6 @@ class SheetListContentTest {
                 SheetListContent(
                     sheets = emptyList(),
                     latestStamps = emptyMap(),
-                    completedSheetCount = 0,
-                    onSheetClick = {},
-                    onCreateSheetClick = {},
-                )
-            }
-        }
-
-        composeTestRule.onNodeWithTag("SheetListScreen.EmptyList").assertIsDisplayed()
-    }
-
-    @Test
-    fun displaysEmptyMessageWhenCompletedSheetsExist() {
-        composeTestRule.setContent {
-            RewardStampTheme {
-                SheetListContent(
-                    sheets = emptyList(),
-                    latestStamps = emptyMap(),
-                    completedSheetCount = 1,
                     onSheetClick = {},
                     onCreateSheetClick = {},
                 )
@@ -71,7 +53,6 @@ class SheetListContentTest {
                         mapOf(
                             100L to rewardStamp(),
                         ),
-                    completedSheetCount = 0,
                     onSheetClick = {},
                     onCreateSheetClick = {},
                 )
@@ -93,7 +74,6 @@ class SheetListContentTest {
                         mapOf(
                             123L to rewardStamp(),
                         ),
-                    completedSheetCount = 0,
                     onSheetClick = { clickedSheetId = it },
                     onCreateSheetClick = {},
                 )
@@ -114,7 +94,6 @@ class SheetListContentTest {
                 SheetListContent(
                     sheets = emptyList(),
                     latestStamps = emptyMap(),
-                    completedSheetCount = 0,
                     onSheetClick = {},
                     onCreateSheetClick = { clicked = true },
                 )

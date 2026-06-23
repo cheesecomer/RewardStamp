@@ -99,7 +99,7 @@ private fun SheetProgress(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.stamp_cherry_blossom),
+                painter = painterResource(R.drawable.ic_cherry_blossom),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
                 tint = SheetPrimary,
@@ -157,7 +157,7 @@ private fun SheetDescription(modifier: Modifier = Modifier) {
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             Icon(
-                painter = painterResource(R.drawable.stamp_cherry_blossom),
+                painter = painterResource(R.drawable.ic_cherry_blossom),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
                 tint = SheetPrimary,
@@ -176,12 +176,9 @@ private fun SheetDescription(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text = "シートをすべてうめて",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-
-            Text(
-                text = "ごほうびのスタンプをもらおう！",
+                text =
+                    "シートをすべてうめて\n" +
+                        "ごほうびをもらおう！",
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

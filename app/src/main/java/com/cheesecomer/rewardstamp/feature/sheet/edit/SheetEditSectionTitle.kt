@@ -10,9 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cheesecomer.rewardstamp.R
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 
 @Composable
 fun SheetEditSectionTitle(
@@ -33,8 +33,10 @@ fun SheetEditSectionTitle(
 
         Text(
             text = text,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
+            style =
+                MaterialTheme.typography.titleMedium.copy(
+                    fontFamily = Nikumaru,
+                ),
         )
     }
 }

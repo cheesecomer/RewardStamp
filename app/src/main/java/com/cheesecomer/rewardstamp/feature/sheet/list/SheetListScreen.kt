@@ -27,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +38,7 @@ import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
 
@@ -58,10 +58,7 @@ private fun sheetListViewModel(): SheetListViewModel {
 }
 
 @Composable
-private fun EmptyList(
-    modifier: Modifier = Modifier,
-    completedRewardCount: Int = 0,
-) {
+private fun EmptyList(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -74,26 +71,15 @@ private fun EmptyList(
             modifier = Modifier.width(256.dp),
         )
         Spacer(modifier = Modifier.size(20.dp))
-        if (completedRewardCount > 0) {
-            Text(
-                text = "もうシートがありません",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-        } else {
-            Text(
-                text = "まだシートがありません",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-        }
         Text(
-            text = "右下の「＋」から",
-            style = MaterialTheme.typography.bodyMedium,
+            text = "なにを がんばる？",
+            style =
+                MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = Nikumaru,
+                ),
         )
-
         Text(
-            text = "シートを作ってみましょう！",
+            text = "＋ボタンから はじめよう♪",
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -130,7 +116,6 @@ private fun SheetListScreenHeader(modifier: Modifier = Modifier) {
 internal fun SheetListContent(
     sheets: List<RewardSheet>,
     latestStamps: Map<Long, RewardStamp>,
-    completedSheetCount: Int,
     onSheetClick: (Long) -> Unit,
     onCreateSheetClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -152,7 +137,6 @@ internal fun SheetListContent(
         ) {
             if (sheets.isEmpty()) {
                 EmptyList(
-                    completedRewardCount = completedSheetCount,
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -196,7 +180,6 @@ fun SheetListScreen(
         modifier = modifier,
         sheets = viewModel.sheets,
         latestStamps = viewModel.latestStamps,
-        completedSheetCount = viewModel.completedSheetCount,
         onSheetClick = onSheetClick,
         onCreateSheetClick = onCreateSheetClick,
     )
@@ -218,7 +201,6 @@ private fun EmptySheetListContentPreview() {
             SheetListContent(
                 sheets = emptyList(),
                 latestStamps = emptyMap(),
-                completedSheetCount = 0,
                 onSheetClick = {},
                 onCreateSheetClick = {},
                 modifier = Modifier.padding(innerPadding),
@@ -262,7 +244,6 @@ private fun SheetListContentPreview() {
                                 stampType = StampType.Star,
                             ),
                     ),
-                completedSheetCount = 0,
                 onSheetClick = {},
                 onCreateSheetClick = {},
                 modifier = Modifier.padding(innerPadding),

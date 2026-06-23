@@ -60,6 +60,7 @@ class SheetDetailViewModel(
                 uiState.copy(
                     sheet = sheet,
                     stamps = rewardStampRepository.findBySheetId(sheetId),
+                    goalStampType = null,
                 )
 
             if (sheet != null && sheet.currentCount >= sheet.goalCount) {
@@ -143,27 +144,29 @@ class SheetDetailViewModel(
         }
     }
 
-    suspend fun createCompletedRewardSheet(
+    fun createCompletedRewardSheet(
         sheet: RewardSheet,
         goalStampType: GoalStampType,
     ) {
-        val completedRewardSheetId =
-            completedRewardSheetRepository.save(
-                CompletedRewardSheet(
-                    id = 0,
-                    sheetId = sheet.id,
-                    title = sheet.title,
-                    goalCount = sheet.goalCount,
-                    goalStampType = goalStampType,
-                    completedAt = now(),
-                    consumedAt = null,
-                ),
+        viewModelScope.launch {
+            val completedRewardSheetId =
+                completedRewardSheetRepository.save(
+                    CompletedRewardSheet(
+                        id = 0,
+                        sheetId = sheet.id,
+                        title = sheet.title,
+                        goalCount = sheet.goalCount,
+                        goalStampType = goalStampType,
+                        completedAt = now(),
+                        consumedAt = null,
+                    ),
+                )
+            rewardStampRepository.attachToCompletedRewardSheet(
+                sheetId = sheet.id,
+                completedRewardSheetId = completedRewardSheetId,
             )
-        rewardStampRepository.attachToCompletedRewardSheet(
-            sheetId = sheet.id,
-            completedRewardSheetId = completedRewardSheetId,
-        )
-        rewardSheetRepository.restart(sheet.id)
+            rewardSheetRepository.restart(sheet.id)
+        }
     }
 
     fun delete(

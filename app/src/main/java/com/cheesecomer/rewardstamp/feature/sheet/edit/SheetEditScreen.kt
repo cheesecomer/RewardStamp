@@ -235,6 +235,36 @@ fun SheetEditScreen(
 @Preview(showBackground = true)
 @Suppress("MagicNumber")
 @Composable
+private fun NewSheetScreenPreview() {
+    RewardStampTheme {
+        SheetEditContent(
+            sheetId = null,
+            title = "おかたずけ",
+            goalCount = 1,
+            milestones =
+                listOf(
+                    RewardMilestone(
+                        id = 0L,
+                        sheetId = 1L,
+                        requiredSheetCount = 1,
+                        reward = "スーパーカップ",
+                    ),
+                    RewardMilestone(
+                        id = 0L,
+                        sheetId = 1L,
+                        requiredSheetCount = 2,
+                        reward = "ハーゲンダッツ",
+                    ),
+                ),
+            modifier = Modifier.fillMaxHeight(),
+        )
+    }
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Suppress("MagicNumber")
+@Composable
 private fun SheetEditScreenPreview() {
     RewardStampTheme {
         SheetEditContent(

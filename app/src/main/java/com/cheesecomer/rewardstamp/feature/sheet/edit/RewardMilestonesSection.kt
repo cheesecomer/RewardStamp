@@ -1,27 +1,23 @@
 package com.cheesecomer.rewardstamp.feature.sheet.edit
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,11 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
-import com.cheesecomer.rewardstamp.ui.RewardStampTextFieldDefaults
+import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 
 @Composable
@@ -88,107 +85,6 @@ private fun RewardMilestoneRow(
             }
         }
     }
-}
-
-@Composable
-private fun RewardMilestoneDialogText(
-    requiredSheetCount: String,
-    reward: String,
-    onRequiredSheetCountChange: (String) -> Unit,
-    onRewardChange: (String) -> Unit,
-) {
-    val tagPrefix = "RewardMilestonesSection.RewardMilestoneDialog.Text"
-    Column(
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        OutlinedTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .testTag("$tagPrefix.RequiredSheetCount"),
-            value = requiredSheetCount,
-            onValueChange = onRequiredSheetCountChange,
-            label = {
-                Text("必要な枚数")
-            },
-            suffix = {
-                Text("枚")
-            },
-            keyboardOptions =
-                KeyboardOptions(
-                    keyboardType = KeyboardType.Number,
-                ),
-            singleLine = true,
-            colors = RewardStampTextFieldDefaults.colors(),
-        )
-
-        OutlinedTextField(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .testTag("$tagPrefix.Reward"),
-            value = reward,
-            onValueChange = onRewardChange,
-            label = {
-                Text("ごほうび")
-            },
-            placeholder = {
-                Text("例：アイス")
-            },
-            singleLine = true,
-            colors = RewardStampTextFieldDefaults.colors(),
-        )
-    }
-}
-
-@Composable
-fun RewardMilestoneDialog(
-    requiredSheetCount: String,
-    reward: String,
-    isEdit: Boolean,
-    onRequiredSheetCountChange: (String) -> Unit,
-    onRewardChange: (String) -> Unit,
-    onDismissRequest: () -> Unit,
-    onConfirmClick: () -> Unit,
-) {
-    val tagPrefix = "RewardMilestonesSection.RewardMilestoneDialog"
-    AlertDialog(
-        modifier = Modifier.testTag(tagPrefix),
-        onDismissRequest = onDismissRequest,
-        title = {
-            Text(
-                text = if (isEdit) "ごほうびを編集" else "ごほうびを追加",
-            )
-        },
-        text = {
-            RewardMilestoneDialogText(
-                requiredSheetCount = requiredSheetCount,
-                reward = reward,
-                onRequiredSheetCountChange = onRequiredSheetCountChange,
-                onRewardChange = onRewardChange,
-            )
-        },
-        confirmButton = {
-            TextButton(
-                enabled =
-                    requiredSheetCount.isNotBlank() &&
-                        reward.isNotBlank(),
-                onClick = onConfirmClick,
-                modifier = Modifier.testTag("$tagPrefix.Confirm"),
-            ) {
-                Text(
-                    if (isEdit) "保存" else "追加",
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(
-                onClick = onDismissRequest,
-            ) {
-                Text("キャンセル")
-            }
-        },
-    )
 }
 
 private const val NEW_MILESTONE_INDEX = -1
@@ -311,6 +207,35 @@ private fun RewardMilestoneRows(
 }
 
 @Composable
+private fun RewardMilestonesSectionHeadline(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier,
+    ) {
+        SheetEditSectionTitle(text = "ごほうびは？")
+        Text(
+            modifier = Modifier.padding(start = 32.dp),
+            text =
+                "最後までがんばったシートと交換するごほうびです。\n" +
+                    "ごほうびは何個でも登録できます",
+            style = MaterialTheme.typography.bodySmall,
+        )
+    }
+}
+
+@Composable
+private fun AddMilestoneButton(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier,
+    ) {
+        Text("＋ ごほうびを追加")
+    }
+}
+
+@Composable
 fun RewardMilestonesSection(
     milestones: List<RewardMilestone>,
     onCreateClick: (RewardMilestone) -> Unit,
@@ -344,13 +269,7 @@ fun RewardMilestonesSection(
                     .fillMaxWidth()
                     .padding(12.dp),
         ) {
-            SheetEditSectionTitle(text = "満タンカードと交換できるごほうび")
-            Text(
-                modifier = Modifier.padding(start = 32.dp),
-                text = "ごほうびを複数登録できます",
-                style = MaterialTheme.typography.bodySmall,
-            )
-
+            RewardMilestonesSectionHeadline()
             RewardMilestoneRows(
                 milestones = milestones,
                 onEditClick = { editingMilestone = it },
@@ -361,7 +280,7 @@ fun RewardMilestonesSection(
                 EmptyLabel()
             }
 
-            Button(
+            AddMilestoneButton(
                 onClick = {
                     editingMilestone =
                         EditingRewardMilestone(
@@ -374,9 +293,24 @@ fun RewardMilestonesSection(
                         .fillMaxWidth()
                         .padding(top = 12.dp)
                         .testTag("MilestoneFormList.addMilestoneButton"),
-            ) {
-                Text("＋ ごほうびを追加")
-            }
+            )
+        }
+    }
+}
+
+@ExcludeFromCoverage
+@Preview(showBackground = true)
+@Composable
+private fun RewardMilestonesSectionPreview() {
+    RewardStampTheme {
+        Scaffold {
+            RewardMilestonesSection(
+                modifier = Modifier.padding(it),
+                milestones = emptyList(),
+                onRemoveClick = {},
+                onUpdateClick = { _, _ -> },
+                onCreateClick = {},
+            )
         }
     }
 }

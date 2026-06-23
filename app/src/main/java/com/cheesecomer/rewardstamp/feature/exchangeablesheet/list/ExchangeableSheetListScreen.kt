@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +39,7 @@ import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialog
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialog
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 
 @Composable
@@ -55,17 +56,16 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "交換できるごほうびはありません",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            text = "まだ ごほうびはないよ",
+            style =
+                MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = Nikumaru,
+                ),
         )
         Text(
-            text = "がんばってシートをいっぱいにしよう！",
+            text = "最後までがんばると交換できるよ♪",
             style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "ごほうびが待ってるよ",
-            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
         )
     }
 }

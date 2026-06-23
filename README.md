@@ -25,6 +25,7 @@
 
 <p align="center">
   <img src="docs/images/sheet-new.png" alt="シート登録" width="320">
+  <img src="docs/images/sheet-new_2.png" alt="シート登録" width="320">
   <img src="docs/images/add-milestone-dialog.png" alt="ごほうび登録" width="320">
 </p>
 

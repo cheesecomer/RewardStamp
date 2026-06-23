@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 import com.cheesecomer.rewardstamp.ui.theme.SheetCard
@@ -87,17 +89,16 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "まだ きろくがありません",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold,
+            text = "がんばったシートはまだないよ",
+            style =
+                MaterialTheme.typography.titleLarge.copy(
+                    fontFamily = Nikumaru,
+                ),
         )
         Text(
-            text = "シートをいっぱいにすると",
+            text = "最後までがんばると\nここにのこるよ♪",
             style = MaterialTheme.typography.bodyMedium,
-        )
-        Text(
-            text = "ここにのるよ",
-            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center,
         )
     }
 }
