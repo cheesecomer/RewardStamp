@@ -36,6 +36,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "RewardSeal"
+rootProject.name = "RewardStamp"
 include(":app")
  

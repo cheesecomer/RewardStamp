@@ -18,11 +18,11 @@ android {
         schemaDirectory("$projectDir/schemas")
     }
 
-    namespace = "com.cheesecomer.rewardseal"
+    namespace = "com.cheesecomer.rewardstamp"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.cheesecomer.rewardseal"
+        applicationId = "com.cheesecomer.rewardstamp"
         minSdk = 26
         targetSdk = 36
         versionCode = 1
@@ -122,7 +122,7 @@ kover {
         filters {
             excludes {
                 annotatedBy(
-                    "com.cheesecomer.rewardseal.annotation.ExcludeFromCoverage",
+                    "com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage",
                 )
                 classes(
                     "*AppDatabase_Impl*",
