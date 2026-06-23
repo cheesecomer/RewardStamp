@@ -86,6 +86,8 @@ class SheetDetailViewModelTest {
                     rewardSheet(
                         id = 0,
                         title = "はみがき",
+                        goalCount = 10,
+                        currentCount = 1,
                     ),
                 )
             completedRewardSheetRepository.save(
@@ -119,12 +121,62 @@ class SheetDetailViewModelTest {
 
             assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
             assertThat(viewModel.uiState.stamps).hasSize(1)
-            assertThat(viewModel.uiState.exchangeableRewards).hasSize(1)
+            assertThat(
+                viewModel.uiState.stamps
+                    .single()
+                    .stampType,
+            ).isEqualTo(StampType.Hippopotamus)
+        }
+
+    @Test
+    fun load_updatesSheetAndStampsWhenFinishedSheet() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        title = "はみがき",
+                        goalCount = 10,
+                        currentCount = 10,
+                    ),
+                )
+            completedRewardSheetRepository.save(
+                completedRewardSheet(sheetId = sheetId),
+            )
+
+            rewardStampRepository.save(
+                rewardStamp(
+                    id = 0,
+                    sheetId = sheetId,
+                    position = 0,
+                    stampType = StampType.Hippopotamus,
+                    stampedAt = now,
+                ),
+            )
+
+            rewardMilestoneRepository.saveAll(
+                sheetId,
+                listOf(
+                    rewardMilestone(requiredSheetCount = 1),
+                    rewardMilestone(requiredSheetCount = 2),
+                    rewardMilestone(requiredSheetCount = 3),
+                    rewardMilestone(requiredSheetCount = 4),
+                    rewardMilestone(requiredSheetCount = 5),
+                ),
+            )
+
+            val viewModel = createViewModel()
+
+            viewModel.load(sheetId)
+
+            assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
+            assertThat(viewModel.uiState.stamps).hasSize(1)
+            assertThat(viewModel.uiState.exchangeableRewards).hasSize(2)
             assertThat(viewModel.uiState.exchangeableRewards.map { it.requiredSheetCount })
-                .containsExactly(1)
+                .containsExactly(1, 2)
+            assertThat(viewModel.uiState.lockedRewards).hasSize(3)
             assertThat(viewModel.uiState.lockedRewards.map { it.requiredSheetCount })
-                .containsExactly(2, 3, 4, 5)
-            assertThat(viewModel.uiState.lockedRewards).hasSize(4)
+                .containsExactly(3, 4, 5)
             assertThat(
                 viewModel.uiState.stamps
                     .single()
@@ -174,6 +226,16 @@ class SheetDetailViewModelTest {
                         goalCount = 3,
                     ),
                 )
+            rewardMilestoneRepository.saveAll(
+                sheetId,
+                listOf(
+                    rewardMilestone(requiredSheetCount = 1),
+                    rewardMilestone(requiredSheetCount = 2),
+                    rewardMilestone(requiredSheetCount = 3),
+                    rewardMilestone(requiredSheetCount = 4),
+                    rewardMilestone(requiredSheetCount = 5),
+                ),
+            )
 
             val viewModel = createViewModel()
             viewModel.load(sheetId)
@@ -182,6 +244,12 @@ class SheetDetailViewModelTest {
                 sheetId = sheetId,
                 stampType = StampType.Hippopotamus,
             )
+
+            assertThat(viewModel.uiState.exchangeableRewards).hasSize(1)
+            assertThat(viewModel.uiState.exchangeableRewards.map { it.requiredSheetCount })
+                .containsExactly(1)
+            assertThat(viewModel.uiState.lockedRewards.map { it.requiredSheetCount })
+                .containsExactly(2, 3, 4, 5)
 
             val completedSheets = completedRewardSheetRepository.findAll()
             val restartedSheet = rewardSheetRepository.findById(sheetId)!!
