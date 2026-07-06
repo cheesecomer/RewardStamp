@@ -101,6 +101,12 @@ SQLite
 
 ## Getting Started
 
+### 必要環境
+
+- Android Studio
+- Android SDK
+- JDK 11
+
 リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。
 
 ```bash
@@ -117,13 +123,24 @@ Git Hooks が設定されている場合、以下のチェックが自動で実�
   - `./gradlew detekt`
 
 - **pre-push**
+  - `./gradlew clean`
   - `./gradlew assembleDebug`
+  - `./gradlew koverVerifyDebug`
+
+## プライバシーポリシー
+
+[プライバシーポリシー](docs/privacy-policy.md)
 
 ## 今後の予定
 
-- アプリアイコン作成
 - 演出強化
 - Google Play 公開
+
+## License
+
+このプロジェクトのソースコードは [MIT License](LICENSE) で公開しています。
+
+画像、スタンプ、フォントなどのアセットは、明示されていない限りライセンス対象外です。
 
 ## Code Quality
 
