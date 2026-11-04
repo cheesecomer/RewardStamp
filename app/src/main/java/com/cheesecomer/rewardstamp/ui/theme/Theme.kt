@@ -1,35 +1,11 @@
 package com.cheesecomer.rewardstamp.ui.theme
 
-import android.os.Build
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme =
-    darkColorScheme(
-        primary = SheetPrimary,
-        onPrimary = Color.White,
-        primaryContainer = SheetPrimaryContainer,
-        onPrimaryContainer = SheetPrimary,
-        secondary = SheetPrimary,
-        onSecondary = Color.White,
-        secondaryContainer = SheetPrimaryContainer,
-        onSecondaryContainer = SheetText,
-        background = SheetBackground,
-        onBackground = SheetText,
-        surface = SheetCard,
-        onSurface = SheetText,
-        surfaceVariant = SheetPrimaryContainer,
-        onSurfaceVariant = SheetText,
-        outline = SheetBorder,
-    )
-
-private val LightColorScheme =
+private val ColorScheme =
     lightColorScheme(
         primary = SheetPrimary,
         onPrimary = Color.White,
@@ -60,25 +36,9 @@ private val LightColorScheme =
     )
 
 @Composable
-fun RewardStampTheme(
-    darkTheme: Boolean = false,
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = false,
-    content: @Composable () -> Unit,
-) {
-    val colorScheme =
-        when {
-            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-                val context = LocalContext.current
-                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-            }
-
-            darkTheme -> DarkColorScheme
-            else -> LightColorScheme
-        }
-
+fun RewardStampTheme(content: @Composable () -> Unit) {
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = ColorScheme,
         typography = Typography,
         content = content,
     )
