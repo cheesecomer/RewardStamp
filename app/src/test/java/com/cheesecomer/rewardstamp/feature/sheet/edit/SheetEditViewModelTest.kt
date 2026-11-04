@@ -285,6 +285,27 @@ class SheetEditViewModelTest {
             assertThat(milestones.single().reward).isEqualTo("アイス")
         }
 
+    @Test
+    fun load_doesNotOverwriteEditingStateWhenCalledAgain() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        title = "はみがき",
+                        goalCount = 10,
+                    ),
+                )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.incrementGoalCount()
+
+            viewModel.load(sheetId)
+
+            assertThat(viewModel.uiState.goalCount).isEqualTo(11)
+        }
+
     private fun createViewModel(): SheetEditViewModel =
         SheetEditViewModel(
             rewardSheetRepository = rewardSheetRepository,

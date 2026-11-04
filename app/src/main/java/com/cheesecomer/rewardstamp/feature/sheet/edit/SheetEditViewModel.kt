@@ -43,7 +43,12 @@ class SheetEditViewModel(
     )
         private set
 
+    private var loadedSheetId: Long? = null
+
     fun load(sheetId: Long) {
+        if (loadedSheetId == sheetId) return
+        loadedSheetId = sheetId
+
         viewModelScope.launch {
             val sheet = rewardSheetRepository.findById(sheetId)
             if (sheet == null) return@launch
