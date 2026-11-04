@@ -153,6 +153,28 @@ class SheetEditViewModelTest {
         }
 
     @Test
+    fun decrementGoalCount_doesNotGoBelowCurrentCount() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        currentCount = 3,
+                        goalCount = 5,
+                    ),
+                )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+
+            repeat(MAX_GOAL_COUNT) {
+                viewModel.decrementGoalCount()
+            }
+
+            assertThat(viewModel.uiState.goalCount).isEqualTo(3)
+        }
+
+    @Test
     fun load_updatesUiState() =
         runTest {
             val sheetId =
