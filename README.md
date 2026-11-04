@@ -157,6 +157,7 @@ Git Hooks が設定されている場合、以下のチェックが自動で実�
 ```bash
 ./gradlew ktlintCheck
 ./gradlew detekt
+./gradlew lintDebug
 ./gradlew assembleDebug
 ./gradlew testDebugUnitTest
 ./gradlew screenshotTest
