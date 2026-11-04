@@ -16,7 +16,7 @@ fun DeleteSheetDialog(
     onDismissRequest: () -> Unit = {},
 ) {
     AlertDialog(
-        modifier = modifier.testTag("DeleteSheetDialog"),
+        modifier = modifier.testTag(DeleteSheetDialogTestTags.ROOT),
         onDismissRequest = onDismissRequest,
         title = {
             Text(stringResource(R.string.delete_sheet_title))
@@ -27,7 +27,7 @@ fun DeleteSheetDialog(
         confirmButton = {
             TextButton(
                 onClick = onDeleteRequest,
-                modifier = Modifier.testTag("DeleteSheetDialog.DeleteButton"),
+                modifier = Modifier.testTag(DeleteSheetDialogTestTags.DELETE_BUTTON),
             ) {
                 Text(stringResource(R.string.common_delete))
             }

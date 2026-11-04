@@ -44,10 +44,10 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.1").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").assertIsNotEnabled()
-        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").assertIsEnabled()
+        composeTestRule.onNodeWithTag(ChoiceRewardDialogTestTags.reward(1)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ChoiceRewardDialogTestTags.reward(2)).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON).assertIsNotEnabled()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.DISMISS_BUTTON).assertIsEnabled()
     }
 
     @Test
@@ -84,7 +84,7 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").performClick()
+        composeTestRule.onNodeWithTag(ChoiceRewardDialogTestTags.reward(2)).performClick()
 
         assertThat(dismissed).isFalse()
         assertThat(selectedMilestone).isNull()
@@ -124,8 +124,8 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("ChoiceRewardDialog.Rewards.2").performClick()
-        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").performClick()
+        composeTestRule.onNodeWithTag(ChoiceRewardDialogTestTags.reward(2)).performClick()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON).performClick()
 
         assertThat(dismissed).isTrue()
         assertThat(selectedMilestone).isEqualTo(milestone)
@@ -152,7 +152,7 @@ class ChoiceRewardDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").performClick()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.DISMISS_BUTTON).performClick()
 
         assertThat(dismissed).isTrue()
     }

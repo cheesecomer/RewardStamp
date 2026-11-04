@@ -153,7 +153,7 @@ fun ChoiceRewardDialog(
                 ) {
                     milestones.forEach { milestone ->
                         RewardExchangeOptionRow(
-                            modifier = Modifier.testTag("ChoiceRewardDialog.Rewards.${milestone.id}"),
+                            modifier = Modifier.testTag(ChoiceRewardDialogTestTags.reward(milestone.id)),
                             selected = selectedId == milestone.id,
                             reward = milestone.reward,
                             sheetCount = milestone.requiredSheetCount,

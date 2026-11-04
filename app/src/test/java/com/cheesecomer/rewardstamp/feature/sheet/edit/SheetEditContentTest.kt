@@ -50,11 +50,11 @@ class SheetEditContentTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.TitleTextField")
+            .onNodeWithTag(SheetEditTestTags.TITLE_TEXT_FIELD)
             .assertExists()
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.TitleLabel")
+            .onNodeWithTag(SheetEditTestTags.TITLE_LABEL)
             .assertDoesNotExist()
     }
 
@@ -83,11 +83,11 @@ class SheetEditContentTest {
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.TitleTextField")
+            .onNodeWithTag(SheetEditTestTags.TITLE_TEXT_FIELD)
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.TitleLabel")
+            .onNodeWithTag(SheetEditTestTags.TITLE_LABEL)
             .assertExists()
     }
 
@@ -111,11 +111,11 @@ class SheetEditContentTest {
             )
         }
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.List")
-            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
+            .onNodeWithTag(SheetEditTestTags.LIST)
+            .performScrollToNode(hasTestTag(SheetEditTestTags.SAVE))
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.Save")
+            .onNodeWithTag(SheetEditTestTags.SAVE)
             .assertExists()
             .assertIsDisplayed()
             .assertIsNotEnabled()
@@ -136,11 +136,11 @@ class SheetEditContentTest {
             )
         }
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.List")
-            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
+            .onNodeWithTag(SheetEditTestTags.LIST)
+            .performScrollToNode(hasTestTag(SheetEditTestTags.SAVE))
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.Save")
+            .onNodeWithTag(SheetEditTestTags.SAVE)
             .assertExists()
             .performScrollTo()
             .assertIsDisplayed()
@@ -165,11 +165,11 @@ class SheetEditContentTest {
             )
         }
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.List")
-            .performScrollToNode(hasTestTag("SheetEditScreen.Save"))
+            .onNodeWithTag(SheetEditTestTags.LIST)
+            .performScrollToNode(hasTestTag(SheetEditTestTags.SAVE))
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.Save")
+            .onNodeWithTag(SheetEditTestTags.SAVE)
             .assertExists()
             .performScrollTo()
             .assertIsDisplayed()
@@ -234,21 +234,21 @@ class SheetEditContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("MilestoneFormList.addMilestoneButton")
+            .onNodeWithTag(RewardMilestonesSectionTestTags.ADD_MILESTONE_BUTTON)
             .performScrollTo()
             .assertIsDisplayed()
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.REQUIRED_SHEET_COUNT)
             .performTextInput("1")
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.Reward")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.REWARD)
             .performTextInput("アイス")
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.CONFIRM)
             .performClick()
 
         assertThat(addMilestone).isTrue()
@@ -266,30 +266,30 @@ class SheetEditContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("MilestoneFormList.addMilestoneButton")
+            .onNodeWithTag(RewardMilestonesSectionTestTags.ADD_MILESTONE_BUTTON)
             .performScrollTo()
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.Reward")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.REWARD)
             .performTextInput("アイス")
 
         listOf("0", "-1", "1.5", "99999999999").forEach { input ->
             composeTestRule
-                .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
+                .onNodeWithTag(RewardMilestoneDialogTestTags.REQUIRED_SHEET_COUNT)
                 .performTextReplacement(input)
 
             composeTestRule
-                .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
+                .onNodeWithTag(RewardMilestoneDialogTestTags.CONFIRM)
                 .assertIsNotEnabled()
         }
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.REQUIRED_SHEET_COUNT)
             .performTextReplacement("1")
 
         composeTestRule
-            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
+            .onNodeWithTag(RewardMilestoneDialogTestTags.CONFIRM)
             .assertIsEnabled()
     }
 
@@ -317,7 +317,7 @@ class SheetEditContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetEditScreen.TitleTextField")
+            .onNodeWithTag(SheetEditTestTags.TITLE_TEXT_FIELD)
             .performTextInput("おかたづけ")
 
         assertThat(title).isEqualTo("おかたづけ")
@@ -349,7 +349,7 @@ class SheetEditContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("GoalCountPicker.IncrementButton")
+            .onNodeWithTag(GoalCountPickerTestTags.INCREMENT_BUTTON)
             .performClick()
 
         assertThat(plus).isTrue()
@@ -357,7 +357,7 @@ class SheetEditContentTest {
         plus = false
 
         composeTestRule
-            .onNodeWithTag("GoalCountPicker.DecrementButton")
+            .onNodeWithTag(GoalCountPickerTestTags.DECREMENT_BUTTON)
             .performClick()
 
         assertThat(plus).isFalse()

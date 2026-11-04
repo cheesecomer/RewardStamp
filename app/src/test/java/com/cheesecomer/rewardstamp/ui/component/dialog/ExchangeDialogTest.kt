@@ -33,9 +33,9 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("ExchangeDialog.Background").assertIsDisplayed()
-        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").assertIsEnabled().assertIsDisplayed()
-        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(ExchangeDialogTestTags.BACKGROUND).assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON).assertIsEnabled().assertIsDisplayed()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.DISMISS_BUTTON).assertIsDisplayed()
     }
 
     @Test
@@ -58,7 +58,7 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("DialogButtons.ConfirmButton").performClick()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON).performClick()
 
         assertThat(dismissed).isTrue()
         assertThat(selectedMilestone).isEqualTo(milestone)
@@ -80,7 +80,7 @@ class ExchangeDialogTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("DialogButtons.DismissButton").performClick()
+        composeTestRule.onNodeWithTag(DialogButtonsTestTags.DISMISS_BUTTON).performClick()
 
         assertThat(dismissed).isTrue()
     }

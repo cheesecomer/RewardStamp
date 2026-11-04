@@ -94,7 +94,7 @@ private fun LastStampView(
                 Icon(
                     painter = painterResource(stampType.iconRes),
                     contentDescription = stampType.id,
-                    modifier = Modifier.size(44.dp).testTag("SheetCard.LastStampView.Stamp"),
+                    modifier = Modifier.size(44.dp).testTag(SheetCardTestTags.LAST_STAMP),
                     tint = color.copy(alpha = 0.9f),
                 )
             }
@@ -268,7 +268,7 @@ fun SheetCard(
                 ) {
                     Spacer(modifier = Modifier.height(8.dp))
                     ProgressStampRow(
-                        modifier = Modifier.fillMaxWidth().testTag("SheetCard.ProgressStampRow"),
+                        modifier = Modifier.fillMaxWidth().testTag(SheetCardTestTags.PROGRESS_STAMP_ROW),
                         currentCount = sheet.currentCount,
                         goalCount = sheet.goalCount,
                     )

@@ -44,7 +44,7 @@ private fun TitleLabel(
                 MaterialTheme.typography.headlineLarge.copy(
                     fontWeight = FontWeight.Bold,
                 ),
-            modifier = Modifier.alignByBaseline().testTag("CompletedSheetDetailScreen.TitleLabel.Text"),
+            modifier = Modifier.alignByBaseline().testTag(CompletedSheetDetailTestTags.TITLE_LABEL_TEXT),
         )
         Text(
             text = stringResource(R.string.completed_detail_title_suffix),
@@ -63,7 +63,7 @@ private fun GoalCountLabel(
         Text(
             text = text,
             style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.alignByBaseline().testTag("CompletedSheetDetailScreen.GoalCountLabel.Text"),
+            modifier = Modifier.alignByBaseline().testTag(CompletedSheetDetailTestTags.GOAL_COUNT_LABEL_TEXT),
         )
         Text(
             text = stringResource(R.string.completed_detail_goal_count_suffix),
@@ -102,11 +102,11 @@ internal fun CompletedSheetDetailContent(
             ) {
                 TitleLabel(
                     text = sheet.title,
-                    modifier = Modifier.testTag("CompletedSheetDetailScreen.TitleLabel"),
+                    modifier = Modifier.testTag(CompletedSheetDetailTestTags.TITLE_LABEL),
                 )
                 GoalCountLabel(
                     text = sheet.goalCount.toString(),
-                    modifier = Modifier.testTag("CompletedSheetDetailScreen.GoalCountLabel"),
+                    modifier = Modifier.testTag(CompletedSheetDetailTestTags.GOAL_COUNT_LABEL),
                 )
             }
 

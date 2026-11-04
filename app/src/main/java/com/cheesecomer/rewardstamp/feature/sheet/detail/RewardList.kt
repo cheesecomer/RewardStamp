@@ -221,7 +221,7 @@ fun RewardList(
                         Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
-                            .testTag("RewardList.ExchangeableRewardsCard"),
+                            .testTag(RewardListTestTags.EXCHANGEABLE_REWARDS_CARD),
                     exchangeableRewards = exchangeableRewards,
                 )
             }
@@ -233,7 +233,7 @@ fun RewardList(
                         Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
-                            .testTag("RewardList.LockedRewardsCard"),
+                            .testTag(RewardListTestTags.LOCKED_REWARDS_CARD),
                     lockedRewards = lockedRewards,
                 )
             }

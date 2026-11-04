@@ -150,7 +150,7 @@ private fun StampGrid(
             StampGridItem(
                 stamp = stampType,
                 onClick = { onSelect(stampType) },
-                modifier = Modifier.testTag("StampPickerBottomSheet.StampGrid.${stampType.id}"),
+                modifier = Modifier.testTag(StampPickerTestTags.stamp(stampType)),
             )
         }
         item {

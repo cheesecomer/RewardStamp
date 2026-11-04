@@ -115,7 +115,7 @@ internal fun SheetListContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(vertical = 80.dp)
-                            .testTag("SheetListScreen.EmptyList"),
+                            .testTag(SheetListTestTags.EMPTY_LIST),
                 )
             } else {
                 LazyColumn(
@@ -129,7 +129,7 @@ internal fun SheetListContent(
                                 Modifier
                                     .clickable { onSheetClick(sheet.id) }
                                     .padding(12.dp)
-                                    .testTag("SheetListScreen.SheetCard.${sheet.id}"),
+                                    .testTag(SheetListTestTags.sheetCard(sheet.id)),
                         )
                     }
                 }

@@ -24,7 +24,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.LastStampView.Stamp")
+            .onNodeWithTag(SheetCardTestTags.LAST_STAMP)
             .assertDoesNotExist()
     }
 
@@ -38,7 +38,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.LastStampView.Stamp")
+            .onNodeWithTag(SheetCardTestTags.LAST_STAMP)
             .assertExists()
     }
 
@@ -55,7 +55,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.ProgressStampRow")
+            .onNodeWithTag(SheetCardTestTags.PROGRESS_STAMP_ROW)
             .assertExists()
     }
 
@@ -72,7 +72,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.ProgressStampRow")
+            .onNodeWithTag(SheetCardTestTags.PROGRESS_STAMP_ROW)
             .assertExists()
     }
 
@@ -89,7 +89,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.ProgressStampRow")
+            .onNodeWithTag(SheetCardTestTags.PROGRESS_STAMP_ROW)
             .assertExists()
     }
 
@@ -106,7 +106,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.ProgressStampRow")
+            .onNodeWithTag(SheetCardTestTags.PROGRESS_STAMP_ROW)
             .assertExists()
     }
 
@@ -123,7 +123,7 @@ class SheetCardTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetCard.ProgressStampRow")
+            .onNodeWithTag(SheetCardTestTags.PROGRESS_STAMP_ROW)
             .assertExists()
     }
 }

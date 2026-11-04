@@ -120,7 +120,7 @@ fun CongratulationDialogContent(
                     Modifier
                         .fillMaxWidth()
                         .padding(top = 4.dp)
-                        .testTag("CongratulationDialog.SureButton"),
+                        .testTag(CongratulationDialogTestTags.SURE_BUTTON),
             ) {
                 Text(stringResource(R.string.congratulation_ok))
             }
@@ -130,7 +130,7 @@ fun CongratulationDialogContent(
                 Modifier
                     .align(Alignment.TopEnd)
                     .padding(12.dp)
-                    .testTag("CongratulationDialog.EditButton"),
+                    .testTag(CongratulationDialogTestTags.EDIT_BUTTON),
             onClick = onEditButtonClick,
         ) {
             Icon(

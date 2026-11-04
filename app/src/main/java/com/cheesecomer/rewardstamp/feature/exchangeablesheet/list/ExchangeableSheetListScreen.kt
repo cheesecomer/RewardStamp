@@ -37,7 +37,9 @@ import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialog
+import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialog
+import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialogTestTags
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -81,14 +83,14 @@ internal fun RewardDialog(
         val milestone = sheet.exchangeableMilestones[0]
         ExchangeDialog(
             milestone = milestone,
-            modifier = modifier.testTag("ExchangeDialog"),
+            modifier = modifier.testTag(ExchangeDialogTestTags.ROOT),
             onDismissRequest = onDismissRequest,
             onRewardSelect = { onRewardSelect(milestone) },
         )
     } else {
         ChoiceRewardDialog(
             milestones = sheet.exchangeableMilestones,
-            modifier = modifier.testTag("ChoiceRewardDialog"),
+            modifier = modifier.testTag(ChoiceRewardDialogTestTags.ROOT),
             onDismissRequest = onDismissRequest,
             onRewardSelect = onRewardSelect,
         )
@@ -131,14 +133,14 @@ internal fun ExchangeableSheetListContent(
                         Modifier
                             .fillMaxSize()
                             .padding(vertical = 80.dp)
-                            .testTag("ExchangeableRewardListScreen.EmptyList"),
+                            .testTag(ExchangeableSheetListTestTags.EMPTY_LIST),
                 )
                 return@Column
             }
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.testTag("ExchangeableRewardListScreen.List"),
+                modifier = Modifier.testTag(ExchangeableSheetListTestTags.LIST),
             ) {
                 items(sheets) { sheet ->
                     ExchangeableSheetCard(

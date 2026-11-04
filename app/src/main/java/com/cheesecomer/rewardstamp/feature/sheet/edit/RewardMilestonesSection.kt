@@ -292,7 +292,7 @@ fun RewardMilestonesSection(
                     Modifier
                         .fillMaxWidth()
                         .padding(top = 12.dp)
-                        .testTag("MilestoneFormList.addMilestoneButton"),
+                        .testTag(RewardMilestonesSectionTestTags.ADD_MILESTONE_BUTTON),
             )
         }
     }

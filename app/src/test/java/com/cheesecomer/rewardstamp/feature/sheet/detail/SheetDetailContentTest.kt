@@ -9,6 +9,7 @@ import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.StampType
+import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialogTestTags
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
@@ -54,7 +55,7 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CongratulationDialog")
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
             .assertDoesNotExist()
 
         composeTestRule
@@ -106,7 +107,7 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CongratulationDialog")
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
             .assertExists()
     }
 
@@ -173,11 +174,11 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetDetailScreen.MenuButton")
+            .onNodeWithTag(SheetDetailTestTags.MENU_BUTTON)
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("SheetDetailScreen.Menu.EditButton")
+            .onNodeWithTag(SheetDetailTestTags.MENU_EDIT_BUTTON)
             .performClick()
 
         assertThat(clicked).isTrue()
@@ -206,7 +207,7 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CongratulationDialog.SureButton")
+            .onNodeWithTag(CongratulationDialogTestTags.SURE_BUTTON)
             .performClick()
 
         assertThat(clicked).isTrue()
@@ -233,7 +234,7 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CongratulationDialog.EditButton")
+            .onNodeWithTag(CongratulationDialogTestTags.EDIT_BUTTON)
             .performClick()
 
         assertThat(onRestartWithEditClickCalled).isTrue()
@@ -266,7 +267,7 @@ class SheetDetailContentTest {
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("StampPickerBottomSheet.StampGrid.${StampType.Hippopotamus.id}")
+            .onNodeWithTag(StampPickerTestTags.stamp(StampType.Hippopotamus))
             .performClick()
 
         assertThat(selectedStampType).isEqualTo(StampType.Hippopotamus)
@@ -289,15 +290,15 @@ class SheetDetailContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("SheetDetailScreen.MenuButton")
+            .onNodeWithTag(SheetDetailTestTags.MENU_BUTTON)
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("SheetDetailScreen.Menu.DeleteButton")
+            .onNodeWithTag(SheetDetailTestTags.MENU_DELETE_BUTTON)
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("DeleteSheetDialog.DeleteButton")
+            .onNodeWithTag(DeleteSheetDialogTestTags.DELETE_BUTTON)
             .performClick()
 
         assertThat(deleted).isTrue()

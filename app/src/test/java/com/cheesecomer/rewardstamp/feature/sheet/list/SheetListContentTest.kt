@@ -32,7 +32,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("SheetListScreen.EmptyList").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SheetListTestTags.EMPTY_LIST).assertIsDisplayed()
     }
 
     @Test
@@ -59,7 +59,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("SheetListScreen.SheetCard.${100L}").assertIsDisplayed()
+        composeTestRule.onNodeWithTag(SheetListTestTags.sheetCard(100L)).assertIsDisplayed()
     }
 
     @Test
@@ -80,7 +80,7 @@ class SheetListContentTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("SheetListScreen.SheetCard.${123L}").performClick()
+        composeTestRule.onNodeWithTag(SheetListTestTags.sheetCard(123L)).performClick()
 
         assertThat(clickedSheetId).isEqualTo(123L)
     }
