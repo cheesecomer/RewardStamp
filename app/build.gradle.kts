@@ -117,6 +117,12 @@ detekt {
     config.setFrom("$rootDir/detekt.yml")
 }
 kover {
+    currentProject {
+        // Merges coverage of the debug unit tests and the screenshot tests run on release
+        createVariant("all") {
+            add("debug", "release")
+        }
+    }
     reports {
         verify {
             rule {
@@ -145,10 +151,16 @@ kover {
     }
 }
 
+// Paparazzi (layoutlib) and Robolectric load conflicting native libraries, so they cannot share a JVM.
+// Screenshot tests run only in the release unit test task, and all other tests in the debug one.
+val screenshotTestPattern = "*ScreenshotTest"
+
 tasks.withType<Test>().configureEach {
-    // Paparazzi (layoutlib) and Robolectric load conflicting native libraries, so they cannot share a JVM
-    forkEvery = 1
-    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+    if (name == "testReleaseUnitTest") {
+        filter.includeTestsMatching(screenshotTestPattern)
+    } else {
+        filter.excludeTestsMatching(screenshotTestPattern)
+    }
     // Robolectric accesses FileDescriptor internals through jdk.internal.access.SharedSecrets
     jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
 
@@ -157,4 +169,10 @@ tasks.withType<Test>().configureEach {
 
         showStandardStreams = true
     }
+}
+
+tasks.register("screenshotTest") {
+    group = "verification"
+    description = "Runs Paparazzi screenshot tests."
+    dependsOn("testReleaseUnitTest")
 }

@@ -14,7 +14,7 @@ import org.junit.Rule
 import org.junit.Test
 import java.time.LocalDateTime
 
-class RewardBoardViewTest {
+class RewardBoardViewScreenshotTest {
     @get:Rule
     val paparazzi =
         Paparazzi(

@@ -22,7 +22,7 @@ gitHooks {
     }
 
     hook("pre-push") {
-        tasks("clean", "assembleDebug", "koverVerifyDebug")
+        tasks("clean", "assembleDebug", "koverVerifyAll")
     }
 
     createHooks(true)
