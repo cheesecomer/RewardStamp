@@ -1,7 +1,6 @@
 package com.cheesecomer.rewardstamp.data.source.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -82,7 +81,4 @@ interface RewardMilestoneDao {
 
     @Query("DELETE FROM reward_milestones WHERE sheetId = :sheetId")
     suspend fun deleteBySheetId(sheetId: Long)
-
-    @Delete
-    suspend fun delete(entity: RewardMilestoneEntity)
 }

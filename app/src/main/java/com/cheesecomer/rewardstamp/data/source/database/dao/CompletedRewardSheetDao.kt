@@ -29,14 +29,8 @@ interface CompletedRewardSheetDao {
     @Query("SELECT * FROM completed_reward_sheets WHERE id = :id")
     suspend fun findById(id: Long): CompletedRewardSheetEntity?
 
-    @Query("SELECT * FROM completed_reward_sheets WHERE consumedAt IS NULL")
-    suspend fun findUnreceived(): List<CompletedRewardSheetEntity>
-
     @Query("SELECT COUNT(*) FROM completed_reward_sheets")
     suspend fun countAll(): Int
-
-    @Query("SELECT COUNT(*) FROM completed_reward_sheets WHERE consumedAt IS NULL")
-    suspend fun countUnreceived(): Int
 
     @Query("SELECT COUNT(*) FROM completed_reward_sheets WHERE sheetId = :sheetId AND consumedAt IS NULL")
     suspend fun countExchangeableBySheetId(sheetId: Long): Int

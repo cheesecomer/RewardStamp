@@ -64,7 +64,7 @@ class SheetListViewModelTest {
     }
 
     @Test
-    fun init_loadsSheetsAndCounts() =
+    fun reload_loadsSheetsAndLatestStamps() =
         runTest {
             rewardSheetRepository.save(
                 rewardSheet(
@@ -106,24 +106,21 @@ class SheetListViewModelTest {
             val viewModel =
                 SheetListViewModel(
                     rewardSheetRepository = rewardSheetRepository,
-                    completedRewardSheetRepository = completedRewardSheetRepository,
                     stampRepository = rewardStampRepository,
                 )
+            viewModel.reload()
 
             assertThat(viewModel.sheets.map { it.title })
                 .containsExactly("はみがき", "おかたづけ")
-            assertThat(viewModel.exchangeableSheetCount).isEqualTo(1)
-            assertThat(viewModel.completedSheetCount).isEqualTo(2)
             assertThat(viewModel.latestStamps.keys).containsExactly(exchangeableSheetId)
         }
 
     @Test
-    fun reload_updatesSheetsAndCounts() =
+    fun reload_updatesSheets() =
         runTest {
             val viewModel =
                 SheetListViewModel(
                     rewardSheetRepository = rewardSheetRepository,
-                    completedRewardSheetRepository = completedRewardSheetRepository,
                     stampRepository = rewardStampRepository,
                 )
 
@@ -148,7 +145,5 @@ class SheetListViewModelTest {
 
             assertThat(viewModel.sheets.map { it.title })
                 .containsExactly("追加シート")
-            assertThat(viewModel.exchangeableSheetCount).isEqualTo(1)
-            assertThat(viewModel.completedSheetCount).isEqualTo(1)
         }
 }

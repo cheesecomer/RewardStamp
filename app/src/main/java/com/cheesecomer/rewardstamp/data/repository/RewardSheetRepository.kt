@@ -31,8 +31,6 @@ class RewardSheetRepository(
             .findExchangeable()
             .map { it.toModel() }
 
-    suspend fun countExchangeable() = dao.countExchangeable()
-
     suspend fun findAll(): List<RewardSheet> =
         dao
             .findAll()

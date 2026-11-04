@@ -51,9 +51,6 @@ interface RewardStampDao {
     @Insert
     suspend fun insert(entity: RewardStampEntity): Long
 
-    @Query("DELETE FROM reward_stamps WHERE sheetId = :sheetId")
-    suspend fun deleteBySheetId(sheetId: Long)
-
     @Query(
         """
     UPDATE reward_stamps
