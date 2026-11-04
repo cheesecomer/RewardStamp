@@ -25,7 +25,7 @@ class SheetEditViewModelDoubleSubmitTest {
             val gate = CompletableDeferred<Unit>()
             val rewardSheetRepository =
                 mock<RewardSheetRepository> {
-                    onBlocking { save(any()) } doSuspendableAnswer {
+                    on { save(any()) } doSuspendableAnswer {
                         gate.await()
                         1L
                     }

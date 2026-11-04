@@ -1,6 +1,7 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
@@ -19,7 +20,7 @@ android {
     }
 
     namespace = "com.cheesecomer.rewardstamp"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.cheesecomer.rewardstamp"
@@ -44,9 +45,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
         compose = true
     }
@@ -54,6 +52,12 @@ android {
         unitTests {
             isIncludeAndroidResources = true
         }
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(JvmTarget.JVM_11)
     }
 }
 
@@ -113,6 +117,12 @@ detekt {
     config.setFrom("$rootDir/detekt.yml")
 }
 kover {
+    currentProject {
+        // Merges coverage of the debug unit tests and the screenshot tests run on release
+        createVariant("all") {
+            add("debug", "release")
+        }
+    }
     reports {
         verify {
             rule {
@@ -141,10 +151,28 @@ kover {
     }
 }
 
+// Paparazzi (layoutlib) and Robolectric load conflicting native libraries, so they cannot share a JVM.
+// Screenshot tests run only in the release unit test task, and all other tests in the debug one.
+val screenshotTestPattern = "*ScreenshotTest"
+
 tasks.withType<Test>().configureEach {
+    if (name == "testReleaseUnitTest") {
+        filter.includeTestsMatching(screenshotTestPattern)
+    } else {
+        filter.excludeTestsMatching(screenshotTestPattern)
+    }
+    // Robolectric accesses FileDescriptor internals through jdk.internal.access.SharedSecrets
+    jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
+
     testLogging {
         events("passed", "failed", "skipped")
 
         showStandardStreams = true
     }
+}
+
+tasks.register("screenshotTest") {
+    group = "verification"
+    description = "Runs Paparazzi screenshot tests."
+    dependsOn("testReleaseUnitTest")
 }

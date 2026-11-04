@@ -5,7 +5,7 @@ import com.cheesecomer.rewardstamp.R
 
 enum class GoalStampType(
     val id: String,
-    @DrawableRes val iconRes: Int,
+    @param:DrawableRes val iconRes: Int,
 ) {
     Bear1("Bear1", R.drawable.stamp_goal_bear_1),
     Bear2("Bear2", R.drawable.stamp_goal_bear_2),

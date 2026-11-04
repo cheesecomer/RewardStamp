@@ -1,7 +1,7 @@
 package com.cheesecomer.rewardstamp.feature.setting
 
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import org.junit.Rule

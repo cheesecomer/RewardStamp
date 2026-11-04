@@ -5,7 +5,7 @@ import com.cheesecomer.rewardstamp.R
 
 enum class StampType(
     val id: String,
-    @DrawableRes val iconRes: Int,
+    @param:DrawableRes val iconRes: Int,
 ) {
     Dog("dog", R.drawable.stamp_dog),
     Cat("cat", R.drawable.stamp_cat),

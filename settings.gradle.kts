@@ -13,7 +13,7 @@ pluginManagement {
 }
 
 plugins {
-    id("org.danilopianini.gradle-pre-commit-git-hooks") version "2.1.18"
+    id("org.danilopianini.gradle-pre-commit-git-hooks") version "2.1.28"
 }
 
 gitHooks {
@@ -22,7 +22,7 @@ gitHooks {
     }
 
     hook("pre-push") {
-        tasks("clean", "assembleDebug", "koverVerifyDebug")
+        tasks("clean", "assembleDebug", "koverVerifyAll")
     }
 
     createHooks(true)
