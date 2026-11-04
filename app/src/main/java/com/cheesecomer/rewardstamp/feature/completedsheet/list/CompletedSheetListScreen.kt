@@ -19,11 +19,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CardGiftcard
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,6 +39,7 @@ import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -50,17 +48,6 @@ import com.cheesecomer.rewardstamp.ui.theme.SheetCard
 import com.cheesecomer.rewardstamp.ui.theme.StampInk
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CompletedSheetListHeader(modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text("がんばったきろく")
-        },
-        modifier = modifier,
-    )
-}
 
 @Composable
 private fun EmptyList(modifier: Modifier = Modifier) {
@@ -180,9 +167,9 @@ internal fun CompletedSheetListContent(
     modifier: Modifier = Modifier,
     onSheetClick: (Long) -> Unit = {},
 ) {
-    Scaffold(
+    RewardStampScaffold(
+        title = "がんばったきろく",
         modifier = modifier,
-        topBar = { CompletedSheetListHeader() },
     ) { innerPadding ->
         Column(
             modifier =
