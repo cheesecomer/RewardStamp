@@ -6,6 +6,8 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
+import com.cheesecomer.rewardstamp.R
 
 @Composable
 fun DeleteSheetDialog(
@@ -17,24 +19,24 @@ fun DeleteSheetDialog(
         modifier = modifier.testTag("DeleteSheetDialog"),
         onDismissRequest = onDismissRequest,
         title = {
-            Text("シートを削除しますか？")
+            Text(stringResource(R.string.delete_sheet_title))
         },
         text = {
-            Text("このシートは削除されます。")
+            Text(stringResource(R.string.delete_sheet_message))
         },
         confirmButton = {
             TextButton(
                 onClick = onDeleteRequest,
                 modifier = Modifier.testTag("DeleteSheetDialog.DeleteButton"),
             ) {
-                Text("削除")
+                Text(stringResource(R.string.common_delete))
             }
         },
         dismissButton = {
             TextButton(
                 onClick = onDismissRequest,
             ) {
-                Text("キャンセル")
+                Text(stringResource(R.string.common_cancel))
             }
         },
     )

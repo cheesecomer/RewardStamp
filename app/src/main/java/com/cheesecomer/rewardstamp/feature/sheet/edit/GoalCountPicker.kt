@@ -25,9 +25,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 import com.cheesecomer.rewardstamp.ui.theme.SheetPrimary
 import com.cheesecomer.rewardstamp.ui.theme.SheetPrimaryContainer
@@ -94,7 +96,7 @@ private fun GoalCountLabel(
         Spacer(Modifier.width(6.dp))
 
         Text(
-            text = "回",
+            text = stringResource(R.string.common_count_unit),
             modifier = Modifier.alignByBaseline(),
             fontSize = 28.sp,
         )
@@ -120,7 +122,7 @@ fun GoalCountPicker(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            SheetEditSectionTitle(text = "何回がんばる？")
+            SheetEditSectionTitle(text = stringResource(R.string.sheet_edit_goal_count_label))
             Spacer(modifier = Modifier.size(8.dp))
 
             Box(

@@ -33,10 +33,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
@@ -147,7 +149,7 @@ private fun RowScope.SheetNavigationBarItem(
         },
         label = {
             Text(
-                text = "シート",
+                text = stringResource(R.string.tab_sheets),
                 fontFamily = Nikumaru,
             )
         },
@@ -165,12 +167,12 @@ private fun RowScope.RewardNavigationBarItem(
         icon = {
             Icon(
                 imageVector = Icons.Outlined.CardGiftcard,
-                contentDescription = "ごほうび",
+                contentDescription = stringResource(R.string.tab_rewards),
             )
         },
         label = {
             Text(
-                text = "ごほうび",
+                text = stringResource(R.string.tab_rewards),
                 fontFamily = Nikumaru,
             )
         },
@@ -188,12 +190,12 @@ private fun RowScope.HistoryNavigationBarItem(
         icon = {
             Icon(
                 imageVector = Icons.Outlined.History,
-                contentDescription = "れきし",
+                contentDescription = stringResource(R.string.tab_history),
             )
         },
         label = {
             Text(
-                text = "れきし",
+                text = stringResource(R.string.tab_history),
                 fontFamily = Nikumaru,
             )
         },
@@ -211,12 +213,12 @@ private fun RowScope.SettingsNavigationBarItem(
         icon = {
             Icon(
                 imageVector = Icons.Outlined.Settings,
-                contentDescription = "せってい",
+                contentDescription = stringResource(R.string.tab_settings),
             )
         },
         label = {
             Text(
-                text = "せってい",
+                text = stringResource(R.string.tab_settings),
                 fontFamily = Nikumaru,
             )
         },

@@ -14,10 +14,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStamp
@@ -46,7 +48,7 @@ private fun TitleLabel(
             modifier = Modifier.alignByBaseline().testTag("CompletedSheetDetailScreen.TitleLabel.Text"),
         )
         Text(
-            text = "を",
+            text = stringResource(R.string.completed_detail_title_suffix),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.alignByBaseline(),
         )
@@ -65,7 +67,7 @@ private fun GoalCountLabel(
             modifier = Modifier.alignByBaseline().testTag("CompletedSheetDetailScreen.GoalCountLabel.Text"),
         )
         Text(
-            text = "かい がんばりました！",
+            text = stringResource(R.string.completed_detail_goal_count_suffix),
             style = MaterialTheme.typography.headlineSmall,
             modifier = Modifier.alignByBaseline(),
         )
@@ -79,7 +81,7 @@ internal fun CompletedSheetDetailContent(
     modifier: Modifier = Modifier,
 ) {
     if (sheet == null) {
-        Text("見つかりません")
+        Text(stringResource(R.string.common_not_found))
         return
     }
 
@@ -90,7 +92,7 @@ internal fun CompletedSheetDetailContent(
         }
 
     RewardStampScaffold(
-        title = "がんばったきろく",
+        title = stringResource(R.string.completed_title),
         modifier = modifier,
     ) { innerPadding ->
         Column(

@@ -11,8 +11,10 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.ui.RewardStampTextFieldDefaults
 
 @Composable
@@ -34,10 +36,10 @@ private fun RewardMilestoneDialogText(
             value = reward,
             onValueChange = onRewardChange,
             label = {
-                Text("ごほうびは？")
+                Text(stringResource(R.string.milestone_dialog_reward_label))
             },
             placeholder = {
-                Text("例：アイス")
+                Text(stringResource(R.string.milestone_dialog_reward_placeholder))
             },
             singleLine = true,
             colors = RewardStampTextFieldDefaults.colors(),
@@ -50,10 +52,10 @@ private fun RewardMilestoneDialogText(
             value = requiredSheetCount,
             onValueChange = onRequiredSheetCountChange,
             label = {
-                Text("何枚と交換する？")
+                Text(stringResource(R.string.milestone_dialog_required_label))
             },
             suffix = {
-                Text("枚")
+                Text(stringResource(R.string.common_sheet_count_unit))
             },
             keyboardOptions =
                 KeyboardOptions(
@@ -81,7 +83,10 @@ fun RewardMilestoneDialog(
         onDismissRequest = onDismissRequest,
         title = {
             Text(
-                text = if (isEdit) "ごほうびを編集" else "ごほうびを追加",
+                text =
+                    stringResource(
+                        if (isEdit) R.string.milestone_dialog_title_edit else R.string.milestone_dialog_title_add,
+                    ),
             )
         },
         text = {
@@ -101,7 +106,7 @@ fun RewardMilestoneDialog(
                 modifier = Modifier.testTag("$tagPrefix.Confirm"),
             ) {
                 Text(
-                    if (isEdit) "保存" else "追加",
+                    stringResource(if (isEdit) R.string.common_save else R.string.common_add),
                 )
             }
         },
@@ -109,7 +114,7 @@ fun RewardMilestoneDialog(
             TextButton(
                 onClick = onDismissRequest,
             ) {
-                Text("キャンセル")
+                Text(stringResource(R.string.common_cancel))
             }
         },
     )

@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,14 +56,14 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "まだ ごほうびはないよ",
+            text = stringResource(R.string.exchangeable_empty_title),
             style =
                 MaterialTheme.typography.titleLarge.copy(
                     fontFamily = Nikumaru,
                 ),
         )
         Text(
-            text = "最後までがんばると交換できるよ♪",
+            text = stringResource(R.string.exchangeable_empty_message),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
         )
@@ -114,7 +115,7 @@ internal fun ExchangeableSheetListContent(
         )
     }
     RewardStampScaffold(
-        title = "ごほうび交換",
+        title = stringResource(R.string.exchangeable_title),
         modifier = modifier,
     ) { innerPadding ->
         Column(

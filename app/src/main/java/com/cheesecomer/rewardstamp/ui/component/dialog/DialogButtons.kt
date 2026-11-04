@@ -9,14 +9,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.R
 
 @Composable
 fun DialogButtons(
     confirmText: String,
     modifier: Modifier = Modifier,
     enable: Boolean = true,
-    dismissText: String = "キャンセル",
+    dismissText: String = stringResource(R.string.common_cancel),
     onConfirmClick: () -> Unit = {},
     onDismissClick: () -> Unit = {},
 ) {

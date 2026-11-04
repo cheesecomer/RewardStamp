@@ -1,3 +1,96 @@
 <resources>
     <string name="app_name">ごほうびスタンプ</string>
+
+    <!-- Common -->
+    <string name="common_back">戻る</string>
+    <string name="common_cancel">キャンセル</string>
+    <string name="common_save">保存</string>
+    <string name="common_add">追加</string>
+    <string name="common_edit">編集</string>
+    <string name="common_delete">削除</string>
+    <string name="common_menu">メニュー</string>
+    <string name="common_exchange">交換する</string>
+    <string name="common_not_found">見つかりません</string>
+    <string name="common_reward">ごほうび</string>
+    <string name="common_sheet_count_unit">枚</string>
+    <string name="common_count_unit">回</string>
+
+    <!-- Bottom navigation -->
+    <string name="tab_sheets">シート</string>
+    <string name="tab_rewards">ごほうび</string>
+    <string name="tab_history">れきし</string>
+    <string name="tab_settings">せってい</string>
+
+    <!-- Sheet list -->
+    <string name="sheet_list_title">ごほうびスタンプ</string>
+    <string name="sheet_list_empty_title">なにを がんばる？</string>
+    <string name="sheet_list_empty_message">＋ボタンから はじめよう♪</string>
+    <string name="sheet_list_create">シートを作る</string>
+    <string name="sheet_card_goal">ゴール %1$d</string>
+    <string name="sheet_card_latest_stamp">さいごのスタンプ</string>
+    <string name="sheet_card_goal_count">/ %1$d 回</string>
+
+    <!-- Sheet detail -->
+    <string name="sheet_detail_stamp">スタンプを押す</string>
+    <string name="sheet_detail_count">回数</string>
+    <string name="sheet_detail_count_unit">" 回"</string>
+    <string name="sheet_detail_well_done">がんばったね！</string>
+    <string name="sheet_detail_today">きょうの がんばり</string>
+    <string name="sheet_detail_message">シートをすべてうめて\nごほうびをもらおう！</string>
+    <string name="sheet_detail_available_rewards">いま もらえる ごほうび</string>
+    <string name="sheet_detail_next_rewards">つぎの ごほうび</string>
+    <string name="stamp_picker_title">スタンプをえらんでね</string>
+    <string name="congratulation_title">やったー！</string>
+    <string name="congratulation_message">シートがいっぱいになったよ！</string>
+    <string name="congratulation_ok">わかった</string>
+    <string name="congratulation_edit_reward">ごほうびを編集</string>
+    <string name="delete_sheet_title">シートを削除しますか？</string>
+    <string name="delete_sheet_message">このシートは削除されます。</string>
+
+    <!-- Sheet edit -->
+    <string name="sheet_edit_title_create">シートを作る</string>
+    <string name="sheet_edit_title_edit">シートを編集</string>
+    <string name="sheet_edit_name_label">なにを がんばる？</string>
+    <string name="sheet_edit_name_placeholder">はみがき</string>
+    <string name="sheet_edit_goal_count_label">何回がんばる？</string>
+    <string name="sheet_edit_rewards_label">ごほうびは？</string>
+    <string name="sheet_edit_rewards_description">最後までがんばったシートと交換するごほうびです。\nごほうびは何個でも登録できます</string>
+    <string name="sheet_edit_rewards_empty">まだごほうびがありません</string>
+    <string name="sheet_edit_add_reward">＋ ごほうびを追加</string>
+    <string name="sheet_edit_milestone_required">%1$d枚で</string>
+    <string name="milestone_dialog_title_add">ごほうびを追加</string>
+    <string name="milestone_dialog_title_edit">ごほうびを編集</string>
+    <string name="milestone_dialog_reward_label">ごほうびは？</string>
+    <string name="milestone_dialog_reward_placeholder">例：アイス</string>
+    <string name="milestone_dialog_required_label">何枚と交換する？</string>
+
+    <!-- Rewards -->
+    <string name="exchangeable_title">ごほうび交換</string>
+    <string name="exchangeable_empty_title">まだ ごほうびはないよ</string>
+    <string name="exchangeable_empty_message">最後までがんばると交換できるよ♪</string>
+    <string name="exchangeable_sheet_count">たまったシート %1$d枚</string>
+    <string name="exchangeable_next_reward">つぎのごほうび</string>
+    <string name="exchangeable_remaining_stamps_prefix">"あと "</string>
+    <string name="exchangeable_remaining_stamps_suffix">" 回がんばると交換できるよ"</string>
+    <string name="exchangeable_remaining_sheets_prefix">"あとシート "</string>
+    <string name="exchangeable_remaining_sheets_suffix">" 枚"</string>
+    <string name="exchangeable_available_rewards">交換できるごほうび</string>
+    <string name="exchangeable_milestone_required">"%1$d枚で "</string>
+    <string name="exchange_dialog_message">シート%1$d枚と交換するよ</string>
+    <string name="choice_reward_title">どれと交換する？</string>
+    <string name="choice_reward_message">ごほうびをえらんでね</string>
+    <string name="choice_reward_sheet_count">(%1$d枚)</string>
+
+    <!-- History -->
+    <string name="completed_title">がんばったきろく</string>
+    <string name="completed_empty_title">がんばったシートはまだないよ</string>
+    <string name="completed_empty_message">最後までがんばると\nここにのこるよ♪</string>
+    <string name="completed_reward_received">ごほうび交換済み</string>
+    <string name="completed_goal_count">%1$dかい</string>
+    <string name="completed_detail_title_suffix">を</string>
+    <string name="completed_detail_goal_count_suffix">かい がんばりました！</string>
+
+    <!-- Settings -->
+    <string name="settings_title">せってい</string>
+    <string name="settings_empty">なにもないよ</string>
 </resources>

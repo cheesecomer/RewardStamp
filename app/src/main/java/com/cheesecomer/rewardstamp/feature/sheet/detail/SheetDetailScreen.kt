@@ -19,9 +19,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardMilestone
@@ -81,7 +83,7 @@ private fun SheetDetailMenu(
     ) {
         Icon(
             imageVector = Icons.Default.MoreVert,
-            contentDescription = "メニュー",
+            contentDescription = stringResource(R.string.common_menu),
         )
     }
 
@@ -90,7 +92,7 @@ private fun SheetDetailMenu(
         onDismissRequest = { showMenu = false },
     ) {
         DropdownMenuItem(
-            text = { Text("編集") },
+            text = { Text(stringResource(R.string.common_edit)) },
             modifier = Modifier.testTag("SheetDetailScreen.Menu.EditButton"),
             onClick = {
                 showMenu = false
@@ -98,7 +100,7 @@ private fun SheetDetailMenu(
             },
         )
         DropdownMenuItem(
-            text = { Text("削除") },
+            text = { Text(stringResource(R.string.common_delete)) },
             modifier = Modifier.testTag("SheetDetailScreen.Menu.DeleteButton"),
             onClick = {
                 showMenu = false
@@ -119,7 +121,7 @@ private fun SheetNotFound(
         onBackClick = onBackClick,
     ) { innerPadding ->
         Text(
-            text = "見つかりません",
+            text = stringResource(R.string.common_not_found),
             modifier =
                 Modifier
                     .padding(innerPadding)

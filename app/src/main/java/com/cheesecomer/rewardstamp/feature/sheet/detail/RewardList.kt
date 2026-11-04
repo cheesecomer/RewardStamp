@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.cheesecomer.rewardstamp.R
@@ -53,7 +54,7 @@ private fun RequiredSheetCount(
                 style = MaterialTheme.typography.bodyLarge,
             )
             Text(
-                text = "枚",
+                text = stringResource(R.string.common_sheet_count_unit),
                 color = SheetText,
                 modifier = Modifier.alignByBaseline(),
                 style = MaterialTheme.typography.bodySmall,
@@ -100,7 +101,7 @@ private fun ExchangeableRewardsCardHeadline(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "いま もらえる ごほうび",
+            text = stringResource(R.string.sheet_detail_available_rewards),
             style = MaterialTheme.typography.titleMedium,
             fontFamily = Nikumaru,
             color = SheetText,
@@ -159,7 +160,7 @@ private fun LockedRewardsCardHeadline(modifier: Modifier = Modifier) {
         )
 
         Text(
-            text = "つぎの ごほうび",
+            text = stringResource(R.string.sheet_detail_next_rewards),
             style = MaterialTheme.typography.titleMedium,
             fontFamily = Nikumaru,
             color = SheetText,

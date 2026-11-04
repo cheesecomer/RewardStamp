@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,14 +57,14 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "なにを がんばる？",
+            text = stringResource(R.string.sheet_list_empty_title),
             style =
                 MaterialTheme.typography.titleLarge.copy(
                     fontFamily = Nikumaru,
                 ),
         )
         Text(
-            text = "＋ボタンから はじめよう♪",
+            text = stringResource(R.string.sheet_list_empty_message),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -80,7 +81,7 @@ private fun FloatingCreateSheetButton(
     ) {
         Icon(
             imageVector = Icons.Default.Add,
-            contentDescription = "シートを作る",
+            contentDescription = stringResource(R.string.sheet_list_create),
         )
     }
 }
@@ -94,7 +95,7 @@ internal fun SheetListContent(
     modifier: Modifier = Modifier,
 ) {
     RewardStampScaffold(
-        title = "ごほうびスタンプ",
+        title = stringResource(R.string.sheet_list_title),
         modifier = modifier,
         floatingActionButton = {
             FloatingCreateSheetButton(

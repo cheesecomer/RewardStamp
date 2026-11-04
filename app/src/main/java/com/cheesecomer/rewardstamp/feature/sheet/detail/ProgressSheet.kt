@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cheesecomer.rewardstamp.R
@@ -65,7 +66,7 @@ private fun StampButton(
             modifier = Modifier.padding(paddingValues = contentPadding),
         ) {
             Text(
-                text = "スタンプを押す",
+                text = stringResource(R.string.sheet_detail_stamp),
                 modifier = Modifier.align(Alignment.Center),
                 color = Color.White,
                 fontFamily = Nikumaru,
@@ -106,7 +107,7 @@ private fun SheetProgress(
             )
 
             Text(
-                text = "回数",
+                text = stringResource(R.string.sheet_detail_count),
                 style = MaterialTheme.typography.titleMedium,
                 fontFamily = Nikumaru,
                 color = SheetText,
@@ -134,13 +135,13 @@ private fun SheetProgress(
             )
 
             Text(
-                text = " 回",
+                text = stringResource(R.string.sheet_detail_count_unit),
                 modifier = Modifier.alignByBaseline(),
             )
         }
 
         Text(
-            text = "がんばったね！",
+            text = stringResource(R.string.sheet_detail_well_done),
             style = MaterialTheme.typography.labelMedium,
         )
     }
@@ -164,7 +165,7 @@ private fun SheetDescription(modifier: Modifier = Modifier) {
             )
 
             Text(
-                text = "きょうの がんばり",
+                text = stringResource(R.string.sheet_detail_today),
                 style = MaterialTheme.typography.titleMedium,
                 fontFamily = Nikumaru,
                 color = SheetText,
@@ -176,9 +177,7 @@ private fun SheetDescription(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
-                text =
-                    "シートをすべてうめて\n" +
-                        "ごほうびをもらおう！",
+                text = stringResource(R.string.sheet_detail_message),
                 style = MaterialTheme.typography.bodyMedium,
             )
         }

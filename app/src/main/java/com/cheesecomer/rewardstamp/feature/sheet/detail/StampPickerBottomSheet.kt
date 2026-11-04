@@ -37,10 +37,12 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -91,7 +93,7 @@ private fun StampPickerBottomSheetContent(
                 .padding(bottom = 32.dp, top = 24.dp),
     ) {
         Text(
-            text = "スタンプをえらんでね",
+            text = stringResource(R.string.stamp_picker_title),
             style =
                 MaterialTheme.typography.headlineSmall.copy(
                     fontWeight = FontWeight.Bold,
@@ -128,7 +130,7 @@ private fun StampPickerBottomSheetContent(
             onClick = onDismiss,
             modifier = Modifier.align(Alignment.End),
         ) {
-            Text("キャンセル")
+            Text(stringResource(R.string.common_cancel))
         }
     }
 }
