@@ -77,13 +77,12 @@
 ## 技術スタック
 
 - Kotlin
-- Jetpack Compose
-- Room
-- MVVM
+- Jetpack Compose（Material 3）
 - Navigation Compose
-- KSP
-- Detekt
-- Ktlint
+- Room / KSP
+- MVVM（ViewModel + StateFlow）
+- テスト: JUnit, Robolectric, Paparazzi, Kover
+- 品質: ktlint, Detekt, Android Lint, GitHub Actions
 
 ## アーキテクチャ
 
@@ -99,33 +98,17 @@ Room (DAO)
 SQLite
 ```
 
-## Getting Started
-
-### 必要環境
-
-- Android Studio
-- Android SDK
-- JDK 21
-
-リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。
+## 開発
 
 ```bash
 git clone git@github.com:cheesecomer/RewardStamp.git
 cd RewardStamp
 
 ./gradlew help
+./gradlew assembleDebug
 ```
 
-Git Hooks が設定されている場合、以下のチェックが自動で実行されます。
-
-- **pre-commit**
-  - `./gradlew ktlintCheck`
-  - `./gradlew detekt`
-
-- **pre-push**
-  - `./gradlew clean`
-  - `./gradlew assembleDebug`
-  - `./gradlew koverVerifyAll`
+必要な環境（JDK 21、Android SDK）、テストや静的解析のタスク、コードの決まりごとは [開発ガイド](docs/development.md) にまとめています。
 
 ## プライバシーポリシー
 
@@ -140,31 +123,8 @@ Git Hooks が設定されている場合、以下のチェックが自動で実�
 
 このプロジェクトのソースコードは [MIT License](LICENSE) で公開しています。
 
-画像、スタンプ、フォントなどのアセットは、明示されていない限りライセンス対象外です。
+画像やスタンプなどのアセットは、明示されていない限りライセンス対象外です。
 
 ### Credits
 
 スタンプのアイコン（`app/src/main/res/drawable/stamp_*.xml`）は、[SVG Repo](https://www.svgrepo.com/) で公開されている [Icooon Mono](https://www.svgrepo.com/author/Icooon%20Mono/) のアイコンを使用しています。これらのアイコンは PD（Public Domain）ライセンスで提供されています。
-
-## Code Quality
-
-コードスタイルと静的解析には ktlint と Detekt を使用しています。
-
-### Format
-
-```bash
-./gradlew ktlintFormat
-```
-
-### Check
-
-```bash
-./gradlew ktlintCheck
-./gradlew detekt
-./gradlew lintDebug
-./gradlew assembleDebug
-./gradlew testDebugUnitTest
-./gradlew screenshotTest
-./gradlew koverHtmlReportAll
-./gradlew koverVerifyAll
-```
