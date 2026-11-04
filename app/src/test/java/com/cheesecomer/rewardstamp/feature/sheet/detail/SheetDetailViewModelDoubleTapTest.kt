@@ -5,6 +5,7 @@ import com.cheesecomer.rewardstamp.data.repository.CompletedRewardSheetRepositor
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardStampRepository
+import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.model.StampType
 import kotlinx.coroutines.CompletableDeferred
@@ -45,6 +46,7 @@ class SheetDetailViewModelDoubleTapTest {
                     completedRewardSheetRepository = mock<CompletedRewardSheetRepository>(),
                     rewardStampRepository = rewardStampRepository,
                     rewardMilestoneRepository = mock<RewardMilestoneRepository>(),
+                    sheetCompletionRepository = mock<SheetCompletionRepository>(),
                 )
             viewModel.load(sheet.id)
             shadowOf(Looper.getMainLooper()).idle()

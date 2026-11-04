@@ -1,8 +1,10 @@
 package com.cheesecomer.rewardstamp.data.repository
 
+import com.cheesecomer.rewardstamp.data.source.database.TransactionRunner
 import com.cheesecomer.rewardstamp.model.ExchangeableSheet
 
 class ExchangeableSheetRepository(
+    private val transactionRunner: TransactionRunner,
     private val rewardSheetRepository: RewardSheetRepository,
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardMilestoneRepository: RewardMilestoneRepository,
@@ -33,5 +35,15 @@ class ExchangeableSheetRepository(
     suspend fun exchangeReward(
         sheetId: Long,
         exchangeCount: Int,
-    ) = completedRewardSheetRepository.markRewardReceived(sheetId, exchangeCount)
+    ): Boolean =
+        transactionRunner.run {
+            val exchangeableSheetCount =
+                completedRewardSheetRepository.countExchangeableBySheetId(sheetId)
+            if (exchangeCount < 1 || exchangeableSheetCount < exchangeCount) {
+                return@run false
+            }
+
+            completedRewardSheetRepository.markRewardReceived(sheetId, exchangeCount)
+            true
+        }
 }

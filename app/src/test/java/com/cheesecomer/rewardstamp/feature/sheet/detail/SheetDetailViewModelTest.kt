@@ -7,10 +7,12 @@ import com.cheesecomer.rewardstamp.data.repository.CompletedRewardSheetRepositor
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardStampRepository
+import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
 import com.cheesecomer.rewardstamp.data.rewardMilestone
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.data.rewardStamp
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
+import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
 import com.cheesecomer.rewardstamp.feature.sheet.detail.SheetDetailViewModel
 import com.cheesecomer.rewardstamp.model.StampType
 import com.google.common.truth.Truth.assertThat
@@ -313,6 +315,14 @@ class SheetDetailViewModelTest {
             completedRewardSheetRepository = completedRewardSheetRepository,
             rewardStampRepository = rewardStampRepository,
             rewardMilestoneRepository = rewardMilestoneRepository,
+            sheetCompletionRepository =
+                SheetCompletionRepository(
+                    transactionRunner = RoomTransactionRunner(database),
+                    rewardSheetRepository = rewardSheetRepository,
+                    completedRewardSheetRepository = completedRewardSheetRepository,
+                    rewardStampRepository = rewardStampRepository,
+                    now = { now },
+                ),
             now = { now },
         )
 }
