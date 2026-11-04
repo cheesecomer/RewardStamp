@@ -31,11 +31,11 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.EmptyList")
+            .onNodeWithTag(CompletedSheetListTestTags.EMPTY_LIST)
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid")
+            .onNodeWithTag(CompletedSheetListTestTags.GRID)
             .assertDoesNotExist()
     }
 
@@ -58,11 +58,11 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.EmptyList")
+            .onNodeWithTag(CompletedSheetListTestTags.EMPTY_LIST)
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid")
+            .onNodeWithTag(CompletedSheetListTestTags.GRID)
             .assertIsDisplayed()
     }
 
@@ -85,7 +85,7 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123.RewardReceivedBadge")
+            .onNodeWithTag(CompletedSheetListTestTags.rewardReceivedBadge(123))
             .isNotDisplayed()
     }
 
@@ -108,7 +108,7 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123.RewardReceivedBadge")
+            .onNodeWithTag(CompletedSheetListTestTags.rewardReceivedBadge(123))
             .assertIsDisplayed()
     }
 
@@ -135,7 +135,7 @@ class CompletedSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("CompletedSheetListScreen.CompletedSheetGrid.123")
+            .onNodeWithTag(CompletedSheetListTestTags.gridItem(123))
             .performClick()
 
         assertThat(clickedRewardId).isEqualTo(123L)

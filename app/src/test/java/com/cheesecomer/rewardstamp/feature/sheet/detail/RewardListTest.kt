@@ -30,8 +30,8 @@ class RewardListTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("RewardList.ExchangeableRewardsCard").assertDoesNotExist()
-        composeTestRule.onNodeWithTag("RewardList.LockedRewardsCard").assertDoesNotExist()
+        composeTestRule.onNodeWithTag(RewardListTestTags.EXCHANGEABLE_REWARDS_CARD).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(RewardListTestTags.LOCKED_REWARDS_CARD).assertDoesNotExist()
     }
 
     @Test
@@ -50,8 +50,8 @@ class RewardListTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("RewardList.ExchangeableRewardsCard").assertDoesNotExist()
-        composeTestRule.onNodeWithTag("RewardList.LockedRewardsCard").assertExists()
+        composeTestRule.onNodeWithTag(RewardListTestTags.EXCHANGEABLE_REWARDS_CARD).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(RewardListTestTags.LOCKED_REWARDS_CARD).assertExists()
     }
 
     @Test
@@ -70,7 +70,7 @@ class RewardListTest {
             }
         }
 
-        composeTestRule.onNodeWithTag("RewardList.ExchangeableRewardsCard").assertExists()
-        composeTestRule.onNodeWithTag("RewardList.LockedRewardsCard").assertDoesNotExist()
+        composeTestRule.onNodeWithTag(RewardListTestTags.EXCHANGEABLE_REWARDS_CARD).assertExists()
+        composeTestRule.onNodeWithTag(RewardListTestTags.LOCKED_REWARDS_CARD).assertDoesNotExist()
     }
 }

@@ -5,6 +5,8 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import com.cheesecomer.rewardstamp.data.exchangeableSheet
 import com.cheesecomer.rewardstamp.data.rewardMilestone
+import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
+import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialogTestTags
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import org.junit.Rule
 import org.junit.Test
@@ -35,11 +37,11 @@ class RewardDialogTest {
             }
         }
         composeTestRule
-            .onNodeWithTag("ChoiceRewardDialog")
+            .onNodeWithTag(ChoiceRewardDialogTestTags.ROOT)
             .assertDoesNotExist()
 
         composeTestRule
-            .onNodeWithTag("ExchangeDialog")
+            .onNodeWithTag(ExchangeDialogTestTags.ROOT)
             .assertIsDisplayed()
     }
 
@@ -66,11 +68,11 @@ class RewardDialogTest {
             }
         }
         composeTestRule
-            .onNodeWithTag("ChoiceRewardDialog")
+            .onNodeWithTag(ChoiceRewardDialogTestTags.ROOT)
             .assertIsDisplayed()
 
         composeTestRule
-            .onNodeWithTag("ExchangeDialog")
+            .onNodeWithTag(ExchangeDialogTestTags.ROOT)
             .assertDoesNotExist()
     }
 }

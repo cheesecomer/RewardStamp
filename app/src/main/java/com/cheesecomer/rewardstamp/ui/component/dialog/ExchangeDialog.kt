@@ -100,7 +100,7 @@ fun ExchangeDialog(
                 Modifier
                     .fillMaxWidth()
                     .padding(24.dp)
-                    .testTag("ExchangeDialog.Background"),
+                    .testTag(ExchangeDialogTestTags.BACKGROUND),
             shape = RoundedCornerShape(28.dp),
             color = SheetCard,
         ) {

@@ -293,7 +293,7 @@ fun ExchangeableSheetCard(
 
             ExchangeButton(
                 onClick = onRewardReceiveClick,
-                modifier = Modifier.testTag("ExchangeableSheetCard.${sheet.rewardSheet.id}.ExchangeButton"),
+                modifier = Modifier.testTag(ExchangeableSheetCardTestTags.exchangeButton(sheet.rewardSheet.id)),
             )
         }
     }

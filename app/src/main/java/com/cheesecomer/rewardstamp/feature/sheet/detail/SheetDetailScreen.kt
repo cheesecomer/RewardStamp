@@ -76,7 +76,7 @@ private fun SheetDetailMenu(
 ) {
     var showMenu by remember { mutableStateOf(false) }
     IconButton(
-        modifier = Modifier.testTag("SheetDetailScreen.MenuButton"),
+        modifier = Modifier.testTag(SheetDetailTestTags.MENU_BUTTON),
         onClick = {
             showMenu = true
         },
@@ -93,7 +93,7 @@ private fun SheetDetailMenu(
     ) {
         DropdownMenuItem(
             text = { Text(stringResource(R.string.common_edit)) },
-            modifier = Modifier.testTag("SheetDetailScreen.Menu.EditButton"),
+            modifier = Modifier.testTag(SheetDetailTestTags.MENU_EDIT_BUTTON),
             onClick = {
                 showMenu = false
                 onEditClick()
@@ -101,7 +101,7 @@ private fun SheetDetailMenu(
         )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.common_delete)) },
-            modifier = Modifier.testTag("SheetDetailScreen.Menu.DeleteButton"),
+            modifier = Modifier.testTag(SheetDetailTestTags.MENU_DELETE_BUTTON),
             onClick = {
                 showMenu = false
                 onDeleteClick()
@@ -183,7 +183,7 @@ internal fun SheetDetailContent(
                     onEditButtonClick = onRestartWithEditClick,
                     exchangeableRewards = exchangeableRewards,
                     lockedRewards = lockedRewards,
-                    modifier = Modifier.testTag("CongratulationDialog"),
+                    modifier = Modifier.testTag(CongratulationDialogTestTags.ROOT),
                 )
             }
             Column(

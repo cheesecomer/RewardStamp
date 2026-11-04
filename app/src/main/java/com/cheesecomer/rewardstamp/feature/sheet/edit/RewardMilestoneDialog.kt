@@ -24,7 +24,6 @@ private fun RewardMilestoneDialogText(
     onRequiredSheetCountChange: (String) -> Unit,
     onRewardChange: (String) -> Unit,
 ) {
-    val tagPrefix = "RewardMilestonesSection.RewardMilestoneDialog.Text"
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
@@ -32,7 +31,7 @@ private fun RewardMilestoneDialogText(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .testTag("$tagPrefix.Reward"),
+                    .testTag(RewardMilestoneDialogTestTags.REWARD),
             value = reward,
             onValueChange = onRewardChange,
             label = {
@@ -48,7 +47,7 @@ private fun RewardMilestoneDialogText(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .testTag("$tagPrefix.RequiredSheetCount"),
+                    .testTag(RewardMilestoneDialogTestTags.REQUIRED_SHEET_COUNT),
             value = requiredSheetCount,
             onValueChange = onRequiredSheetCountChange,
             label = {
@@ -77,9 +76,8 @@ fun RewardMilestoneDialog(
     onDismissRequest: () -> Unit,
     onConfirmClick: () -> Unit,
 ) {
-    val tagPrefix = "RewardMilestonesSection.RewardMilestoneDialog"
     AlertDialog(
-        modifier = Modifier.testTag(tagPrefix),
+        modifier = Modifier.testTag(RewardMilestoneDialogTestTags.ROOT),
         onDismissRequest = onDismissRequest,
         title = {
             Text(
@@ -103,7 +101,7 @@ fun RewardMilestoneDialog(
                     (requiredSheetCount.toIntOrNull() ?: 0) >= 1 &&
                         reward.isNotBlank(),
                 onClick = onConfirmClick,
-                modifier = Modifier.testTag("$tagPrefix.Confirm"),
+                modifier = Modifier.testTag(RewardMilestoneDialogTestTags.CONFIRM),
             ) {
                 Text(
                     stringResource(if (isEdit) R.string.common_save else R.string.common_add),

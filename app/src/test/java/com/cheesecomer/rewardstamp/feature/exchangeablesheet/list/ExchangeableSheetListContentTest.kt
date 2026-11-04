@@ -7,6 +7,9 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.exchangeableSheet
 import com.cheesecomer.rewardstamp.model.RewardMilestone
+import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
+import com.cheesecomer.rewardstamp.ui.component.dialog.DialogButtonsTestTags
+import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialogTestTags
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -30,10 +33,10 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableRewardListScreen.EmptyList")
+            .onNodeWithTag(ExchangeableSheetListTestTags.EMPTY_LIST)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithTag("ExchangeableRewardListScreen.List")
+            .onNodeWithTag(ExchangeableSheetListTestTags.LIST)
             .assertDoesNotExist()
     }
 
@@ -70,7 +73,7 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableRewardListScreen.List")
+            .onNodeWithTag(ExchangeableSheetListTestTags.LIST)
             .assertExists()
     }
 
@@ -121,11 +124,11 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableSheetCard.${sheet.rewardSheet.id}.ExchangeButton")
+            .onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(sheet.rewardSheet.id))
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("DialogButtons.ConfirmButton")
+            .onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON)
             .performClick()
 
         assertThat(clickedSheetId).isEqualTo(sheet.rewardSheet.id)
@@ -157,11 +160,11 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableSheetCard.${sheet.rewardSheet.id}.ExchangeButton")
+            .onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(sheet.rewardSheet.id))
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("ExchangeDialog")
+            .onNodeWithTag(ExchangeDialogTestTags.ROOT)
             .assertIsDisplayed()
 
         assertThat(clickedSheetId).isNull()
@@ -196,11 +199,11 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableSheetCard.${sheet.rewardSheet.id}.ExchangeButton")
+            .onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(sheet.rewardSheet.id))
             .performClick()
 
         composeTestRule
-            .onNodeWithTag("ChoiceRewardDialog")
+            .onNodeWithTag(ChoiceRewardDialogTestTags.ROOT)
             .assertIsDisplayed()
 
         assertThat(clickedSheetId).isNull()
@@ -238,13 +241,13 @@ class ExchangeableSheetListContentTest {
         }
 
         composeTestRule
-            .onNodeWithTag("ExchangeableSheetCard.${sheet.rewardSheet.id}.ExchangeButton")
+            .onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(sheet.rewardSheet.id))
             .performClick()
         composeTestRule
-            .onNodeWithTag("ChoiceRewardDialog.Rewards.1002")
+            .onNodeWithTag(ChoiceRewardDialogTestTags.reward(1002))
             .performClick()
         composeTestRule
-            .onNodeWithTag("DialogButtons.ConfirmButton")
+            .onNodeWithTag(DialogButtonsTestTags.CONFIRM_BUTTON)
             .performClick()
 
         assertThat(clickedSheetId).isEqualTo(sheet.rewardSheet.id)

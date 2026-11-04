@@ -53,7 +53,7 @@ private fun SheetNameSection(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .testTag("SheetEditScreen.TitleTextField"),
+                        .testTag(SheetEditTestTags.TITLE_TEXT_FIELD),
                 singleLine = true,
                 colors = RewardStampTextFieldDefaults.colors(),
             )
@@ -63,7 +63,7 @@ private fun SheetNameSection(
                 modifier =
                     Modifier
                         .padding(start = 16.dp, bottom = 16.dp)
-                        .testTag("SheetEditScreen.TitleLabel"),
+                        .testTag(SheetEditTestTags.TITLE_LABEL),
                 fontSize = 25.sp,
                 fontWeight = FontWeight.Bold,
             )
@@ -101,7 +101,7 @@ internal fun SheetEditContent(
                 Modifier
                     .padding(innerPadding)
                     .padding(16.dp)
-                    .testTag("SheetEditScreen.List"),
+                    .testTag(SheetEditTestTags.LIST),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             item {
@@ -135,7 +135,7 @@ internal fun SheetEditContent(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .testTag("SheetEditScreen.Save"),
+                            .testTag(SheetEditTestTags.SAVE),
                     enabled = canSave,
                 ) {
                     Text(stringResource(R.string.common_save))

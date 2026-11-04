@@ -134,7 +134,7 @@ fun GoalCountPicker(
                             .align(Alignment.CenterStart)
                             .padding(start = 32.dp)
                             .size(48.dp)
-                            .testTag("GoalCountPicker.DecrementButton"),
+                            .testTag(GoalCountPickerTestTags.DECREMENT_BUTTON),
                     onClick = onMinusClick,
                 )
 
@@ -151,7 +151,7 @@ fun GoalCountPicker(
                             .align(Alignment.CenterEnd)
                             .padding(end = 32.dp)
                             .size(48.dp)
-                            .testTag("GoalCountPicker.IncrementButton"),
+                            .testTag(GoalCountPickerTestTags.INCREMENT_BUTTON),
                     onClick = onPlusClick,
                 )
             }

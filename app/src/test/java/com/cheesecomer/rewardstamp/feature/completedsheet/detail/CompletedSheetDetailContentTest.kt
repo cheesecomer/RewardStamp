@@ -53,11 +53,11 @@ class CompletedSheetDetailContentTest {
             .onNodeWithText("がんばったきろく")
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithTag("CompletedSheetDetailScreen.TitleLabel.Text")
+            .onNodeWithTag(CompletedSheetDetailTestTags.TITLE_LABEL_TEXT)
             .assertTextEquals("はみがき")
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithTag("CompletedSheetDetailScreen.GoalCountLabel.Text")
+            .onNodeWithTag(CompletedSheetDetailTestTags.GOAL_COUNT_LABEL_TEXT)
             .assertTextEquals("15")
             .assertIsDisplayed()
     }

@@ -155,7 +155,7 @@ private fun CompletedSheetGridItem(
                     Modifier
                         .align(Alignment.TopEnd)
                         .offset(x = (-10).dp, y = 10.dp)
-                        .testTag("CompletedSheetListScreen.CompletedSheetGrid.${sheet.id}.RewardReceivedBadge"),
+                        .testTag(CompletedSheetListTestTags.rewardReceivedBadge(sheet.id)),
             )
             Spacer(Modifier.size(8.dp))
         }
@@ -185,19 +185,19 @@ internal fun CompletedSheetListContent(
                         Modifier
                             .fillMaxWidth()
                             .padding(top = 80.dp)
-                            .testTag("CompletedSheetListScreen.EmptyList"),
+                            .testTag(CompletedSheetListTestTags.EMPTY_LIST),
                 )
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier.testTag("CompletedSheetListScreen.CompletedSheetGrid"),
+                    modifier = Modifier.testTag(CompletedSheetListTestTags.GRID),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                 ) {
                     items(sheets) { sheet ->
                         CompletedSheetGridItem(
                             sheet,
-                            modifier = Modifier.testTag("CompletedSheetListScreen.CompletedSheetGrid.${sheet.id}"),
+                            modifier = Modifier.testTag(CompletedSheetListTestTags.gridItem(sheet.id)),
                             onClick = { onSheetClick(sheet.id) },
                         )
                     }

@@ -27,14 +27,14 @@ fun DialogButtons(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         TextButton(
-            modifier = Modifier.weight(1f).testTag("DialogButtons.DismissButton"),
+            modifier = Modifier.weight(1f).testTag(DialogButtonsTestTags.DISMISS_BUTTON),
             onClick = onDismissClick,
         ) {
             Text(text = dismissText)
         }
 
         Button(
-            modifier = Modifier.weight(1f).testTag("DialogButtons.ConfirmButton"),
+            modifier = Modifier.weight(1f).testTag(DialogButtonsTestTags.CONFIRM_BUTTON),
             enabled = enable,
             onClick = onConfirmClick,
         ) {
