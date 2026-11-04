@@ -7,6 +7,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.rewardSheet
+import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.StampType
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -107,6 +108,29 @@ class SheetDetailContentTest {
         composeTestRule
             .onNodeWithTag("CongratulationDialog")
             .assertExists()
+    }
+
+    @Test
+    fun displaysProgressSheetWithGoalStamp() {
+        composeTestRule.setContent {
+            SheetDetailContent(
+                sheet =
+                    rewardSheet(
+                        id = 1L,
+                        title = "はみがき",
+                        currentCount = 10,
+                        goalCount = 10,
+                    ),
+                stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
+                goalStampType = GoalStampType.Bear1,
+            )
+        }
+
+        composeTestRule
+            .onNodeWithText("はみがき")
+            .assertIsDisplayed()
     }
 
     @Test

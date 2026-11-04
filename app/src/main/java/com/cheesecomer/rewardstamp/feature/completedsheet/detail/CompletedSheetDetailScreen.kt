@@ -9,10 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -29,6 +27,7 @@ import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
+import com.cheesecomer.rewardstamp.ui.rememberDrawable
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
@@ -85,11 +84,7 @@ internal fun CompletedSheetDetailContent(
         return
     }
 
-    val context = LocalContext.current
-    val goalStampDrawable =
-        remember(sheet.goalStampType) {
-            context.getDrawable(sheet.goalStampType.iconRes)!!
-        }
+    val goalStampDrawable = rememberDrawable(sheet.goalStampType.iconRes)
 
     RewardStampScaffold(
         title = stringResource(R.string.completed_title),
