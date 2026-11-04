@@ -3,6 +3,7 @@ package com.cheesecomer.rewardstamp.data.repository
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
+import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
 import com.cheesecomer.rewardstamp.data.source.database.completedRewardSheetEntity
 import com.cheesecomer.rewardstamp.data.source.database.rewardMilestoneEntity
 import com.cheesecomer.rewardstamp.data.source.database.rewardSheetEntity
@@ -51,6 +52,7 @@ class ExchangeableRewardRepositoryTest {
 
         repository =
             ExchangeableSheetRepository(
+                transactionRunner = RoomTransactionRunner(database),
                 rewardSheetRepository = rewardSheetRepository,
                 completedRewardSheetRepository = completedRewardSheetRepository,
                 rewardMilestoneRepository = rewardMilestoneRepository,
@@ -157,5 +159,41 @@ class ExchangeableRewardRepositoryTest {
             assertThat(remaining).hasSize(1)
             assertThat(remaining.single().completedAt)
                 .isEqualTo(LocalDateTime.parse("2026-06-03T00:00:00"))
+        }
+
+    @Test
+    fun exchangeReward_doesNotConsumeWhenNotEnoughSheets() =
+        runTest {
+            val sheetId = database.rewardSheetDao().insert(rewardSheetEntity())
+            database.completedRewardSheetDao().insert(
+                completedRewardSheetEntity(sheetId = sheetId, consumedAt = null),
+            )
+
+            val result =
+                repository.exchangeReward(
+                    sheetId = sheetId,
+                    exchangeCount = 2,
+                )
+
+            assertThat(result).isFalse()
+            assertThat(completedRewardSheetRepository.countExchangeableBySheetId(sheetId))
+                .isEqualTo(1)
+        }
+
+    @Test
+    fun exchangeReward_doesNotConsumeWhenExchangeCountIsZero() =
+        runTest {
+            val sheetId = database.rewardSheetDao().insert(rewardSheetEntity())
+            database.completedRewardSheetDao().insert(
+                completedRewardSheetEntity(sheetId = sheetId, consumedAt = null),
+            )
+
+            val result =
+                repository.exchangeReward(
+                    sheetId = sheetId,
+                    exchangeCount = 0,
+                )
+
+            assertThat(result).isFalse()
         }
 }

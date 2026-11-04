@@ -8,7 +8,9 @@ import com.cheesecomer.rewardstamp.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardStampRepository
+import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
+import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
 
 @ExcludeFromCoverage
 class RewardStampApplication : Application() {
@@ -19,6 +21,10 @@ class RewardStampApplication : Application() {
                 AppDatabase::class.java,
                 "reward_seal.db",
             ).build()
+    }
+
+    private val transactionRunner by lazy {
+        RoomTransactionRunner(database)
     }
 
     val rewardSheetRepository: RewardSheetRepository by lazy {
@@ -38,9 +44,19 @@ class RewardStampApplication : Application() {
 
     val exchangeableSheetRepository: ExchangeableSheetRepository by lazy {
         ExchangeableSheetRepository(
+            transactionRunner,
             rewardSheetRepository,
             completedRewardSheetRepository,
             rewardMilestoneRepository,
+        )
+    }
+
+    val sheetCompletionRepository: SheetCompletionRepository by lazy {
+        SheetCompletionRepository(
+            transactionRunner,
+            rewardSheetRepository,
+            completedRewardSheetRepository,
+            rewardStampRepository,
         )
     }
 }
