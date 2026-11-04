@@ -18,6 +18,7 @@ import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -79,39 +80,44 @@ class SheetDetailViewModel(
         }
     }
 
+    private var incrementJob: Job? = null
+
     fun increment(
         sheetId: Long,
         stampType: StampType,
     ) {
-        viewModelScope.launch {
-            val sheetBefore = uiState.sheet ?: return@launch
-            if (!rewardSheetRepository.increment(sheetId)) {
-                return@launch
-            }
+        if (incrementJob?.isActive == true) return
 
-            rewardStampRepository.save(
-                RewardStamp(
-                    id = 0,
-                    sheetId = sheetId,
-                    completedRewardSheetId = null,
-                    position = sheetBefore.currentCount,
-                    stampType = stampType,
-                    stampedAt = now(),
-                ),
-            )
+        incrementJob =
+            viewModelScope.launch {
+                val sheetBefore = uiState.sheet ?: return@launch
+                if (!rewardSheetRepository.increment(sheetId)) {
+                    return@launch
+                }
 
-            val sheet = rewardSheetRepository.findById(sheetId)
-            val stamps = rewardStampRepository.findBySheetId(sheetId)
-            uiState =
-                uiState.copy(
-                    sheet = sheet,
-                    stamps = stamps,
+                rewardStampRepository.save(
+                    RewardStamp(
+                        id = 0,
+                        sheetId = sheetId,
+                        completedRewardSheetId = null,
+                        position = sheetBefore.currentCount,
+                        stampType = stampType,
+                        stampedAt = now(),
+                    ),
                 )
 
-            if (sheet != null && sheet.isCompleted) {
-                complete(sheet)
+                val sheet = rewardSheetRepository.findById(sheetId)
+                val stamps = rewardStampRepository.findBySheetId(sheetId)
+                uiState =
+                    uiState.copy(
+                        sheet = sheet,
+                        stamps = stamps,
+                    )
+
+                if (sheet != null && sheet.isCompleted) {
+                    complete(sheet)
+                }
             }
-        }
     }
 
     private suspend fun complete(sheet: RewardSheet) {
