@@ -59,6 +59,7 @@ class SheetEditViewModel(
                     sheetId = sheetId,
                     title = sheet.title,
                     goalCount = sheet.goalCount,
+                    currentCount = sheet.currentCount,
                     milestones = milestoneRepository.findBySheetId(sheetId),
                 )
         }
@@ -81,7 +82,7 @@ class SheetEditViewModel(
     }
 
     fun decrementGoalCount() {
-        if (uiState.goalCount <= MIN_GOAL_COUNT) return
+        if (uiState.goalCount <= maxOf(MIN_GOAL_COUNT, uiState.currentCount)) return
 
         uiState =
             uiState.copy(

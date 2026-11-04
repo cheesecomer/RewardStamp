@@ -6,6 +6,7 @@ data class SheetEditUiState(
     val sheetId: Long = 0,
     val title: String = "",
     val goalCount: Int = 10,
+    val currentCount: Int = 0,
     val milestones: List<RewardMilestone> = emptyList(),
 ) {
     fun canSave(): Boolean = title.isNotBlank() && milestones.isNotEmpty()
