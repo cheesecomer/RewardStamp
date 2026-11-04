@@ -13,8 +13,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -37,6 +35,7 @@ import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -86,17 +85,6 @@ private fun FloatingCreateSheetButton(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun SheetListScreenHeader(modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text("ごほうびスタンプ")
-        },
-        modifier = modifier,
-    )
-}
-
 @Composable
 internal fun SheetListContent(
     sheets: List<RewardSheet>,
@@ -105,9 +93,9 @@ internal fun SheetListContent(
     onCreateSheetClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
+    RewardStampScaffold(
+        title = "ごほうびスタンプ",
         modifier = modifier,
-        topBar = { SheetListScreenHeader() },
         floatingActionButton = {
             FloatingCreateSheetButton(
                 onClick = onCreateSheetClick,

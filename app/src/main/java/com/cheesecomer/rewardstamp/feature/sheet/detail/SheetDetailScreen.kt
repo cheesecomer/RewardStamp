@@ -3,9 +3,7 @@ package com.cheesecomer.rewardstamp.feature.sheet.detail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +30,7 @@ import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialog
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -68,73 +67,56 @@ private fun SheetDetailDialogs(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun SheetDetailHeader(
-    sheet: RewardSheet,
-    modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
-    onEditClick: () -> Unit = {},
-    onDeleteClick: () -> Unit = {},
+private fun SheetDetailMenu(
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
-    CenterAlignedTopAppBar(
-        modifier = modifier,
-        title = {
-            Text(sheet.title)
+    IconButton(
+        modifier = Modifier.testTag("SheetDetailScreen.MenuButton"),
+        onClick = {
+            showMenu = true
         },
-        navigationIcon = {
-            IconButton(
-                onClick = onBackClick,
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "戻る",
-                )
-            }
-        },
-        actions = {
-            IconButton(
-                modifier = Modifier.testTag("SheetDetailScreen.MenuButton"),
-                onClick = {
-                    showMenu = true
-                },
-            ) {
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "メニュー",
-                )
-            }
+    ) {
+        Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = "メニュー",
+        )
+    }
 
-            DropdownMenu(
-                expanded = showMenu,
-                onDismissRequest = { showMenu = false },
-            ) {
-                DropdownMenuItem(
-                    text = { Text("編集") },
-                    modifier = Modifier.testTag("SheetDetailScreen.Menu.EditButton"),
-                    onClick = {
-                        showMenu = false
-                        onEditClick()
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text("削除") },
-                    modifier = Modifier.testTag("SheetDetailScreen.Menu.DeleteButton"),
-                    onClick = {
-                        showMenu = false
-                        onDeleteClick()
-                    },
-                )
-            }
-        },
-    )
+    DropdownMenu(
+        expanded = showMenu,
+        onDismissRequest = { showMenu = false },
+    ) {
+        DropdownMenuItem(
+            text = { Text("編集") },
+            modifier = Modifier.testTag("SheetDetailScreen.Menu.EditButton"),
+            onClick = {
+                showMenu = false
+                onEditClick()
+            },
+        )
+        DropdownMenuItem(
+            text = { Text("削除") },
+            modifier = Modifier.testTag("SheetDetailScreen.Menu.DeleteButton"),
+            onClick = {
+                showMenu = false
+                onDeleteClick()
+            },
+        )
+    }
 }
 
 @Composable
-private fun SheetNotFound(modifier: Modifier = Modifier) {
-    Scaffold(
+private fun SheetNotFound(
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
+) {
+    RewardStampScaffold(
+        title = "",
         modifier = modifier,
+        onBackClick = onBackClick,
     ) { innerPadding ->
         Text(
             text = "見つかりません",
@@ -163,7 +145,7 @@ internal fun SheetDetailContent(
 ) {
     var activeDialog by remember { mutableStateOf<SheetDetailDialog?>(null) }
     if (sheet == null) {
-        SheetNotFound(modifier = modifier)
+        SheetNotFound(modifier = modifier, onBackClick = onBackClick)
     } else {
         SheetDetailDialogs(
             activeDialog = activeDialog,
@@ -180,12 +162,12 @@ internal fun SheetDetailContent(
             },
         )
 
-        Scaffold(
+        RewardStampScaffold(
+            title = sheet.title,
             modifier = modifier,
-            topBar = {
-                SheetDetailHeader(
-                    sheet,
-                    onBackClick = onBackClick,
+            onBackClick = onBackClick,
+            actions = {
+                SheetDetailMenu(
                     onEditClick = onEditClick,
                     onDeleteClick = {
                         activeDialog = SheetDetailDialog.Delete

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -35,6 +34,7 @@ import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialog
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialog
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
@@ -94,17 +94,6 @@ internal fun RewardDialog(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ExchangeableSheetListScreenHeader(modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text("ごほうび交換")
-        },
-        modifier = modifier,
-    )
-}
-
 @Composable
 internal fun ExchangeableSheetListContent(
     sheets: List<ExchangeableSheet>,
@@ -124,11 +113,9 @@ internal fun ExchangeableSheetListContent(
             },
         )
     }
-    Scaffold(
+    RewardStampScaffold(
+        title = "ごほうび交換",
         modifier = modifier,
-        topBar = {
-            ExchangeableSheetListScreenHeader()
-        },
     ) { innerPadding ->
         Column(
             modifier =

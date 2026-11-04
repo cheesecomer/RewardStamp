@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -29,20 +26,10 @@ import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
+import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CompletedSheetDetailHeader(modifier: Modifier = Modifier) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text("がんばったきろく")
-        },
-        modifier = modifier,
-    )
-}
 
 @Composable
 private fun TitleLabel(
@@ -102,9 +89,9 @@ internal fun CompletedSheetDetailContent(
             context.getDrawable(sheet.goalStampType.iconRes)!!
         }
 
-    Scaffold(
+    RewardStampScaffold(
+        title = "がんばったきろく",
         modifier = modifier,
-        topBar = { CompletedSheetDetailHeader() },
     ) { innerPadding ->
         Column(
             modifier =
