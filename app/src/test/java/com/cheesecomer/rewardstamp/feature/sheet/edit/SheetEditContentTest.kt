@@ -12,6 +12,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.performScrollToNode
 import androidx.compose.ui.test.performTextInput
+import androidx.compose.ui.test.performTextReplacement
 import com.cheesecomer.rewardstamp.data.rewardMilestone
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -251,6 +252,45 @@ class SheetEditContentTest {
             .performClick()
 
         assertThat(addMilestone).isTrue()
+    }
+
+    @Test
+    fun milestoneDialog_disablesConfirmWhenRequiredSheetCountIsInvalid() {
+        composeTestRule.setContent {
+            SheetEditContent(
+                sheetId = null,
+                title = "",
+                goalCount = 10,
+                milestones = emptyList(),
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag("MilestoneFormList.addMilestoneButton")
+            .performScrollTo()
+            .performClick()
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.Reward")
+            .performTextInput("アイス")
+
+        listOf("0", "-1", "1.5", "99999999999").forEach { input ->
+            composeTestRule
+                .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
+                .performTextReplacement(input)
+
+            composeTestRule
+                .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
+                .assertIsNotEnabled()
+        }
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Text.RequiredSheetCount")
+            .performTextReplacement("1")
+
+        composeTestRule
+            .onNodeWithTag("RewardMilestonesSection.RewardMilestoneDialog.Confirm")
+            .assertIsEnabled()
     }
 
     @Test

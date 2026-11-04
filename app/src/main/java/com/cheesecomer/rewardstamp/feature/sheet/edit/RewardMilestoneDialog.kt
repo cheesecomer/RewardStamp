@@ -95,7 +95,7 @@ fun RewardMilestoneDialog(
         confirmButton = {
             TextButton(
                 enabled =
-                    requiredSheetCount.isNotBlank() &&
+                    (requiredSheetCount.toIntOrNull() ?: 0) >= 1 &&
                         reward.isNotBlank(),
                 onClick = onConfirmClick,
                 modifier = Modifier.testTag("$tagPrefix.Confirm"),
