@@ -1,4 +1,5 @@
 package com.cheesecomer.rewardstamp.feature.completedsheet.detail
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,8 +20,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cheesecomer.rewardstamp.RewardStampApplication
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStamp
@@ -28,22 +29,9 @@ import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
-
-@ExcludeFromCoverage
-@Composable
-private fun completedSheetDetailViewModel(): CompletedSheetDetailViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel<CompletedSheetDetailViewModel>(
-        factory =
-            CompletedSheetDetailViewModel.factory(
-                application.completedRewardSheetRepository,
-                application.rewardStampRepository,
-            ),
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,15 +150,23 @@ internal fun CompletedSheetDetailContent(
 fun CompletedSheetDetailScreen(
     completedSheetId: Long,
     modifier: Modifier = Modifier,
-    viewModel: CompletedSheetDetailViewModel = completedSheetDetailViewModel(),
+    viewModel: CompletedSheetDetailViewModel =
+        rewardStampViewModel {
+            CompletedSheetDetailViewModel(
+                completedRewardSheetRepository,
+                rewardStampRepository,
+            )
+        },
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(completedSheetId) {
         viewModel.load(completedSheetId)
     }
 
     CompletedSheetDetailContent(
-        sheet = viewModel.uiState.sheet,
-        stamps = viewModel.uiState.stamps,
+        sheet = uiState.sheet,
+        stamps = uiState.stamps,
         modifier = modifier,
     )
 }

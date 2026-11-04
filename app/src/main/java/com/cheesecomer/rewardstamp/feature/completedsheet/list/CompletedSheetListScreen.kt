@@ -27,9 +27,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -37,12 +37,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
-import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
@@ -50,19 +50,6 @@ import com.cheesecomer.rewardstamp.ui.theme.SheetCard
 import com.cheesecomer.rewardstamp.ui.theme.StampInk
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-
-@ExcludeFromCoverage
-@Composable
-private fun completedSheetListViewModel(): CompletedSheetListViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel(
-        factory =
-            CompletedSheetListViewModel.factory(
-                application.completedRewardSheetRepository,
-            ),
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -236,11 +223,18 @@ internal fun CompletedSheetListContent(
 @Composable
 fun CompletedSheetListScreen(
     modifier: Modifier = Modifier,
-    viewModel: CompletedSheetListViewModel = completedSheetListViewModel(),
+    viewModel: CompletedSheetListViewModel =
+        rewardStampViewModel {
+            CompletedSheetListViewModel(
+                completedRewardSheetRepository,
+            )
+        },
     onRewardClick: (Long) -> Unit = {},
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     CompletedSheetListContent(
-        sheets = viewModel.sheets,
+        sheets = uiState.sheets,
         modifier = modifier,
         onSheetClick = onRewardClick,
     )

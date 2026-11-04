@@ -64,7 +64,7 @@ class SheetEditViewModelTest {
 
             viewModel.updateTitle("はみがき")
 
-            assertThat(viewModel.uiState.title).isEqualTo("はみがき")
+            assertThat(viewModel.uiState.value.title).isEqualTo("はみがき")
         }
 
     @Test
@@ -74,7 +74,7 @@ class SheetEditViewModelTest {
 
             viewModel.incrementGoalCount()
 
-            assertThat(viewModel.uiState.goalCount).isEqualTo(11)
+            assertThat(viewModel.uiState.value.goalCount).isEqualTo(11)
         }
 
     @Test
@@ -86,7 +86,7 @@ class SheetEditViewModelTest {
                 viewModel.incrementGoalCount()
             }
 
-            assertThat(viewModel.uiState.goalCount)
+            assertThat(viewModel.uiState.value.goalCount)
                 .isEqualTo(MAX_GOAL_COUNT)
         }
 
@@ -97,7 +97,7 @@ class SheetEditViewModelTest {
 
             viewModel.decrementGoalCount()
 
-            assertThat(viewModel.uiState.goalCount).isEqualTo(9)
+            assertThat(viewModel.uiState.value.goalCount).isEqualTo(9)
         }
 
     @Test
@@ -109,7 +109,7 @@ class SheetEditViewModelTest {
                 viewModel.decrementGoalCount()
             }
 
-            assertThat(viewModel.uiState.goalCount)
+            assertThat(viewModel.uiState.value.goalCount)
                 .isEqualTo(MIN_GOAL_COUNT)
         }
 
@@ -119,7 +119,7 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
             viewModel.createMilestone(rewardMilestone())
 
-            assertThat(viewModel.uiState.milestones).hasSize(1)
+            assertThat(viewModel.uiState.value.milestones).hasSize(1)
         }
 
     @Test
@@ -131,7 +131,7 @@ class SheetEditViewModelTest {
 
             viewModel.removeMilestone(0)
 
-            assertThat(viewModel.uiState.milestones).hasSize(1)
+            assertThat(viewModel.uiState.value.milestones).hasSize(1)
         }
 
     @Test
@@ -146,10 +146,14 @@ class SheetEditViewModelTest {
                 value = milestone.copy(requiredSheetCount = 3, reward = "アイス"),
             )
 
-            assertThat(viewModel.uiState.milestones[0].requiredSheetCount)
-                .isEqualTo(3)
-            assertThat(viewModel.uiState.milestones[0].reward)
-                .isEqualTo("アイス")
+            assertThat(
+                viewModel.uiState.value.milestones[0]
+                    .requiredSheetCount,
+            ).isEqualTo(3)
+            assertThat(
+                viewModel.uiState.value.milestones[0]
+                    .reward,
+            ).isEqualTo("アイス")
         }
 
     @Test
@@ -171,7 +175,7 @@ class SheetEditViewModelTest {
                 viewModel.decrementGoalCount()
             }
 
-            assertThat(viewModel.uiState.goalCount).isEqualTo(3)
+            assertThat(viewModel.uiState.value.goalCount).isEqualTo(3)
         }
 
     @Test
@@ -209,11 +213,13 @@ class SheetEditViewModelTest {
 
             viewModel.load(sheetId)
 
-            assertThat(viewModel.uiState.sheetId).isEqualTo(sheetId)
-            assertThat(viewModel.uiState.title).isEqualTo("はみがき")
-            assertThat(viewModel.uiState.goalCount).isEqualTo(5)
-            assertThat(viewModel.uiState.milestones.map { it.reward })
-                .containsExactly("シール", "アイス")
+            assertThat(viewModel.uiState.value.sheetId).isEqualTo(sheetId)
+            assertThat(viewModel.uiState.value.title).isEqualTo("はみがき")
+            assertThat(viewModel.uiState.value.goalCount).isEqualTo(5)
+            assertThat(
+                viewModel.uiState.value.milestones
+                    .map { it.reward },
+            ).containsExactly("シール", "アイス")
                 .inOrder()
         }
 
@@ -240,7 +246,7 @@ class SheetEditViewModelTest {
             viewModel.updateTitle("はみがき")
             viewModel.createMilestone(rewardMilestone())
 
-            assertThat(viewModel.canSave()).isTrue()
+            assertThat(viewModel.uiState.value.canSave()).isTrue()
         }
 
     @Test
@@ -250,7 +256,7 @@ class SheetEditViewModelTest {
             viewModel.createMilestone(rewardMilestone())
             viewModel.updateTitle("")
 
-            assertThat(viewModel.canSave()).isFalse()
+            assertThat(viewModel.uiState.value.canSave()).isFalse()
         }
 
     @Test
@@ -259,7 +265,7 @@ class SheetEditViewModelTest {
             val viewModel = createViewModel()
             viewModel.updateTitle("はみがき")
 
-            assertThat(viewModel.canSave()).isFalse()
+            assertThat(viewModel.uiState.value.canSave()).isFalse()
         }
 
     @Test
@@ -325,7 +331,7 @@ class SheetEditViewModelTest {
 
             viewModel.load(sheetId)
 
-            assertThat(viewModel.uiState.goalCount).isEqualTo(11)
+            assertThat(viewModel.uiState.value.goalCount).isEqualTo(11)
         }
 
     private fun createViewModel(): SheetEditViewModel =

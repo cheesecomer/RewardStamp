@@ -121,10 +121,13 @@ class SheetDetailViewModelTest {
 
             viewModel.load(sheetId)
 
-            assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
-            assertThat(viewModel.uiState.stamps).hasSize(1)
             assertThat(
-                viewModel.uiState.stamps
+                viewModel.uiState.value.sheet!!
+                    .title,
+            ).isEqualTo("はみがき")
+            assertThat(viewModel.uiState.value.stamps).hasSize(1)
+            assertThat(
+                viewModel.uiState.value.stamps
                     .single()
                     .stampType,
             ).isEqualTo(StampType.Hippopotamus)
@@ -171,16 +174,23 @@ class SheetDetailViewModelTest {
 
             viewModel.load(sheetId)
 
-            assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
-            assertThat(viewModel.uiState.stamps).hasSize(1)
-            assertThat(viewModel.uiState.exchangeableRewards).hasSize(2)
-            assertThat(viewModel.uiState.exchangeableRewards.map { it.requiredSheetCount })
-                .containsExactly(1, 2)
-            assertThat(viewModel.uiState.lockedRewards).hasSize(3)
-            assertThat(viewModel.uiState.lockedRewards.map { it.requiredSheetCount })
-                .containsExactly(3, 4, 5)
             assertThat(
-                viewModel.uiState.stamps
+                viewModel.uiState.value.sheet!!
+                    .title,
+            ).isEqualTo("はみがき")
+            assertThat(viewModel.uiState.value.stamps).hasSize(1)
+            assertThat(viewModel.uiState.value.exchangeableRewards).hasSize(2)
+            assertThat(
+                viewModel.uiState.value.exchangeableRewards
+                    .map { it.requiredSheetCount },
+            ).containsExactly(1, 2)
+            assertThat(viewModel.uiState.value.lockedRewards).hasSize(3)
+            assertThat(
+                viewModel.uiState.value.lockedRewards
+                    .map { it.requiredSheetCount },
+            ).containsExactly(3, 4, 5)
+            assertThat(
+                viewModel.uiState.value.stamps
                     .single()
                     .stampType,
             ).isEqualTo(StampType.Hippopotamus)
@@ -247,11 +257,15 @@ class SheetDetailViewModelTest {
                 stampType = StampType.Hippopotamus,
             )
 
-            assertThat(viewModel.uiState.exchangeableRewards).hasSize(1)
-            assertThat(viewModel.uiState.exchangeableRewards.map { it.requiredSheetCount })
-                .containsExactly(1)
-            assertThat(viewModel.uiState.lockedRewards.map { it.requiredSheetCount })
-                .containsExactly(2, 3, 4, 5)
+            assertThat(viewModel.uiState.value.exchangeableRewards).hasSize(1)
+            assertThat(
+                viewModel.uiState.value.exchangeableRewards
+                    .map { it.requiredSheetCount },
+            ).containsExactly(1)
+            assertThat(
+                viewModel.uiState.value.lockedRewards
+                    .map { it.requiredSheetCount },
+            ).containsExactly(2, 3, 4, 5)
 
             val completedSheets = completedRewardSheetRepository.findAll()
             val restartedSheet = rewardSheetRepository.findById(sheetId)!!
@@ -290,8 +304,11 @@ class SheetDetailViewModelTest {
 
             viewModel.load(sheetId)
 
-            assertThat(viewModel.uiState.sheet!!.isCompleted).isTrue()
-            assertThat(viewModel.uiState.goalStampType).isNotNull()
+            assertThat(
+                viewModel.uiState.value.sheet!!
+                    .isCompleted,
+            ).isTrue()
+            assertThat(viewModel.uiState.value.goalStampType).isNotNull()
             assertThat(completedRewardSheetRepository.findAll()).hasSize(1)
         }
 
@@ -316,8 +333,11 @@ class SheetDetailViewModelTest {
 
             viewModel.restart(sheetId)
 
-            assertThat(viewModel.uiState.sheet!!.currentCount).isEqualTo(0)
-            assertThat(viewModel.uiState.stamps).isEmpty()
+            assertThat(
+                viewModel.uiState.value.sheet!!
+                    .currentCount,
+            ).isEqualTo(0)
+            assertThat(viewModel.uiState.value.stamps).isEmpty()
         }
 
     @Test
@@ -357,7 +377,10 @@ class SheetDetailViewModelTest {
 
             viewModel.restart(sheetId)
 
-            assertThat(viewModel.uiState.sheet!!.title).isEqualTo("はみがき")
+            assertThat(
+                viewModel.uiState.value.sheet!!
+                    .title,
+            ).isEqualTo("はみがき")
         }
 
     private fun createViewModel(): SheetDetailViewModel =
