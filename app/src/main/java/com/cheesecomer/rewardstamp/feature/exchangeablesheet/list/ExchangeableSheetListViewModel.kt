@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardstamp.model.RewardMilestone
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class ExchangeableSheetListViewModel(
@@ -30,6 +31,8 @@ class ExchangeableSheetListViewModel(
         ExchangeableSheetListUiState(),
     )
         private set
+
+    private var receiveRewardJob: Job? = null
 
     init {
         reload()
@@ -53,13 +56,16 @@ class ExchangeableSheetListViewModel(
         milestone: RewardMilestone,
         onCompleted: () -> Unit = {},
     ) {
-        viewModelScope.launch {
-            exchangeableRewardRepository.exchangeReward(
-                id,
-                milestone.requiredSheetCount,
-            )
-            reloadUiState()
-            onCompleted()
-        }
+        if (receiveRewardJob?.isActive == true) return
+
+        receiveRewardJob =
+            viewModelScope.launch {
+                exchangeableRewardRepository.exchangeReward(
+                    id,
+                    milestone.requiredSheetCount,
+                )
+                reloadUiState()
+                onCompleted()
+            }
     }
 }

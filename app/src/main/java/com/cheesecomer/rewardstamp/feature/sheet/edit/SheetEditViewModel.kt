@@ -15,6 +15,7 @@ import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.ui.component.MAX_GOAL_COUNT
 import com.cheesecomer.rewardstamp.ui.component.MIN_GOAL_COUNT
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
@@ -135,28 +136,31 @@ class SheetEditViewModel(
 
     fun canSave(): Boolean = uiState.canSave()
 
+    private var saveJob: Job? = null
+
     fun save(onSaved: () -> Unit) {
-        if (!canSave()) {
+        if (!canSave() || saveJob?.isActive == true) {
             return
         }
 
-        viewModelScope.launch {
-            val sheetId =
-                rewardSheetRepository.save(
-                    createRewardSheet(),
-                )
-            val milestones =
-                uiState.milestones.map {
-                    RewardMilestone(
-                        id = it.id,
-                        sheetId = sheetId,
-                        requiredSheetCount = it.requiredSheetCount,
-                        reward = it.reward,
+        saveJob =
+            viewModelScope.launch {
+                val sheetId =
+                    rewardSheetRepository.save(
+                        createRewardSheet(),
                     )
-                }
-            milestoneRepository.saveAll(sheetId, milestones)
+                val milestones =
+                    uiState.milestones.map {
+                        RewardMilestone(
+                            id = it.id,
+                            sheetId = sheetId,
+                            requiredSheetCount = it.requiredSheetCount,
+                            reward = it.reward,
+                        )
+                    }
+                milestoneRepository.saveAll(sheetId, milestones)
 
-            onSaved()
-        }
+                onSaved()
+            }
     }
 }

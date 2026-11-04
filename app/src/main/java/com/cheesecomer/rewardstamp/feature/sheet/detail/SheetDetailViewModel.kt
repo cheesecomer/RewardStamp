@@ -18,6 +18,7 @@ import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -89,59 +90,64 @@ class SheetDetailViewModel(
         }
     }
 
+    private var incrementJob: Job? = null
+
     fun increment(
         sheetId: Long,
         stampType: StampType,
     ) {
-        viewModelScope.launch {
-            val sheetBefore = uiState.sheet ?: return@launch
-            if (!rewardSheetRepository.increment(sheetId)) {
-                return@launch
-            }
+        if (incrementJob?.isActive == true) return
 
-            rewardStampRepository.save(
-                RewardStamp(
-                    id = 0,
-                    sheetId = sheetId,
-                    completedRewardSheetId = null,
-                    position = sheetBefore.currentCount,
-                    stampType = stampType,
-                    stampedAt = now(),
-                ),
-            )
+        incrementJob =
+            viewModelScope.launch {
+                val sheetBefore = uiState.sheet ?: return@launch
+                if (!rewardSheetRepository.increment(sheetId)) {
+                    return@launch
+                }
 
-            val sheet = rewardSheetRepository.findById(sheetId)
-            val stamps = rewardStampRepository.findBySheetId(sheetId)
-            uiState =
-                uiState.copy(
-                    sheet = sheet,
-                    stamps = stamps,
+                rewardStampRepository.save(
+                    RewardStamp(
+                        id = 0,
+                        sheetId = sheetId,
+                        completedRewardSheetId = null,
+                        position = sheetBefore.currentCount,
+                        stampType = stampType,
+                        stampedAt = now(),
+                    ),
                 )
 
-            if (sheet != null && sheet.currentCount >= sheet.goalCount) {
-                val exchangeableSheetCount =
-                    completedRewardSheetRepository
-                        .countExchangeableBySheetId(sheetId) + 1
-                val goalStampType = GoalStampType.entries.random()
+                val sheet = rewardSheetRepository.findById(sheetId)
+                val stamps = rewardStampRepository.findBySheetId(sheetId)
                 uiState =
                     uiState.copy(
-                        exchangeableRewards =
-                            rewardMilestoneRepository
-                                .findExchangeableMilestonesBySheetId(
-                                    sheetId,
-                                    exchangeableSheetCount,
-                                ),
-                        lockedRewards =
-                            rewardMilestoneRepository
-                                .findLockedMilestonesBySheetId(
-                                    sheetId,
-                                    exchangeableSheetCount,
-                                ),
-                        goalStampType = goalStampType,
+                        sheet = sheet,
+                        stamps = stamps,
                     )
-                createCompletedRewardSheet(sheet, goalStampType)
+
+                if (sheet != null && sheet.currentCount >= sheet.goalCount) {
+                    val exchangeableSheetCount =
+                        completedRewardSheetRepository
+                            .countExchangeableBySheetId(sheetId) + 1
+                    val goalStampType = GoalStampType.entries.random()
+                    uiState =
+                        uiState.copy(
+                            exchangeableRewards =
+                                rewardMilestoneRepository
+                                    .findExchangeableMilestonesBySheetId(
+                                        sheetId,
+                                        exchangeableSheetCount,
+                                    ),
+                            lockedRewards =
+                                rewardMilestoneRepository
+                                    .findLockedMilestonesBySheetId(
+                                        sheetId,
+                                        exchangeableSheetCount,
+                                    ),
+                            goalStampType = goalStampType,
+                        )
+                    createCompletedRewardSheet(sheet, goalStampType)
+                }
             }
-        }
     }
 
     fun createCompletedRewardSheet(
