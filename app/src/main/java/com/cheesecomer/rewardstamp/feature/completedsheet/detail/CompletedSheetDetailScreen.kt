@@ -10,6 +10,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -107,6 +108,12 @@ internal fun CompletedSheetDetailContent(
         return
     }
 
+    val context = LocalContext.current
+    val goalStampDrawable =
+        remember(sheet.goalStampType) {
+            context.getDrawable(sheet.goalStampType.iconRes)!!
+        }
+
     Scaffold(
         modifier = modifier,
         topBar = { CompletedSheetDetailHeader() },
@@ -141,7 +148,7 @@ internal fun CompletedSheetDetailContent(
                 stamps = stamps,
                 goalStamp =
                     GoalStamp(
-                        drawable = LocalContext.current.getDrawable(sheet.goalStampType.iconRes)!!,
+                        drawable = goalStampDrawable,
                         stampedAt = sheet.completedAt,
                     ),
                 modifier = Modifier.weight(1f),

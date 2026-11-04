@@ -126,8 +126,8 @@ internal fun ExchangeableSheetListContent(
     onRewardSelect: (Long, RewardMilestone) -> Unit = { _, _ -> },
 ) {
     var showExchangeDialog by remember { mutableLongStateOf(0L) }
-    if (showExchangeDialog != 0L) {
-        val sheet = sheets.find { it.rewardSheet.id == showExchangeDialog }!!
+    val exchangingSheet = sheets.find { it.rewardSheet.id == showExchangeDialog }
+    exchangingSheet?.let { sheet ->
         RewardDialog(
             sheet,
             onDismissRequest = {

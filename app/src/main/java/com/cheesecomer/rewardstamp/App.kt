@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -18,7 +19,7 @@ import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 @Composable
 fun App(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
-    val navigator = NavControllerNavigator(navController)
+    val navigator = remember(navController) { NavControllerNavigator(navController) }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val selectedTab = Route.bottomTab(backStackEntry?.destination?.route) ?: BottomTab.Sheets
 
@@ -40,7 +41,7 @@ fun App(modifier: Modifier = Modifier) {
     ) { innerPadding ->
         RewardStampNavHost(
             navController = navController,
-            navigator = NavControllerNavigator(navController),
+            navigator = navigator,
             modifier = Modifier.padding(innerPadding),
         )
     }

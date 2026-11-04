@@ -51,7 +51,6 @@ private fun sheetListViewModel(): SheetListViewModel {
         factory =
             SheetListViewModel.factory(
                 application.rewardSheetRepository,
-                application.completedRewardSheetRepository,
                 application.rewardStampRepository,
             ),
     )

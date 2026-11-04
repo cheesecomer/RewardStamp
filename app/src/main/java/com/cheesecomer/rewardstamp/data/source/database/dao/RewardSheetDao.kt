@@ -1,7 +1,6 @@
 package com.cheesecomer.rewardstamp.data.source.database.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -32,17 +31,6 @@ interface RewardSheetDao {
     )
     suspend fun findExchangeable(): List<RewardSheetEntity>
 
-    @Query(
-        """
-    SELECT count(*)
-    FROM reward_sheets
-    WHERE id IN (
-        SELECT sheetId FROM completed_reward_sheets WHERE consumedAt IS NULL
-    )
-    """,
-    )
-    suspend fun countExchangeable(): Int
-
     @Query("SELECT * FROM reward_sheets WHERE id = :id")
     suspend fun findById(id: Long): RewardSheetEntity?
 
@@ -51,7 +39,4 @@ interface RewardSheetDao {
 
     @Update
     suspend fun update(entity: RewardSheetEntity)
-
-    @Delete
-    suspend fun delete(entity: RewardSheetEntity)
 }
