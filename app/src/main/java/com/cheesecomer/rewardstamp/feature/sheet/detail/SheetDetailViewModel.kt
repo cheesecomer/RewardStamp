@@ -54,6 +54,13 @@ class SheetDetailViewModel(
         private set
 
     fun load(sheetId: Long) {
+        val sheet = uiState.sheet
+        if (sheet != null && sheet.id == sheetId && sheet.isCompleted) return
+
+        reload(sheetId)
+    }
+
+    private fun reload(sheetId: Long) {
         viewModelScope.launch {
             val sheet = rewardSheetRepository.findById(sheetId)
             uiState =
@@ -180,6 +187,6 @@ class SheetDetailViewModel(
     }
 
     fun restart(sheetId: Long) {
-        load(sheetId)
+        reload(sheetId)
     }
 }

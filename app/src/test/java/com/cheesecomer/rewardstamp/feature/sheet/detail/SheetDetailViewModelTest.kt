@@ -268,6 +268,57 @@ class SheetDetailViewModelTest {
         }
 
     @Test
+    fun load_keepsCompletedSheetWhenCalledAgainAfterGoalIsReached() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        currentCount = 2,
+                        goalCount = 3,
+                    ),
+                )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.increment(
+                sheetId = sheetId,
+                stampType = StampType.Dog,
+            )
+
+            viewModel.load(sheetId)
+
+            assertThat(viewModel.uiState.sheet!!.isCompleted).isTrue()
+            assertThat(viewModel.uiState.goalStampType).isNotNull()
+            assertThat(completedRewardSheetRepository.findAll()).hasSize(1)
+        }
+
+    @Test
+    fun restart_reloadsSheetAfterGoalIsReached() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        currentCount = 2,
+                        goalCount = 3,
+                    ),
+                )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.increment(
+                sheetId = sheetId,
+                stampType = StampType.Dog,
+            )
+
+            viewModel.restart(sheetId)
+
+            assertThat(viewModel.uiState.sheet!!.currentCount).isEqualTo(0)
+            assertThat(viewModel.uiState.stamps).isEmpty()
+        }
+
+    @Test
     fun delete_deletesSheetAndCallsCallback() =
         runTest {
             val sheetId =
