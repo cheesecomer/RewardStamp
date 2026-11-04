@@ -38,4 +38,5 @@ jobs:
             testDebugUnitTest \
             screenshotTest \
             koverVerifyAll \
+            lintDebug \
             assembleDebug

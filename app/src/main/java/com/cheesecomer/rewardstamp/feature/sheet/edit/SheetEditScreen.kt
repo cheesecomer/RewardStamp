@@ -16,11 +16,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.ui.RewardStampTextFieldDefaults
@@ -39,7 +41,7 @@ private fun SheetNameSection(
         modifier = modifier.fillMaxWidth(),
     ) {
         SheetEditSectionTitle(
-            text = "なにを がんばる？",
+            text = stringResource(R.string.sheet_edit_name_label),
             modifier = Modifier.padding(start = 16.dp),
         )
         Spacer(modifier = Modifier.size(8.dp))
@@ -47,7 +49,7 @@ private fun SheetNameSection(
             OutlinedTextField(
                 value = title,
                 onValueChange = onTitleChange,
-                placeholder = { Text("はみがき") },
+                placeholder = { Text(stringResource(R.string.sheet_edit_name_placeholder)) },
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -87,7 +89,10 @@ internal fun SheetEditContent(
     onRemoveMilestoneClick: (index: Int) -> Unit = {},
 ) {
     RewardStampScaffold(
-        title = if (sheetId == null) "シートを作る" else "シートを編集",
+        title =
+            stringResource(
+                if (sheetId == null) R.string.sheet_edit_title_create else R.string.sheet_edit_title_edit,
+            ),
         modifier = modifier,
         onBackClick = onBackClick,
     ) { innerPadding ->
@@ -133,7 +138,7 @@ internal fun SheetEditContent(
                             .testTag("SheetEditScreen.Save"),
                     enabled = canSave,
                 ) {
-                    Text("保存")
+                    Text(stringResource(R.string.common_save))
                 }
             }
         }

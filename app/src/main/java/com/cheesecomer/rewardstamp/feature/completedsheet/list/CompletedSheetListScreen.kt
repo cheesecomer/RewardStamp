@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,14 +64,14 @@ private fun EmptyList(modifier: Modifier = Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         Text(
-            text = "がんばったシートはまだないよ",
+            text = stringResource(R.string.completed_empty_title),
             style =
                 MaterialTheme.typography.titleLarge.copy(
                     fontFamily = Nikumaru,
                 ),
         )
         Text(
-            text = "最後までがんばると\nここにのこるよ♪",
+            text = stringResource(R.string.completed_empty_message),
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
         )
@@ -93,7 +94,7 @@ fun RewardReceivedBadge(modifier: Modifier = Modifier) {
         Box(contentAlignment = Alignment.Center) {
             Icon(
                 imageVector = Icons.Outlined.CardGiftcard,
-                contentDescription = "ごほうび交換済み",
+                contentDescription = stringResource(R.string.completed_reward_received),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer,
                 modifier = Modifier.size(22.dp),
             )
@@ -143,7 +144,7 @@ private fun CompletedSheetGridItem(
                 )
 
                 Text(
-                    text = "${sheet.goalCount}かい",
+                    text = stringResource(R.string.completed_goal_count, sheet.goalCount),
                     style = MaterialTheme.typography.bodySmall,
                 )
             }
@@ -168,7 +169,7 @@ internal fun CompletedSheetListContent(
     onSheetClick: (Long) -> Unit = {},
 ) {
     RewardStampScaffold(
-        title = "がんばったきろく",
+        title = stringResource(R.string.completed_title),
         modifier = modifier,
     ) { innerPadding ->
         Column(

@@ -26,9 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -51,7 +53,7 @@ private fun RewardMilestoneRow(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "${milestone.requiredSheetCount}枚で",
+            text = stringResource(R.string.sheet_edit_milestone_required, milestone.requiredSheetCount),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
         )
@@ -59,7 +61,7 @@ private fun RewardMilestoneRow(
         Spacer(modifier = Modifier.width(12.dp))
 
         Text(
-            text = milestone.reward.ifBlank { "ごほうび" },
+            text = milestone.reward.ifBlank { stringResource(R.string.common_reward) },
             modifier = Modifier.weight(1f),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface,
@@ -69,7 +71,7 @@ private fun RewardMilestoneRow(
             IconButton(onClick = onEditClick) {
                 Icon(
                     imageVector = Icons.Outlined.Edit,
-                    contentDescription = "編集",
+                    contentDescription = stringResource(R.string.common_edit),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
@@ -79,7 +81,7 @@ private fun RewardMilestoneRow(
             IconButton(onClick = onRemoveClick) {
                 Icon(
                     imageVector = Icons.Outlined.Close,
-                    contentDescription = "削除",
+                    contentDescription = stringResource(R.string.common_delete),
                     tint = MaterialTheme.colorScheme.error,
                 )
             }
@@ -165,7 +167,7 @@ private fun RewardMilestoneDialogHost(
 private fun EmptyLabel() {
     Column {
         Text(
-            text = "まだごほうびがありません",
+            text = stringResource(R.string.sheet_edit_rewards_empty),
             modifier =
                 Modifier
                     .fillMaxWidth()
@@ -211,12 +213,10 @@ private fun RewardMilestonesSectionHeadline(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
     ) {
-        SheetEditSectionTitle(text = "ごほうびは？")
+        SheetEditSectionTitle(text = stringResource(R.string.sheet_edit_rewards_label))
         Text(
             modifier = Modifier.padding(start = 32.dp),
-            text =
-                "最後までがんばったシートと交換するごほうびです。\n" +
-                    "ごほうびは何個でも登録できます",
+            text = stringResource(R.string.sheet_edit_rewards_description),
             style = MaterialTheme.typography.bodySmall,
         )
     }
@@ -231,7 +231,7 @@ private fun AddMilestoneButton(
         onClick = onClick,
         modifier = modifier,
     ) {
-        Text("＋ ごほうびを追加")
+        Text(stringResource(R.string.sheet_edit_add_reward))
     }
 }
 

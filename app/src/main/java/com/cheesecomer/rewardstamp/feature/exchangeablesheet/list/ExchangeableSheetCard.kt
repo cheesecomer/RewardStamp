@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,7 +64,7 @@ private fun ExchangeableSheetCount(
 ) {
     Text(
         modifier = modifier,
-        text = "たまったシート ${count}枚",
+        text = stringResource(R.string.exchangeable_sheet_count, count),
         style = MaterialTheme.typography.bodyMedium,
         color = SheetSection,
     )
@@ -92,7 +93,7 @@ private fun ClosestMilestoneHeadline(modifier: Modifier = Modifier) {
         }
 
         Text(
-            text = "つぎのごほうび",
+            text = stringResource(R.string.exchangeable_next_reward),
             style =
                 MaterialTheme.typography.titleSmall.copy(
                     fontFamily = Nikumaru,
@@ -127,7 +128,7 @@ private fun ClosestMilestone(
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "あと ",
+                    text = stringResource(R.string.exchangeable_remaining_stamps_prefix),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alignByBaseline(),
                 )
@@ -140,14 +141,14 @@ private fun ClosestMilestone(
                     modifier = Modifier.alignByBaseline(),
                 )
                 Text(
-                    " 回がんばると交換できるよ",
+                    stringResource(R.string.exchangeable_remaining_stamps_suffix),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alignByBaseline(),
                 )
             }
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    "あとシート ",
+                    stringResource(R.string.exchangeable_remaining_sheets_prefix),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alignByBaseline(),
                 )
@@ -160,7 +161,7 @@ private fun ClosestMilestone(
                     modifier = Modifier.alignByBaseline(),
                 )
                 Text(
-                    " 枚",
+                    stringResource(R.string.exchangeable_remaining_sheets_suffix),
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.alignByBaseline(),
                 )
@@ -191,7 +192,7 @@ private fun ExchangeableMilestonesHeadline() {
         }
 
         Text(
-            text = "交換できるごほうび",
+            text = stringResource(R.string.exchangeable_available_rewards),
             style =
                 MaterialTheme.typography.titleSmall.copy(
                     fontFamily = Nikumaru,
@@ -217,7 +218,7 @@ private fun ExchangeableMilestones(
                 modifier = Modifier.padding(start = 20.dp),
             ) {
                 Text(
-                    text = "${milestone.requiredSheetCount}枚で ",
+                    text = stringResource(R.string.exchangeable_milestone_required, milestone.requiredSheetCount),
                     modifier = Modifier.alignByBaseline(),
                 )
                 Text(
@@ -241,7 +242,7 @@ private fun ExchangeButton(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
     ) {
-        Text("交換する")
+        Text(stringResource(R.string.common_exchange))
     }
 }
 

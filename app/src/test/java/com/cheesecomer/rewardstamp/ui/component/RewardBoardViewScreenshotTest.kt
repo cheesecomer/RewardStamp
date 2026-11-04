@@ -1,7 +1,6 @@
 package com.cheesecomer.rewardstamp.ui.component
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
@@ -9,6 +8,7 @@ import com.cheesecomer.rewardstamp.data.rewardStamp
 import com.cheesecomer.rewardstamp.model.GoalStamp
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.StampType
+import com.cheesecomer.rewardstamp.ui.rememberDrawable
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import org.junit.Rule
 import org.junit.Test
@@ -49,7 +49,7 @@ class RewardBoardViewScreenshotTest {
                         ),
                     goalStamp =
                         GoalStamp(
-                            drawable = LocalContext.current.getDrawable(GoalStampType.Bear1.iconRes)!!,
+                            drawable = rememberDrawable(GoalStampType.Bear1.iconRes),
                             stampedAt = now,
                         ),
                 )

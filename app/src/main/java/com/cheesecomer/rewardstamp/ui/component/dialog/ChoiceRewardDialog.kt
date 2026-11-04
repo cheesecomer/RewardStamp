@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -75,7 +76,7 @@ private fun RewardExchangeOptionRow(
         )
 
         Text(
-            text = "(${sheetCount}枚)",
+            text = stringResource(R.string.choice_reward_sheet_count, sheetCount),
             color = SheetText,
         )
     }
@@ -105,13 +106,13 @@ fun ChoiceRewardDialogHeadline(modifier: Modifier = Modifier) {
         }
 
         Text(
-            text = "どれと交換する？",
+            text = stringResource(R.string.choice_reward_title),
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = SheetText,
         )
         Text(
-            text = "ごほうびをえらんでね",
+            text = stringResource(R.string.choice_reward_message),
             style = MaterialTheme.typography.bodySmall,
         )
     }
@@ -167,7 +168,7 @@ fun ChoiceRewardDialog(
                 )
 
                 DialogButtons(
-                    confirmText = "交換する",
+                    confirmText = stringResource(R.string.common_exchange),
                     enable = selectedId != null,
                     onDismissClick = onDismissRequest,
                     onConfirmClick = {

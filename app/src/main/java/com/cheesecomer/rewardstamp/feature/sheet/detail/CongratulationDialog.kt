@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -42,13 +43,13 @@ import com.cheesecomer.rewardstamp.ui.theme.SheetPrimary
 private fun CongratulationDialogDescription(modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(
-            text = "やったー！",
+            text = stringResource(R.string.congratulation_title),
             style = MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.Bold,
             fontFamily = Nikumaru,
         )
         Text(
-            text = "シートがいっぱいになったよ！",
+            text = stringResource(R.string.congratulation_message),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -121,7 +122,7 @@ fun CongratulationDialogContent(
                         .padding(top = 4.dp)
                         .testTag("CongratulationDialog.SureButton"),
             ) {
-                Text("わかった")
+                Text(stringResource(R.string.congratulation_ok))
             }
         }
         FilledTonalIconButton(
@@ -134,7 +135,7 @@ fun CongratulationDialogContent(
         ) {
             Icon(
                 Icons.Outlined.Edit,
-                contentDescription = "ごほうびを編集",
+                contentDescription = stringResource(R.string.congratulation_edit_reward),
                 tint = SheetPrimary,
             )
         }
