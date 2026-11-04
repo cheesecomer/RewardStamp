@@ -19,7 +19,7 @@ android {
     }
 
     namespace = "com.cheesecomer.rewardstamp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.cheesecomer.rewardstamp"
@@ -142,6 +142,10 @@ kover {
 }
 
 tasks.withType<Test>().configureEach {
+    // Paparazzi (layoutlib) and Robolectric load conflicting native libraries, so they cannot share a JVM
+    forkEvery = 1
+    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+
     testLogging {
         events("passed", "failed", "skipped")
 
