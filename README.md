@@ -142,6 +142,10 @@ Git Hooks が設定されている場合、以下のチェックが自動で実�
 
 画像、スタンプ、フォントなどのアセットは、明示されていない限りライセンス対象外です。
 
+### Credits
+
+スタンプのアイコン（`app/src/main/res/drawable/stamp_*.xml`）は、[SVG Repo](https://www.svgrepo.com/) で公開されている [Icooon Mono](https://www.svgrepo.com/author/Icooon%20Mono/) のアイコンを使用しています。これらのアイコンは PD（Public Domain）ライセンスで提供されています。
+
 ## Code Quality
 
 コードスタイルと静的解析には ktlint と Detekt を使用しています。
