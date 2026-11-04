@@ -37,7 +37,7 @@ enum class GoalStampType(
     Star1("Star1", R.drawable.stamp_goal_star_1),
     Star2("Star2", R.drawable.stamp_goal_star_2),
     Strawberry1("Strawberry1", R.drawable.stamp_goal_strawberry_1),
-    Strawberry2("Strawberry2", R.drawable.stamp_goal_strawberry_1),
+    Strawberry2("Strawberry2", R.drawable.stamp_goal_strawberry_2),
     ;
 
     companion object {
