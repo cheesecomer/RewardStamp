@@ -80,6 +80,9 @@ interface RewardMilestoneDao {
         ids: List<Long>,
     )
 
+    @Query("DELETE FROM reward_milestones WHERE sheetId = :sheetId")
+    suspend fun deleteBySheetId(sheetId: Long)
+
     @Delete
     suspend fun delete(entity: RewardMilestoneEntity)
 }

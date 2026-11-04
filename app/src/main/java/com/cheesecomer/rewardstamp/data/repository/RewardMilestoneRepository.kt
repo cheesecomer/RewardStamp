@@ -36,7 +36,9 @@ class RewardMilestoneRepository(
         rewardMilestones: List<RewardMilestone>,
     ) {
         val ids = rewardMilestones.map { it.id }.filter { it != 0L }
-        if (ids.isNotEmpty()) {
+        if (ids.isEmpty()) {
+            dao.deleteBySheetId(sheetId)
+        } else {
             dao.deleteNotIn(sheetId, ids)
         }
 

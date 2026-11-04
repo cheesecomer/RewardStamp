@@ -166,4 +166,39 @@ class RewardMilestoneRepositoryTest {
             assertThat(sheet1.map { it.reward }).containsExactly("対象シート更新")
             assertThat(sheet2.map { it.reward }).containsExactly("別シート")
         }
+
+    @Test
+    fun saveAll_deletesExistingMilestonesWhenAllReplacedWithNewOnes() =
+        runTest {
+            dao.insert(
+                rewardMilestoneEntity(
+                    sheetId = 1L,
+                    reward = "消す",
+                ),
+            )
+            dao.insert(
+                rewardMilestoneEntity(
+                    sheetId = 2L,
+                    reward = "別シート",
+                ),
+            )
+
+            repository.saveAll(
+                sheetId = 1L,
+                rewardMilestones =
+                    listOf(
+                        rewardMilestone(
+                            id = 0L,
+                            sheetId = 1L,
+                            reward = "新規",
+                        ),
+                    ),
+            )
+
+            val sheet1 = repository.findBySheetId(1L)
+            val sheet2 = repository.findBySheetId(2L)
+
+            assertThat(sheet1.map { it.reward }).containsExactly("新規")
+            assertThat(sheet2.map { it.reward }).containsExactly("別シート")
+        }
 }
