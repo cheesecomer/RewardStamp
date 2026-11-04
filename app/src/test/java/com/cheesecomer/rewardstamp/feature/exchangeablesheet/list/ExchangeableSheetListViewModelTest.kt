@@ -10,6 +10,7 @@ import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.rewardMilestone
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
+import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -65,6 +66,7 @@ class ExchangeableSheetListViewModelTest {
 
         exchangeableSheetRepository =
             ExchangeableSheetRepository(
+                transactionRunner = RoomTransactionRunner(database),
                 rewardSheetRepository = rewardSheetRepository,
                 completedRewardSheetRepository = completedRewardSheetRepository,
                 rewardMilestoneRepository = rewardMilestoneRepository,

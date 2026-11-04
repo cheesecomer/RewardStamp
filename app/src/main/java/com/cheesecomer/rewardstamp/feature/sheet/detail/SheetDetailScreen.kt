@@ -81,6 +81,7 @@ private fun sheetDetailViewModel(): SheetDetailViewModel {
                 application.completedRewardSheetRepository,
                 application.rewardStampRepository,
                 application.rewardMilestoneRepository,
+                application.sheetCompletionRepository,
             ),
     )
 }
