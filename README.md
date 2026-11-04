@@ -105,7 +105,7 @@ SQLite
 
 - Android Studio
 - Android SDK
-- JDK 11
+- JDK 21
 
 リポジトリをクローンしたら、一度 Gradle を実行して開発環境を初期化してください。
 
