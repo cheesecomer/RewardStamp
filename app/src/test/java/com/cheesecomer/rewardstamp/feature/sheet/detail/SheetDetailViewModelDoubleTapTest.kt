@@ -30,15 +30,15 @@ class SheetDetailViewModelDoubleTapTest {
             val sheet = rewardSheet(id = 1L, currentCount = 0, goalCount = 10)
             val rewardSheetRepository =
                 mock<RewardSheetRepository> {
-                    onBlocking { findById(any()) } doReturn sheet
-                    onBlocking { increment(any()) } doSuspendableAnswer {
+                    on { findById(any()) } doReturn sheet
+                    on { increment(any()) } doSuspendableAnswer {
                         gate.await()
                         true
                     }
                 }
             val rewardStampRepository =
                 mock<RewardStampRepository> {
-                    onBlocking { findBySheetId(any()) } doReturn emptyList()
+                    on { findBySheetId(any()) } doReturn emptyList()
                 }
             val viewModel =
                 SheetDetailViewModel(
