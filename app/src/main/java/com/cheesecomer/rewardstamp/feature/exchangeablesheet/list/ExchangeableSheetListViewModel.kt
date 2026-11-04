@@ -1,36 +1,21 @@
 package com.cheesecomer.rewardstamp.feature.exchangeablesheet.list
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class ExchangeableSheetListViewModel(
     private val exchangeableRewardRepository: ExchangeableSheetRepository,
 ) : ViewModel() {
-    @ExcludeFromCoverage
-    companion object {
-        fun factory(exchangeableRewardRepository: ExchangeableSheetRepository): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    ExchangeableSheetListViewModel(exchangeableRewardRepository)
-                }
-            }
-    }
-
-    var uiState by mutableStateOf(
-        ExchangeableSheetListUiState(),
-    )
-        private set
+    private val _uiState = MutableStateFlow(ExchangeableSheetListUiState())
+    val uiState: StateFlow<ExchangeableSheetListUiState> = _uiState.asStateFlow()
 
     private var receiveRewardJob: Job? = null
 
@@ -39,10 +24,8 @@ class ExchangeableSheetListViewModel(
     }
 
     private suspend fun reloadUiState() {
-        uiState =
-            uiState.copy(
-                sheets = exchangeableRewardRepository.findAll(),
-            )
+        val sheets = exchangeableRewardRepository.findAll()
+        _uiState.update { it.copy(sheets = sheets) }
     }
 
     fun reload() {

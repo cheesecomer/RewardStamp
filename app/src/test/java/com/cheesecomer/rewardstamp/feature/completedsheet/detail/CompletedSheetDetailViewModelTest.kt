@@ -90,15 +90,19 @@ class CompletedSheetDetailViewModelTest {
 
             viewModel.load(completedRewardSheetId)
 
-            assertThat(viewModel.uiState.sheet).isNotNull()
-            assertThat(viewModel.uiState.sheet!!.title)
-                .isEqualTo("はみがき")
+            assertThat(viewModel.uiState.value.sheet).isNotNull()
+            assertThat(
+                viewModel.uiState.value.sheet!!
+                    .title,
+            ).isEqualTo("はみがき")
 
-            assertThat(viewModel.uiState.stamps)
+            assertThat(viewModel.uiState.value.stamps)
                 .hasSize(2)
 
-            assertThat(viewModel.uiState.stamps.map { it.position })
-                .containsExactly(0, 1)
+            assertThat(
+                viewModel.uiState.value.stamps
+                    .map { it.position },
+            ).containsExactly(0, 1)
                 .inOrder()
         }
 

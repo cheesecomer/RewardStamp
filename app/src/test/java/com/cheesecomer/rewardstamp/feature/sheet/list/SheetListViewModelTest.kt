@@ -110,9 +110,11 @@ class SheetListViewModelTest {
                 )
             viewModel.reload()
 
-            assertThat(viewModel.sheets.map { it.title })
-                .containsExactly("はみがき", "おかたづけ")
-            assertThat(viewModel.latestStamps.keys).containsExactly(exchangeableSheetId)
+            assertThat(
+                viewModel.uiState.value.sheets
+                    .map { it.title },
+            ).containsExactly("はみがき", "おかたづけ")
+            assertThat(viewModel.uiState.value.latestStamps.keys).containsExactly(exchangeableSheetId)
         }
 
     @Test
@@ -143,7 +145,9 @@ class SheetListViewModelTest {
 
             viewModel.reload()
 
-            assertThat(viewModel.sheets.map { it.title })
-                .containsExactly("追加シート")
+            assertThat(
+                viewModel.uiState.value.sheets
+                    .map { it.title },
+            ).containsExactly("追加シート")
         }
 }

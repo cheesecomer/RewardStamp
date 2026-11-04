@@ -85,9 +85,11 @@ class ExchangeableSheetListViewModelTest {
 
             val viewModel = createViewModel()
 
-            assertThat(viewModel.uiState.sheets).hasSize(1)
+            assertThat(viewModel.uiState.value.sheets).hasSize(1)
 
-            val sheet = viewModel.uiState.sheets.single()
+            val sheet =
+                viewModel.uiState.value.sheets
+                    .single()
             assertThat(sheet.rewardSheet.id).isEqualTo(sheetId)
             assertThat(sheet.rewardSheet.title).isEqualTo("はみがき")
             assertThat(sheet.exchangeableSheetCount).isEqualTo(1)
@@ -101,15 +103,15 @@ class ExchangeableSheetListViewModelTest {
         runTest {
             val viewModel = createViewModel()
 
-            assertThat(viewModel.uiState.sheets).isEmpty()
+            assertThat(viewModel.uiState.value.sheets).isEmpty()
 
             val sheetId = createExchangeableSheet()
 
             viewModel.reload()
 
-            assertThat(viewModel.uiState.sheets).hasSize(1)
+            assertThat(viewModel.uiState.value.sheets).hasSize(1)
             assertThat(
-                viewModel.uiState.sheets
+                viewModel.uiState.value.sheets
                     .single()
                     .rewardSheet
                     .id,
@@ -138,7 +140,7 @@ class ExchangeableSheetListViewModelTest {
             }
 
             assertThat(completed).isTrue()
-            assertThat(viewModel.uiState.sheets).isEmpty()
+            assertThat(viewModel.uiState.value.sheets).isEmpty()
             assertThat(
                 completedRewardSheetRepository.countExchangeableBySheetId(sheetId),
             ).isEqualTo(0)

@@ -22,15 +22,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
-import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.ExchangeableSheet
 import com.cheesecomer.rewardstamp.model.RewardMilestone
@@ -39,6 +37,7 @@ import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialog
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialog
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 
@@ -68,19 +67,6 @@ private fun EmptyList(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
         )
     }
-}
-
-@ExcludeFromCoverage
-@Composable
-private fun exchangeableSheetListViewModel(): ExchangeableSheetListViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel(
-        factory =
-            ExchangeableSheetListViewModel.factory(
-                application.exchangeableSheetRepository,
-            ),
-    )
 }
 
 @Composable
@@ -184,10 +170,17 @@ internal fun ExchangeableSheetListContent(
 @Composable
 fun ExchangeableSheetListScreen(
     modifier: Modifier = Modifier,
-    viewModel: ExchangeableSheetListViewModel = exchangeableSheetListViewModel(),
+    viewModel: ExchangeableSheetListViewModel =
+        rewardStampViewModel {
+            ExchangeableSheetListViewModel(
+                exchangeableSheetRepository,
+            )
+        },
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     ExchangeableSheetListContent(
-        sheets = viewModel.uiState.sheets,
+        sheets = uiState.sheets,
         modifier = modifier,
         onRewardSelect = { sheetId, milestone ->
             viewModel.receiveReward(sheetId, milestone)

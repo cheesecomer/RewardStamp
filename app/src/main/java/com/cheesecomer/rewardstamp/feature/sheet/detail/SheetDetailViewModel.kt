@@ -1,14 +1,7 @@
 package com.cheesecomer.rewardstamp.feature.sheet.detail
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.CompletedRewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
@@ -19,6 +12,10 @@ import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 
@@ -30,35 +27,11 @@ class SheetDetailViewModel(
     private val sheetCompletionRepository: SheetCompletionRepository,
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
 ) : ViewModel() {
-    @ExcludeFromCoverage
-    companion object {
-        fun factory(
-            rewardSheetRepository: RewardSheetRepository,
-            completedRewardSheetRepository: CompletedRewardSheetRepository,
-            rewardStampRepository: RewardStampRepository,
-            rewardMilestoneRepository: RewardMilestoneRepository,
-            sheetCompletionRepository: SheetCompletionRepository,
-        ): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    SheetDetailViewModel(
-                        rewardSheetRepository,
-                        completedRewardSheetRepository,
-                        rewardStampRepository,
-                        rewardMilestoneRepository,
-                        sheetCompletionRepository,
-                    )
-                }
-            }
-    }
-
-    var uiState by mutableStateOf(
-        SheetDetailUiState(),
-    )
-        private set
+    private val _uiState = MutableStateFlow(SheetDetailUiState())
+    val uiState: StateFlow<SheetDetailUiState> = _uiState.asStateFlow()
 
     fun load(sheetId: Long) {
-        val sheet = uiState.sheet
+        val sheet = _uiState.value.sheet
         if (sheet != null && sheet.id == sheetId && sheet.isCompleted) return
 
         reload(sheetId)
@@ -67,12 +40,14 @@ class SheetDetailViewModel(
     private fun reload(sheetId: Long) {
         viewModelScope.launch {
             val sheet = rewardSheetRepository.findById(sheetId)
-            uiState =
-                uiState.copy(
+            val stamps = rewardStampRepository.findBySheetId(sheetId)
+            _uiState.update {
+                it.copy(
                     sheet = sheet,
-                    stamps = rewardStampRepository.findBySheetId(sheetId),
+                    stamps = stamps,
                     goalStampType = null,
                 )
+            }
 
             if (sheet != null && sheet.isCompleted) {
                 complete(sheet)
@@ -90,7 +65,7 @@ class SheetDetailViewModel(
 
         incrementJob =
             viewModelScope.launch {
-                val sheetBefore = uiState.sheet ?: return@launch
+                val sheetBefore = _uiState.value.sheet ?: return@launch
                 if (!rewardSheetRepository.increment(sheetId)) {
                     return@launch
                 }
@@ -108,11 +83,12 @@ class SheetDetailViewModel(
 
                 val sheet = rewardSheetRepository.findById(sheetId)
                 val stamps = rewardStampRepository.findBySheetId(sheetId)
-                uiState =
-                    uiState.copy(
+                _uiState.update {
+                    it.copy(
                         sheet = sheet,
                         stamps = stamps,
                     )
+                }
 
                 if (sheet != null && sheet.isCompleted) {
                     complete(sheet)
@@ -130,22 +106,23 @@ class SheetDetailViewModel(
             return
         }
 
-        uiState =
-            uiState.copy(
-                exchangeableRewards =
-                    rewardMilestoneRepository
-                        .findExchangeableMilestonesBySheetId(
-                            sheet.id,
-                            exchangeableSheetCount,
-                        ),
-                lockedRewards =
-                    rewardMilestoneRepository
-                        .findLockedMilestonesBySheetId(
-                            sheet.id,
-                            exchangeableSheetCount,
-                        ),
+        val exchangeableRewards =
+            rewardMilestoneRepository.findExchangeableMilestonesBySheetId(
+                sheet.id,
+                exchangeableSheetCount,
+            )
+        val lockedRewards =
+            rewardMilestoneRepository.findLockedMilestonesBySheetId(
+                sheet.id,
+                exchangeableSheetCount,
+            )
+        _uiState.update {
+            it.copy(
+                exchangeableRewards = exchangeableRewards,
+                lockedRewards = lockedRewards,
                 goalStampType = goalStampType,
             )
+        }
     }
 
     fun delete(

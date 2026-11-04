@@ -1,35 +1,19 @@
 package com.cheesecomer.rewardstamp.feature.completedsheet.list
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.CompletedRewardSheetRepository
-import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CompletedSheetListViewModel(
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
 ) : ViewModel() {
-    @ExcludeFromCoverage
-    companion object {
-        fun factory(completedRewardSheetRepository: CompletedRewardSheetRepository): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    CompletedSheetListViewModel(
-                        completedRewardSheetRepository,
-                    )
-                }
-            }
-    }
-
-    var sheets by mutableStateOf<List<CompletedRewardSheet>>(emptyList())
-        private set
+    private val _uiState = MutableStateFlow(CompletedSheetListUiState())
+    val uiState: StateFlow<CompletedSheetListUiState> = _uiState.asStateFlow()
 
     init {
         reload()
@@ -37,7 +21,8 @@ class CompletedSheetListViewModel(
 
     fun reload() {
         viewModelScope.launch {
-            sheets = completedRewardSheetRepository.findAll()
+            val sheets = completedRewardSheetRepository.findAll()
+            _uiState.update { it.copy(sheets = sheets) }
         }
     }
 }

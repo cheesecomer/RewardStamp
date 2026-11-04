@@ -20,12 +20,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cheesecomer.rewardstamp.RewardStampApplication
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardMilestone
@@ -35,6 +33,7 @@ import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialog
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
 
@@ -67,23 +66,6 @@ private fun SheetDetailDialogs(
 
         null -> Unit
     }
-}
-
-@ExcludeFromCoverage
-@Composable
-private fun sheetDetailViewModel(): SheetDetailViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel<SheetDetailViewModel>(
-        factory =
-            SheetDetailViewModel.factory(
-                application.rewardSheetRepository,
-                application.completedRewardSheetRepository,
-                application.rewardStampRepository,
-                application.rewardMilestoneRepository,
-                application.sheetCompletionRepository,
-            ),
-    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -249,18 +231,29 @@ fun SheetDetailScreen(
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
     onRestartWithEditClick: () -> Unit = {},
-    viewModel: SheetDetailViewModel = sheetDetailViewModel(),
+    viewModel: SheetDetailViewModel =
+        rewardStampViewModel {
+            SheetDetailViewModel(
+                rewardSheetRepository,
+                completedRewardSheetRepository,
+                rewardStampRepository,
+                rewardMilestoneRepository,
+                sheetCompletionRepository,
+            )
+        },
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(sheetId) {
         viewModel.load(sheetId)
     }
 
     SheetDetailContent(
-        sheet = viewModel.uiState.sheet,
-        stamps = viewModel.uiState.stamps,
-        goalStampType = viewModel.uiState.goalStampType,
-        exchangeableRewards = viewModel.uiState.exchangeableRewards,
-        lockedRewards = viewModel.uiState.lockedRewards,
+        sheet = uiState.sheet,
+        stamps = uiState.stamps,
+        goalStampType = uiState.goalStampType,
+        exchangeableRewards = uiState.exchangeableRewards,
+        lockedRewards = uiState.lockedRewards,
         modifier = modifier,
         onBackClick = onBackClick,
         onEditClick = onEditClick,

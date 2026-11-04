@@ -22,39 +22,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
-import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
-
-@ExcludeFromCoverage
-@Composable
-private fun sheetListViewModel(): SheetListViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel(
-        factory =
-            SheetListViewModel.factory(
-                application.rewardSheetRepository,
-                application.rewardStampRepository,
-            ),
-    )
-}
 
 @Composable
 private fun EmptyList(modifier: Modifier = Modifier) {
@@ -167,18 +153,26 @@ internal fun SheetListContent(
 @Composable
 fun SheetListScreen(
     modifier: Modifier = Modifier,
-    viewModel: SheetListViewModel = sheetListViewModel(),
+    viewModel: SheetListViewModel =
+        rewardStampViewModel {
+            SheetListViewModel(
+                rewardSheetRepository,
+                rewardStampRepository,
+            )
+        },
     onSheetClick: (Long) -> Unit = {},
     onCreateSheetClick: () -> Unit = {},
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(Unit) {
         viewModel.reload()
     }
 
     SheetListContent(
         modifier = modifier,
-        sheets = viewModel.sheets,
-        latestStamps = viewModel.latestStamps,
+        sheets = uiState.sheets,
+        latestStamps = uiState.latestStamps,
         onSheetClick = onSheetClick,
         onCreateSheetClick = onCreateSheetClick,
     )

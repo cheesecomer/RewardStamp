@@ -20,33 +20,19 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.cheesecomer.rewardstamp.RewardStampApplication
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.ui.RewardStampTextFieldDefaults
+import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
-
-@ExcludeFromCoverage
-@Composable
-private fun sheetEditViewModel(): SheetEditViewModel {
-    val application =
-        LocalContext.current.applicationContext as RewardStampApplication
-    return viewModel(
-        factory =
-            SheetEditViewModel.factory(
-                application.rewardSheetRepository,
-                application.rewardMilestoneRepository,
-            ),
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -195,10 +181,18 @@ internal fun SheetEditContent(
 fun SheetEditScreen(
     modifier: Modifier = Modifier,
     sheetId: Long? = null,
-    viewModel: SheetEditViewModel = sheetEditViewModel(),
+    viewModel: SheetEditViewModel =
+        rewardStampViewModel {
+            SheetEditViewModel(
+                rewardSheetRepository,
+                rewardMilestoneRepository,
+            )
+        },
     onSaveClick: () -> Unit = {},
     onBackClick: () -> Unit = {},
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(sheetId) {
         if (sheetId != null) {
             viewModel.load(sheetId)
@@ -207,11 +201,11 @@ fun SheetEditScreen(
 
     SheetEditContent(
         sheetId = sheetId,
-        title = viewModel.uiState.title,
-        goalCount = viewModel.uiState.goalCount,
-        milestones = viewModel.uiState.milestones,
+        title = uiState.title,
+        goalCount = uiState.goalCount,
+        milestones = uiState.milestones,
         modifier = modifier,
-        canSave = viewModel.canSave(),
+        canSave = uiState.canSave(),
         onSaveClick = {
             viewModel.save {
                 onSaveClick()

@@ -1,14 +1,7 @@
 package com.cheesecomer.rewardstamp.feature.sheet.edit
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.model.RewardMilestone
@@ -16,6 +9,10 @@ import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.ui.component.MAX_GOAL_COUNT
 import com.cheesecomer.rewardstamp.ui.component.MIN_GOAL_COUNT
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 @Suppress("TooManyFunctions")
@@ -23,26 +20,8 @@ class SheetEditViewModel(
     private val rewardSheetRepository: RewardSheetRepository,
     private val milestoneRepository: RewardMilestoneRepository,
 ) : ViewModel() {
-    @ExcludeFromCoverage
-    companion object {
-        fun factory(
-            rewardSheetRepository: RewardSheetRepository,
-            milestoneRepository: RewardMilestoneRepository,
-        ): ViewModelProvider.Factory =
-            viewModelFactory {
-                initializer {
-                    SheetEditViewModel(
-                        rewardSheetRepository,
-                        milestoneRepository,
-                    )
-                }
-            }
-    }
-
-    var uiState by mutableStateOf(
-        SheetEditUiState(),
-    )
-        private set
+    private val _uiState = MutableStateFlow(SheetEditUiState())
+    val uiState: StateFlow<SheetEditUiState> = _uiState.asStateFlow()
 
     private var loadedSheetId: Long? = null
 
@@ -54,67 +33,58 @@ class SheetEditViewModel(
             val sheet = rewardSheetRepository.findById(sheetId)
             if (sheet == null) return@launch
 
-            uiState =
-                uiState.copy(
+            val milestones = milestoneRepository.findBySheetId(sheetId)
+            _uiState.update {
+                it.copy(
                     sheetId = sheetId,
                     title = sheet.title,
                     goalCount = sheet.goalCount,
                     currentCount = sheet.currentCount,
-                    milestones = milestoneRepository.findBySheetId(sheetId),
+                    milestones = milestones,
                 )
+            }
         }
     }
 
     fun updateTitle(title: String) {
-        uiState =
-            uiState.copy(
-                title = title,
-            )
+        _uiState.update { it.copy(title = title) }
     }
 
     fun incrementGoalCount() {
-        if (uiState.goalCount >= MAX_GOAL_COUNT) return
-
-        uiState =
-            uiState.copy(
-                goalCount = uiState.goalCount + 1,
-            )
+        _uiState.update {
+            if (it.goalCount >= MAX_GOAL_COUNT) it else it.copy(goalCount = it.goalCount + 1)
+        }
     }
 
     fun decrementGoalCount() {
-        if (uiState.goalCount <= maxOf(MIN_GOAL_COUNT, uiState.currentCount)) return
-
-        uiState =
-            uiState.copy(
-                goalCount = uiState.goalCount - 1,
-            )
+        _uiState.update {
+            if (it.goalCount <= maxOf(MIN_GOAL_COUNT, it.currentCount)) it else it.copy(goalCount = it.goalCount - 1)
+        }
     }
 
     fun createMilestone(milestone: RewardMilestone) {
-        uiState =
-            uiState.copy(
-                milestones = uiState.milestones + milestone,
-            )
+        _uiState.update { it.copy(milestones = it.milestones + milestone) }
     }
 
     fun removeMilestone(index: Int) {
-        uiState =
-            uiState.copy(
+        _uiState.update {
+            it.copy(
                 milestones =
-                    uiState.milestones.filterIndexed { i, _ ->
+                    it.milestones.filterIndexed { i, _ ->
                         i != index
                     },
             )
+        }
     }
 
     fun updateMilestone(
         index: Int,
         value: RewardMilestone,
     ) {
-        uiState =
-            uiState.copy(
+        _uiState.update {
+            it.copy(
                 milestones =
-                    uiState.milestones.mapIndexed { i, milestone ->
+                    it.milestones.mapIndexed { i, milestone ->
                         if (index == i) {
                             milestone.copy(
                                 reward = value.reward,
@@ -125,10 +95,12 @@ class SheetEditViewModel(
                         }
                     },
             )
+        }
     }
 
-    suspend fun createRewardSheet(): RewardSheet =
-        RewardSheet(
+    suspend fun createRewardSheet(): RewardSheet {
+        val uiState = _uiState.value
+        return RewardSheet(
             id = uiState.sheetId,
             title = uiState.title,
             currentCount =
@@ -139,13 +111,12 @@ class SheetEditViewModel(
                     } ?: 0,
             goalCount = uiState.goalCount,
         )
-
-    fun canSave(): Boolean = uiState.canSave()
+    }
 
     private var saveJob: Job? = null
 
     fun save(onSaved: () -> Unit) {
-        if (!canSave() || saveJob?.isActive == true) {
+        if (!_uiState.value.canSave() || saveJob?.isActive == true) {
             return
         }
 
@@ -156,7 +127,7 @@ class SheetEditViewModel(
                         createRewardSheet(),
                     )
                 val milestones =
-                    uiState.milestones.map {
+                    _uiState.value.milestones.map {
                         RewardMilestone(
                             id = it.id,
                             sheetId = sheetId,

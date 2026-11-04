@@ -65,8 +65,10 @@ class CompletedSheetListViewModelTest {
 
             val viewModel = createViewModel()
 
-            assertThat(viewModel.sheets.map { it.title })
-                .containsExactly("はみがき", "おかたづけ")
+            assertThat(
+                viewModel.uiState.value.sheets
+                    .map { it.title },
+            ).containsExactly("はみがき", "おかたづけ")
         }
 
     @Test
@@ -74,7 +76,7 @@ class CompletedSheetListViewModelTest {
         runTest {
             val viewModel = createViewModel()
 
-            assertThat(viewModel.sheets).isEmpty()
+            assertThat(viewModel.uiState.value.sheets).isEmpty()
 
             completedRewardSheetRepository.save(
                 completedRewardSheet(
@@ -85,8 +87,10 @@ class CompletedSheetListViewModelTest {
 
             viewModel.reload()
 
-            assertThat(viewModel.sheets.map { it.title })
-                .containsExactly("追加シート")
+            assertThat(
+                viewModel.uiState.value.sheets
+                    .map { it.title },
+            ).containsExactly("追加シート")
         }
 
     private fun createViewModel(): CompletedSheetListViewModel =
