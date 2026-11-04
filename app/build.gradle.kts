@@ -149,6 +149,8 @@ tasks.withType<Test>().configureEach {
     // Paparazzi (layoutlib) and Robolectric load conflicting native libraries, so they cannot share a JVM
     forkEvery = 1
     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+    // Robolectric accesses FileDescriptor internals through jdk.internal.access.SharedSecrets
+    jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
 
     testLogging {
         events("passed", "failed", "skipped")
