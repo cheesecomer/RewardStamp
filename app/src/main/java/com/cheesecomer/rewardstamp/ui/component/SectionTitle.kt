@@ -1,4 +1,4 @@
-package com.cheesecomer.rewardstamp.feature.sheet.edit
+package com.cheesecomer.rewardstamp.ui.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -15,7 +15,7 @@ import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 
 @Composable
-fun SheetEditSectionTitle(
+fun SectionTitle(
     text: String,
     modifier: Modifier = Modifier,
 ) {

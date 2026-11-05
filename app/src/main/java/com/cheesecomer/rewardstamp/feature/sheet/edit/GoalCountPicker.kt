@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cheesecomer.rewardstamp.R
+import com.cheesecomer.rewardstamp.ui.component.SectionTitle
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 import com.cheesecomer.rewardstamp.ui.theme.SheetPrimary
 import com.cheesecomer.rewardstamp.ui.theme.SheetPrimaryContainer
@@ -122,7 +123,7 @@ fun GoalCountPicker(
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            SheetEditSectionTitle(text = stringResource(R.string.sheet_edit_goal_count_label))
+            SectionTitle(text = stringResource(R.string.sheet_edit_goal_count_label))
             Spacer(modifier = Modifier.size(8.dp))
 
             Box(

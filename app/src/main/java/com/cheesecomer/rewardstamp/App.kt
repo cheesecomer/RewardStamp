@@ -6,13 +6,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardstamp.model.AppSettings
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.navigation.NavControllerNavigator
 import com.cheesecomer.rewardstamp.navigation.RewardStampNavHost
 import com.cheesecomer.rewardstamp.navigation.Route
+import com.cheesecomer.rewardstamp.ui.ProvideHapticFeedback
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 
 @ExcludeFromCoverage
@@ -22,27 +26,32 @@ fun App(modifier: Modifier = Modifier) {
     val navigator = remember(navController) { NavControllerNavigator(navController) }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val selectedTab = Route.bottomTab(backStackEntry?.destination?.route) ?: BottomTab.Sheets
+    val context = LocalContext.current
+    val settingsRepository = remember { (context.applicationContext as RewardStampApplication).settingsRepository }
+    val settings by settingsRepository.settings.collectAsStateWithLifecycle(AppSettings())
 
-    Scaffold(
-        modifier = modifier,
-        bottomBar = {
-            RewardStampBottomBar(
-                selectedTab = selectedTab,
-                onTabClick = { tab ->
-                    when (tab) {
-                        BottomTab.Sheets -> navigator.toSheetList()
-                        BottomTab.Rewards -> navigator.toExchangeableRewardList()
-                        BottomTab.History -> navigator.toCompletedSheetList()
-                        BottomTab.Settings -> navigator.toSettings()
-                    }
-                },
+    ProvideHapticFeedback(enabled = settings.vibrationEnabled) {
+        Scaffold(
+            modifier = modifier,
+            bottomBar = {
+                RewardStampBottomBar(
+                    selectedTab = selectedTab,
+                    onTabClick = { tab ->
+                        when (tab) {
+                            BottomTab.Sheets -> navigator.toSheetList()
+                            BottomTab.Rewards -> navigator.toExchangeableRewardList()
+                            BottomTab.History -> navigator.toCompletedSheetList()
+                            BottomTab.Settings -> navigator.toSettings()
+                        }
+                    },
+                )
+            },
+        ) { innerPadding ->
+            RewardStampNavHost(
+                navController = navController,
+                navigator = navigator,
+                modifier = Modifier.padding(innerPadding),
             )
-        },
-    ) { innerPadding ->
-        RewardStampNavHost(
-            navController = navController,
-            navigator = navigator,
-            modifier = Modifier.padding(innerPadding),
-        )
+        }
     }
 }

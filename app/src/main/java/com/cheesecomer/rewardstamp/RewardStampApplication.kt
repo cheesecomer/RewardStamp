@@ -1,6 +1,8 @@
 package com.cheesecomer.rewardstamp
 
 import android.app.Application
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.room.Room
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.data.repository.CompletedRewardSheetRepository
@@ -8,6 +10,7 @@ import com.cheesecomer.rewardstamp.data.repository.ExchangeableSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardStampRepository
+import com.cheesecomer.rewardstamp.data.repository.SettingsRepository
 import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
 import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
@@ -48,6 +51,14 @@ class RewardStampApplication : Application() {
             rewardSheetRepository,
             completedRewardSheetRepository,
             rewardMilestoneRepository,
+        )
+    }
+
+    val settingsRepository: SettingsRepository by lazy {
+        SettingsRepository(
+            PreferenceDataStoreFactory.create {
+                applicationContext.preferencesDataStoreFile("settings")
+            },
         )
     }
 
