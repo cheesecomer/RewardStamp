@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -122,6 +123,7 @@ private fun CompletedSheetGridItem(
                 Icon(
                     painter = painterResource(sheet.goalStampType.iconRes),
                     contentDescription = sheet.goalStampType.id,
+                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                     tint = StampInk,
                 )
                 Text(
