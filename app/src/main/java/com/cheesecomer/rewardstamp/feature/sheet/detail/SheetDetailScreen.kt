@@ -1,6 +1,6 @@
 package com.cheesecomer.rewardstamp.feature.sheet.detail
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -131,6 +131,32 @@ private fun SheetNotFound(
 }
 
 @Composable
+private fun SheetDetailBody(
+    sheet: RewardSheet,
+    stamps: List<RewardStamp>,
+    goalStampType: GoalStampType?,
+    stampedPosition: Int?,
+    stampAnimationState: StampAnimationState,
+    onStampClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(modifier = modifier) {
+        ProgressSheet(
+            sheet = sheet,
+            stamps = stamps,
+            goalStampType = goalStampType,
+            onStampTypeSelect = onStampClick,
+            press = stampAnimationState.press(stampedPosition),
+            modifier = Modifier.padding(16.dp),
+        )
+        GoalCelebration(
+            state = stampAnimationState,
+            goalStampType = goalStampType,
+        )
+    }
+}
+
+@Composable
 internal fun SheetDetailContent(
     sheet: RewardSheet?,
     stamps: List<RewardStamp>,
@@ -138,6 +164,7 @@ internal fun SheetDetailContent(
     lockedRewards: List<RewardMilestone>,
     modifier: Modifier = Modifier,
     goalStampType: GoalStampType? = null,
+    stampedPosition: Int? = null,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
@@ -149,6 +176,7 @@ internal fun SheetDetailContent(
     if (sheet == null) {
         SheetNotFound(modifier = modifier, onBackClick = onBackClick)
     } else {
+        val stampAnimationState = rememberStampAnimationState(stampedPosition, sheet.goalCount, goalStampType)
         SheetDetailDialogs(
             activeDialog = activeDialog,
             onDismissRequest = {
@@ -177,7 +205,7 @@ internal fun SheetDetailContent(
                 )
             },
         ) { innerPadding ->
-            if (sheet.isCompleted) {
+            if (sheet.isCompleted && stampAnimationState.isFinished) {
                 CongratulationDialog(
                     onDismissRequest = onRestartClick,
                     onEditButtonClick = onRestartWithEditClick,
@@ -186,21 +214,17 @@ internal fun SheetDetailContent(
                     modifier = Modifier.testTag(CongratulationDialogTestTags.ROOT),
                 )
             }
-            Column(
-                modifier =
-                    Modifier
-                        .padding(innerPadding)
-                        .padding(16.dp),
-            ) {
-                ProgressSheet(
-                    sheet = sheet,
-                    stamps = stamps,
-                    goalStampType = goalStampType,
-                    onStampTypeSelect = {
-                        activeDialog = SheetDetailDialog.Stamp
-                    },
-                )
-            }
+            SheetDetailBody(
+                sheet = sheet,
+                stamps = stamps,
+                goalStampType = goalStampType,
+                stampedPosition = stampedPosition,
+                stampAnimationState = stampAnimationState,
+                onStampClick = {
+                    activeDialog = SheetDetailDialog.Stamp
+                },
+                modifier = Modifier.padding(innerPadding),
+            )
         }
     }
 }
@@ -236,6 +260,7 @@ fun SheetDetailScreen(
         sheet = uiState.sheet,
         stamps = uiState.stamps,
         goalStampType = uiState.goalStampType,
+        stampedPosition = uiState.stampedPosition,
         exchangeableRewards = uiState.exchangeableRewards,
         lockedRewards = uiState.lockedRewards,
         modifier = modifier,

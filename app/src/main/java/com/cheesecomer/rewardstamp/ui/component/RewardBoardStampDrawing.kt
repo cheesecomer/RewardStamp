@@ -12,8 +12,8 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.util.lerp
 import androidx.core.graphics.withSave
-import com.cheesecomer.rewardstamp.model.GoalStamp
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardLayout.STAMP_OFFSET_RANGE
@@ -91,19 +91,41 @@ private fun Canvas.drawStampStampedAt(
     )
 }
 
+private const val PRESS_START_SCALE = 3f
+private const val OPAQUE_ALPHA = 255
+
+// Draws a stamp coming down onto the board: shrinks from PRESS_START_SCALE and fades in as progress goes from 0 to 1
+private fun Canvas.withPress(
+    progress: Float,
+    pivot: Offset,
+    block: Canvas.() -> Unit,
+) {
+    if (progress == 1f) {
+        block()
+        return
+    }
+
+    val scale = lerp(PRESS_START_SCALE, 1f, progress)
+    val count = saveLayerAlpha(null, (progress.coerceIn(0f, 1f) * OPAQUE_ALPHA).toInt())
+    scale(scale, scale, pivot.x, pivot.y)
+    block()
+    restoreToCount(count)
+}
+
 private const val GOAL_STAMP_SCALE = 0.8f
 
-private fun DrawScope.drawGoalStamp(
+internal fun DrawScope.drawGoalStamp(
     pointsByIndex: Map<Int, Offset>,
     metrics: BoardLayoutMetrics,
     goalStampDrawable: Drawable,
     stampedAt: LocalDateTime,
+    pressProgress: Float,
 ) {
     drawIntoCanvas { canvas ->
         val nativeCanvas = canvas.nativeCanvas
         val center = pointsByIndex[pointsByIndex.size - 1]!!
 
-        nativeCanvas.withSave {
+        nativeCanvas.withPress(pressProgress, center) {
             val iconSizePx =
                 arrayOf(
                     (size.width - center.x) * 2f * GOAL_STAMP_SCALE,
@@ -123,14 +145,14 @@ private fun DrawScope.drawGoalStamp(
                 center + Offset(0f, iconSizePx / 2f + 12.dp.toPx()),
                 format = "y/M/d",
             )
-        }
 
-        nativeCanvas.drawStampScratches(
-            center = center,
-            radius = 100.dp.toPx(),
-            seed = 0L, // FixMe
-            backgroundColor = Color.White.copy(alpha = 0.2f),
-        )
+            drawStampScratches(
+                center = center,
+                radius = 100.dp.toPx(),
+                seed = 0L, // FixMe
+                backgroundColor = Color.White.copy(alpha = 0.2f),
+            )
+        }
     }
 }
 
@@ -139,7 +161,7 @@ internal fun DrawScope.drawStamps(
     metrics: BoardLayoutMetrics,
     stamps: List<RewardStamp>,
     stampDrawables: Map<StampType, Drawable>,
-    goalStamp: GoalStamp?,
+    press: StampPress,
 ) {
     val stampRadius = metrics.cellRadius.toPx()
     val iconSizePx = metrics.iconSize.toPx()
@@ -153,45 +175,40 @@ internal fun DrawScope.drawStamps(
         val offset = stampOffset(stamp)
         val rotation = Random(stamp.randomSeed).nextFloat() * 20f - 10f
 
+        val pressProgress = if (stamp.position == press.position) press.progress() else 1f
+
         drawIntoCanvas { canvas ->
             val nativeCanvas = canvas.nativeCanvas
 
-            nativeCanvas.withSave {
-                rotate(
-                    rotation,
-                    center.x,
-                    center.y,
-                )
+            nativeCanvas.withPress(pressProgress, center + offset) {
+                withSave {
+                    rotate(
+                        rotation,
+                        center.x,
+                        center.y,
+                    )
 
-                drawStampIcon(
-                    drawable,
+                    drawStampIcon(
+                        drawable,
+                        center = center,
+                        offset = offset,
+                        iconSizePx = iconSizePx,
+                    )
+
+                    drawStampStampedAt(
+                        stamp.stampedAt,
+                        15.sp.toPx(),
+                        center + offset + Offset(0f, stampRadius + 4.dp.toPx()),
+                    )
+                }
+                drawStampScratches(
                     center = center,
-                    offset = offset,
-                    iconSizePx = iconSizePx,
-                )
-
-                drawStampStampedAt(
-                    stamp.stampedAt,
-                    15.sp.toPx(),
-                    center + offset + Offset(0f, stampRadius + 4.dp.toPx()),
+                    radius = stampRadius,
+                    seed = stamp.randomSeed,
+                    backgroundColor = Color.White.copy(alpha = 0.2f),
                 )
             }
-            nativeCanvas.drawStampScratches(
-                center = center,
-                radius = stampRadius,
-                seed = stamp.randomSeed,
-                backgroundColor = Color.White.copy(alpha = 0.2f),
-            )
         }
-    }
-
-    if (goalStamp != null) {
-        drawGoalStamp(
-            pointsByIndex,
-            metrics,
-            goalStamp.drawable,
-            goalStamp.stampedAt,
-        )
     }
 }
 

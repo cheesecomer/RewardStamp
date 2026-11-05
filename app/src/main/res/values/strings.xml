@@ -39,6 +39,7 @@
     <string name="sheet_detail_message">シートをすべてうめて\nごほうびをもらおう！</string>
     <string name="sheet_detail_available_rewards">いま もらえる ごほうび</string>
     <string name="sheet_detail_next_rewards">つぎの ごほうび</string>
+    <string name="goal_celebration_skip">スキップ</string>
     <string name="stamp_picker_title">スタンプをえらんでね</string>
     <string name="congratulation_title">やったー！</string>
     <string name="congratulation_message">シートがいっぱいになったよ！</string>

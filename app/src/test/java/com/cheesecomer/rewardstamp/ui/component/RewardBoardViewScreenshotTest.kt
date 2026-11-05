@@ -24,6 +24,22 @@ class RewardBoardViewScreenshotTest {
 
     @Test
     fun rewardBoardView() {
+        snapshotBoard()
+    }
+
+    @Test
+    fun rewardBoardView_whileStampsArePressed() {
+        snapshotBoard(
+            press =
+                StampPress(
+                    position = 8,
+                    progress = { 0.5f },
+                    goalProgress = { 0.2f },
+                ),
+        )
+    }
+
+    private fun snapshotBoard(press: StampPress = StampPress()) {
         val now = LocalDateTime.parse("2026-06-01T00:00:00")
         paparazzi.snapshot {
             RewardStampTheme {
@@ -52,6 +68,7 @@ class RewardBoardViewScreenshotTest {
                             drawable = rememberDrawable(GoalStampType.Bear1.iconRes),
                             stampedAt = now,
                         ),
+                    press = press,
                 )
             }
         }
