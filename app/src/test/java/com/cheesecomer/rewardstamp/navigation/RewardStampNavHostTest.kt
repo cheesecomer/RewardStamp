@@ -131,6 +131,15 @@ class RewardStampNavHostTest {
     }
 
     @Test
+    fun navigatesBackWhenCompletedSheetIsDeleted() {
+        navController.navigate(Route.completedSheetDetail(1L))
+
+        composeTestRule.onNodeWithText("delete completed sheet").performClick()
+
+        verify(navigator).back()
+    }
+
+    @Test
     fun navigatesToSetting() {
         navController.navigate(Route.SETTINGS)
         composeTestRule.onNodeWithText("settings").assertExists()
@@ -226,11 +235,17 @@ class RewardStampNavHostTest {
         var completedSheetDetailArgs: Array<Any?> = emptyArray()
 
         @Composable
-        override fun CompletedSheetDetail(completedSheetId: Long) {
-            completedSheetDetailArgs = arrayOf(completedSheetId)
+        override fun CompletedSheetDetail(
+            completedSheetId: Long,
+            onDeleteClick: () -> Unit,
+        ) {
+            completedSheetDetailArgs = arrayOf(completedSheetId, onDeleteClick)
             Scaffold {
                 Column(modifier = Modifier.padding(it)) {
                     Text("completed sheet detail")
+                    Button(onClick = onDeleteClick) {
+                        Text("delete completed sheet")
+                    }
                 }
             }
         }

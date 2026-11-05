@@ -29,4 +29,14 @@ class CompletedSheetDetailViewModel(
             }
         }
     }
+
+    fun delete(
+        completedRewardSheetId: Long,
+        onCompleted: () -> Unit,
+    ) {
+        viewModelScope.launch {
+            completedRewardSheetRepository.delete(completedRewardSheetId)
+            onCompleted()
+        }
+    }
 }

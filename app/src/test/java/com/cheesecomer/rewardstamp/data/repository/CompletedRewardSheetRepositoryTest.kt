@@ -5,6 +5,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
 import com.cheesecomer.rewardstamp.data.source.database.completedRewardSheetEntity
 import com.cheesecomer.rewardstamp.data.source.database.dao.CompletedRewardSheetDao
+import com.cheesecomer.rewardstamp.data.source.database.rewardStampEntity
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -77,5 +78,25 @@ class CompletedRewardSheetRepositoryTest {
 
             assertThat(consumed).hasSize(2)
             assertThat(consumed.all { it.consumedAt == now }).isTrue()
+        }
+
+    @Test
+    fun delete_deletesSheetAndItsStamps() =
+        runTest {
+            val deletedId = dao.insert(completedRewardSheetEntity())
+            val keptId = dao.insert(completedRewardSheetEntity())
+            val stampDao = database.rewardStampDao()
+            stampDao.insert(rewardStampEntity(completedRewardSheetId = deletedId, position = 0))
+            stampDao.insert(rewardStampEntity(completedRewardSheetId = deletedId, position = 1))
+            stampDao.insert(rewardStampEntity(completedRewardSheetId = keptId, position = 0))
+            stampDao.insert(rewardStampEntity(completedRewardSheetId = null, position = 0))
+
+            repository.delete(deletedId)
+
+            assertThat(dao.findById(deletedId)).isNull()
+            assertThat(dao.findById(keptId)).isNotNull()
+            assertThat(stampDao.findByCompletedRewardSheetId(deletedId)).isEmpty()
+            assertThat(stampDao.findByCompletedRewardSheetId(keptId)).hasSize(1)
+            assertThat(stampDao.findBySheetId(1L)).hasSize(1)
         }
 }

@@ -4,11 +4,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
@@ -27,6 +34,7 @@ import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
+import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialog
 import com.cheesecomer.rewardstamp.ui.rememberDrawable
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -74,10 +82,40 @@ private fun GoalCountLabel(
 }
 
 @Composable
+private fun DeleteAction(onDeleteClick: () -> Unit) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    IconButton(
+        onClick = { showDialog = true },
+        modifier = Modifier.testTag(CompletedSheetDetailTestTags.DELETE_BUTTON),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = stringResource(R.string.common_delete),
+        )
+    }
+
+    if (showDialog) {
+        DeleteSheetDialog(
+            title = stringResource(R.string.delete_completed_sheet_title),
+            message = stringResource(R.string.delete_completed_sheet_message),
+            onDeleteRequest = {
+                showDialog = false
+                onDeleteClick()
+            },
+            onDismissRequest = {
+                showDialog = false
+            },
+        )
+    }
+}
+
+@Composable
 internal fun CompletedSheetDetailContent(
     sheet: CompletedRewardSheet?,
     stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
+    onDeleteClick: () -> Unit = {},
 ) {
     if (sheet == null) {
         Text(stringResource(R.string.common_not_found))
@@ -89,6 +127,9 @@ internal fun CompletedSheetDetailContent(
     RewardStampScaffold(
         title = stringResource(R.string.completed_title),
         modifier = modifier,
+        actions = {
+            DeleteAction(onDeleteClick = onDeleteClick)
+        },
     ) { innerPadding ->
         Column(
             modifier =
@@ -134,6 +175,7 @@ internal fun CompletedSheetDetailContent(
 fun CompletedSheetDetailScreen(
     completedSheetId: Long,
     modifier: Modifier = Modifier,
+    onDeleteClick: () -> Unit = {},
     viewModel: CompletedSheetDetailViewModel =
         rewardStampViewModel {
             CompletedSheetDetailViewModel(
@@ -152,6 +194,11 @@ fun CompletedSheetDetailScreen(
         sheet = uiState.sheet,
         stamps = uiState.stamps,
         modifier = modifier,
+        onDeleteClick = {
+            viewModel.delete(completedSheetId) {
+                onDeleteClick()
+            }
+        },
     )
 }
 

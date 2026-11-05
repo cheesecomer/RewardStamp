@@ -40,7 +40,10 @@ interface ScreenFactory {
     fun CompletedSheetList(onRewardClick: (Long) -> Unit)
 
     @Composable
-    fun CompletedSheetDetail(completedSheetId: Long)
+    fun CompletedSheetDetail(
+        completedSheetId: Long,
+        onDeleteClick: () -> Unit,
+    )
 
     @Composable
     fun Settings()
@@ -102,9 +105,13 @@ object RewardStampScreenFactory : ScreenFactory {
     }
 
     @Composable
-    override fun CompletedSheetDetail(completedSheetId: Long) {
+    override fun CompletedSheetDetail(
+        completedSheetId: Long,
+        onDeleteClick: () -> Unit,
+    ) {
         CompletedSheetDetailScreen(
             completedSheetId = completedSheetId,
+            onDeleteClick = onDeleteClick,
         )
     }
 

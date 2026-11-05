@@ -90,6 +90,8 @@
     <string name="completed_goal_count">%1$dかい</string>
     <string name="completed_detail_title_suffix">を</string>
     <string name="completed_detail_goal_count_suffix">かい がんばりました！</string>
+    <string name="delete_completed_sheet_title">きろくを削除しますか？</string>
+    <string name="delete_completed_sheet_message">このきろくは削除されます。元にはもどせません。</string>
 
     <!-- Settings -->
     <string name="settings_title">せってい</string>

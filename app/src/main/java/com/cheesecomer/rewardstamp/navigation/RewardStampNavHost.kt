@@ -89,6 +89,7 @@ fun RewardStampNavHost(
 
             screenFactory.CompletedSheetDetail(
                 completedSheetId = completedSheetId,
+                onDeleteClick = navigator::back,
             )
         }
         composable(Route.SETTINGS) {
