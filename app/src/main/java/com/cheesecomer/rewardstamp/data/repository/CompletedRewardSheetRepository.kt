@@ -26,6 +26,8 @@ class CompletedRewardSheetRepository(
 
     suspend fun countExchangeableBySheetId(sheetId: Long): Int = dao.countExchangeableBySheetId(sheetId)
 
+    suspend fun delete(id: Long) = dao.deleteById(id)
+
     suspend fun markRewardReceived(
         sheetId: Long,
         exchangeCount: Int,

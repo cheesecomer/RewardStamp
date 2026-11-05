@@ -3,6 +3,7 @@ package com.cheesecomer.rewardstamp.data.source.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.cheesecomer.rewardstamp.data.source.database.entity.CompletedRewardSheetEntity
 
@@ -40,4 +41,16 @@ interface CompletedRewardSheetDao {
 
     @Update
     suspend fun update(entity: CompletedRewardSheetEntity)
+
+    @Query("DELETE FROM reward_stamps WHERE completedRewardSheetId = :id")
+    suspend fun deleteStampsById(id: Long)
+
+    @Query("DELETE FROM completed_reward_sheets WHERE id = :id")
+    suspend fun deleteSheetById(id: Long)
+
+    @Transaction
+    suspend fun deleteById(id: Long) {
+        deleteStampsById(id)
+        deleteSheetById(id)
+    }
 }

@@ -106,6 +106,25 @@ class CompletedSheetDetailViewModelTest {
                 .inOrder()
         }
 
+    @Test
+    fun delete_deletesSheetAndCallsCallback() =
+        runTest {
+            val completedRewardSheetId =
+                completedRewardSheetRepository.save(
+                    completedRewardSheet(id = 0),
+                )
+
+            var completed = false
+
+            val viewModel = createViewModel()
+            viewModel.delete(completedRewardSheetId) {
+                completed = true
+            }
+
+            assertThat(completed).isTrue()
+            assertThat(completedRewardSheetRepository.findAll()).isEmpty()
+        }
+
     private fun createViewModel(): CompletedSheetDetailViewModel =
         CompletedSheetDetailViewModel(
             completedRewardSheetRepository = completedRewardSheetRepository,

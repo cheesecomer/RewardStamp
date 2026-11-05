@@ -5,4 +5,5 @@ internal object CompletedSheetDetailTestTags {
     const val TITLE_LABEL_TEXT = "CompletedSheetDetailScreen.TitleLabel.Text"
     const val GOAL_COUNT_LABEL = "CompletedSheetDetailScreen.GoalCountLabel"
     const val GOAL_COUNT_LABEL_TEXT = "CompletedSheetDetailScreen.GoalCountLabel.Text"
+    const val DELETE_BUTTON = "CompletedSheetDetailScreen.DeleteButton"
 }

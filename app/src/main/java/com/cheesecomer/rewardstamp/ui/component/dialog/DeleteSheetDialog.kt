@@ -12,6 +12,8 @@ import com.cheesecomer.rewardstamp.R
 @Composable
 fun DeleteSheetDialog(
     modifier: Modifier = Modifier,
+    title: String = stringResource(R.string.delete_sheet_title),
+    message: String = stringResource(R.string.delete_sheet_message),
     onDeleteRequest: () -> Unit = {},
     onDismissRequest: () -> Unit = {},
 ) {
@@ -19,10 +21,10 @@ fun DeleteSheetDialog(
         modifier = modifier.testTag(DeleteSheetDialogTestTags.ROOT),
         onDismissRequest = onDismissRequest,
         title = {
-            Text(stringResource(R.string.delete_sheet_title))
+            Text(title)
         },
         text = {
-            Text(stringResource(R.string.delete_sheet_message))
+            Text(message)
         },
         confirmButton = {
             TextButton(
