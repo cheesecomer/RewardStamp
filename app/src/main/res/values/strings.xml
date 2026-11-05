@@ -47,6 +47,10 @@
     <string name="congratulation_edit_reward">ごほうびを編集</string>
     <string name="delete_sheet_title">シートを削除しますか？</string>
     <string name="delete_sheet_message">このシートは削除されます。</string>
+    <string name="stamp_action_title">スタンプをどうする？</string>
+    <string name="stamp_action_message">とりけすと、うしろのスタンプが前につめられます。</string>
+    <string name="stamp_action_change">かえる</string>
+    <string name="stamp_action_cancel">とりけす</string>
 
     <!-- Sheet edit -->
     <string name="sheet_edit_title_create">シートを作る</string>

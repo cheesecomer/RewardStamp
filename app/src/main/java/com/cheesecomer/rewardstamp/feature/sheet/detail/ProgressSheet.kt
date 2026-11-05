@@ -245,6 +245,7 @@ fun ProgressSheet(
     onStampTypeSelect: () -> Unit,
     modifier: Modifier = Modifier,
     press: StampPress = StampPress(),
+    onStampLongPress: ((RewardStamp) -> Unit)? = null,
 ) {
     Column(
         modifier = modifier,
@@ -264,6 +265,7 @@ fun ProgressSheet(
             stamps = stamps,
             goalStamp = goalStampType?.let { rememberGoalStamp(it) },
             press = press,
+            onStampLongPress = onStampLongPress,
             modifier = Modifier.weight(1f),
         )
         StampButton(

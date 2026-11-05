@@ -3,6 +3,7 @@ package com.cheesecomer.rewardstamp.data.source.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Transaction
 import com.cheesecomer.rewardstamp.data.source.database.entity.RewardStampEntity
 
 @Dao
@@ -63,4 +64,38 @@ interface RewardStampDao {
         sheetId: Long,
         completedRewardSheetId: Long,
     )
+
+    @Query("UPDATE reward_stamps SET stampTypeId = :stampTypeId WHERE id = :id")
+    suspend fun updateStampType(
+        id: Long,
+        stampTypeId: String,
+    )
+
+    @Query("DELETE FROM reward_stamps WHERE id = :id")
+    suspend fun deleteById(id: Long)
+
+    @Query(
+        """
+    UPDATE reward_stamps
+    SET position = position - 1
+    WHERE sheetId = :sheetId
+      AND completedRewardSheetId IS NULL
+      AND position > :position
+    """,
+    )
+    suspend fun shiftPositionsAfter(
+        sheetId: Long,
+        position: Int,
+    )
+
+    @Query("UPDATE reward_sheets SET currentCount = currentCount - 1 WHERE id = :sheetId AND currentCount > 0")
+    suspend fun decrementSheetCount(sheetId: Long)
+
+    // Removes the stamp and moves the later stamps forward so the positions stay contiguous
+    @Transaction
+    suspend fun cancel(entity: RewardStampEntity) {
+        deleteById(entity.id)
+        shiftPositionsAfter(entity.sheetId, entity.position)
+        decrementSheetCount(entity.sheetId)
+    }
 }
