@@ -42,6 +42,20 @@ cd RewardStamp
 | カバレッジ検証（95% 以上） | `./gradlew koverVerifyAll` |
 | カバレッジレポート | `./gradlew koverHtmlReportAll` |
 | ビルド | `./gradlew assembleDebug` |
+| リリースビルド（Google Play 用） | `./gradlew bundleRelease` |
+
+## リリースビルド
+
+リポジトリ直下に `keystore.properties` を置くと、release ビルドが署名されます。このファイルとキーストアは `.gitignore` 済みで、コミットしません。ファイルがない場合、release は未署名でビルドされます。
+
+```properties
+storeFile=RewardStamp.jks
+storePassword=...
+keyAlias=...
+keyPassword=...
+```
+
+`storeFile` はリポジトリ直下からの相対パスか、絶対パスで書きます。`./gradlew bundleRelease` を実行すると `app/build/outputs/bundle/release/app-release.aab` ができるので、これを Play Console にアップロードします。
 
 ## テスト
 
