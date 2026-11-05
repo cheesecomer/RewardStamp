@@ -1,0 +1,316 @@
+<!DOCTYPE html><html lang="ja"><head>
+<meta charset="utf-8">
+<meta content="width=412, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+<title>ごほうびスタンプ - せってい</title>
+<!-- Google Fonts: Zen Maru Gothic for gentle rounded Japanese aesthetic -->
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            appBg: '#FFF8EF',
+            cardBg: '#FFFCF8',
+            cardBorder: '#F6CFC5',
+            divider: '#F2D8CF',
+            brownDark: '#5A3925',
+            brownMuted: '#7A5B49',
+            coralPink: '#F85A5A',
+            coralLight: '#FFE9E5',
+          },
+          fontFamily: {
+            maru: ['"Zen Maru Gothic"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<!-- BEGIN: CustomStyles -->
+<style data-purpose="base-layout">
+    body {
+      background-color: #FFF8EF;
+      color: #5A3925;
+      font-family: 'Zen Maru Gothic', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    /* Hide scrollbars for clean mobile appearance */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  </style>
+<style data-purpose="switch-component">
+    /* Android M3 Switch Styling */
+    .m3-switch-input {
+      display: none;
+    }
+    .m3-switch-label {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 30px;
+      background-color: #E2D3CA;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      flex-shrink: 0;
+    }
+    .m3-switch-label .thumb {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background-color: #FFFFFF;
+      border-radius: 50%;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .m3-switch-input:checked + .m3-switch-label {
+      background-color: #F85A5A;
+    }
+    .m3-switch-input:checked + .m3-switch-label .thumb {
+      transform: translateX(22px);
+    }
+  </style>
+<!-- END: CustomStyles -->
+<meta content="mobile_tab" name="shell-type"><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="flex justify-center bg-stone-200 min-h-screen">
+<!-- Mobile Container Mockup (412px x 915px) -->
+<div class="relative w-full max-w-[412px] h-[915px] bg-appBg flex flex-col overflow-hidden shadow-2xl">
+<!-- BEGIN: StatusBar -->
+<header class="w-full pt-3 px-6 pb-2 flex justify-between items-center text-brownDark text-sm font-semibold select-none flex-shrink-0 z-30">
+<!-- Clock -->
+<span class="tracking-wide text-sm font-bold">11:08</span>
+<!-- Status Icons (5G, Signal, Battery) -->
+<div class="flex items-center space-x-1.5 text-brownDark">
+<!-- 5G Label -->
+<span class="text-xs font-black tracking-tighter">5G</span>
+<!-- Cellular Signal Icon -->
+<svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+<path d="M12 3c-4.97 0-9 4.03-9 9 0 2.12.74 4.07 1.97 5.61L4.2 18.39C2.83 16.59 2 14.39 2 12 2 6.48 6.48 2 12 2s10 4.48 10 10c0 2.39-.83 4.59-2.2 6.39l-.77-.78C20.26 16.07 21 14.12 21 12c0-4.97-4.03-9-9-9zm-6 9c0-3.31 2.69-6 6-6s6 2.69 6 6c0 1.45-.52 2.78-1.38 3.82l-.76-.76C16.48 14.3 17 13.21 17 12c0-2.76-2.24-5-5-5s-5 2.24-5 5c0 1.21.52 2.3 1.14 3.06l-.76.76C7.52 14.78 7 13.45 7 12z"></path>
+<circle cx="12" cy="12" r="2.5"></circle>
+</svg>
+<!-- Battery Icon -->
+<svg class="w-5 h-5 fill-current ml-0.5" viewBox="0 0 24 24">
+<path d="M17 5v3h1c.55 0 1 .45 1 1v6c0 .55-.45 1-1 1h-1v3c0 .55-.45 1-1 1H7c-.55 0-1-.45-1-1V5c0-.55.45-1 1-1h9c.55 0 1 .45 1 1zm-2 1H8v12h7V6z"></path>
+</svg>
+</div>
+</header>
+<!-- END: StatusBar -->
+<!-- BEGIN: TopAppBar -->
+<div class="w-full py-2.5 text-center flex-shrink-0 z-20">
+<h1 class="text-xl font-normal text-brownDark tracking-wider">せってい</h1>
+</div>
+<!-- END: TopAppBar -->
+<!-- BEGIN: ScrollableContent -->
+<main class="flex-1 overflow-y-auto px-4 pt-1 pb-28 space-y-4"><div class="flex flex-col w-full relative">
+<!-- Underlying Settings Screen Elements (Visible Under Scrim) -->
+<div aria-hidden="true" class="flex flex-col w-full space-y-4 filter blur-[1.5px] opacity-40 pointer-events-none select-none">
+<!-- Mock Setting Group 1: Notifications & Sounds -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col space-y-3">
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md">notifications</span>
+</div>
+<span class="font-body-large text-body-large text-on-surface">おしらせ・つうち</span>
+</div>
+<div class="w-12 h-6 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-surface-container-lowest rounded-full"></div>
+</div>
+</div>
+<div class="h-0.5 bg-surface-container-high/60 w-full"></div>
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md">volume_up</span>
+</div>
+<span class="font-body-large text-body-large text-on-surface">こうかおん</span>
+</div>
+<div class="w-12 h-6 bg-secondary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-surface-container-lowest rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Mock Setting Group 2: Parental & Data Protection -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex flex-col space-y-3">
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-large text-body-large text-on-surface">おとなロック</span>
+<span class="font-caption-sm text-caption-sm text-on-surface-variant">せってい変更のほご</span>
+</div>
+</div>
+<div class="w-12 h-6 bg-primary rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-surface-container-lowest rounded-full"></div>
+</div>
+</div>
+<div class="h-0.5 bg-surface-container-high/60 w-full"></div>
+<div class="flex items-center justify-between py-1">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md">backup</span>
+</div>
+<span class="font-body-large text-body-large text-on-surface">バックアップ・ひきつぎ</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+<!-- Mock Setting Group 3: App Information -->
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm flex items-center justify-between">
+<div class="flex items-center space-x-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-title-md">info</span>
+</div>
+<span class="font-body-large text-body-large text-on-surface">アプリについて</span>
+</div>
+<span class="font-label-bold text-label-bold text-on-surface-variant">v1.2.0</span>
+</div>
+</div>
+<!-- Modal Backdrop / Scrim -->
+<div class="absolute inset-0 z-40 bg-inverse-surface/40 backdrop-blur-[2px] transition-opacity flex items-center justify-center px-4 py-4"><div class="w-full max-w-[340px] bg-white rounded-[32px] shadow-2xl p-5 flex flex-col items-center relative overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50 my-auto"><div class="w-12 h-12 rounded-full bg-[#FFE9E5] flex items-center justify-center mb-2 flex-shrink-0"><span class="material-symbols-outlined text-[#F85A5A] text-2xl" style="font-variation-settings: 'FILL' 1;">lock</span></div><h2 class="text-lg font-bold text-[#5A3925] tracking-wide text-center">おとなのかたへ</h2><p class="text-xs text-[#7A5B49] text-center mt-0.5 leading-tight">お子さまの誤操作をふせぐため<br>けいさんの答えを入力してください</p><div class="border-t border-[#F2D8CF] my-2.5 w-full"></div><div class="text-center mb-1.5"><span class="text-base font-bold text-[#5A3925] tracking-widest" id="math-problem">7 × 8 = ?</span></div><div class="w-full h-10 bg-white border border-[#F6CFC5] rounded-xl flex items-center justify-center px-3 mb-2.5 shadow-inner relative"><span class="text-lg font-bold text-[#5A3925] tracking-widest leading-none" id="answer-display"></span><span class="text-sm text-[#5A3925]/40 tracking-wider" id="answer-placeholder">こたえを入力</span><div class="w-0.5 h-4 bg-[#F85A5A] animate-pulse ml-0.5" id="cursor-caret"></div></div><div class="grid grid-cols-3 gap-1.5 w-full mb-3"><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('1')" type="button">1</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('2')" type="button">2</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('3')" type="button">3</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('4')" type="button">4</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('5')" type="button">5</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('6')" type="button">6</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('7')" type="button">7</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('8')" type="button">8</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('9')" type="button">9</button><button class="h-9 bg-[#FFE9E5]/60 rounded-xl flex items-center justify-center text-xs font-bold text-[#7A5B49] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadClearHandle()" type="button">クリア</button><button class="h-9 bg-[#FFF8EF] rounded-xl flex items-center justify-center text-sm font-bold text-[#5A3925] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadPress('0')" type="button">0</button><button aria-label="もどる" class="h-9 bg-[#FFE9E5]/60 rounded-xl flex items-center justify-center text-[#7A5B49] active:bg-[#FFE9E5] active:scale-95 transition-all shadow-sm" onclick="keypadBackspace()" type="button"><span class="material-symbols-outlined text-base">backspace</span></button></div><div class="flex items-center justify-between w-full pt-1 px-1"><button class="text-[#F85A5A] font-bold text-sm py-2 px-3 hover:opacity-80 active:scale-95 transition-transform" onclick="handleCancel()" type="button">キャンセル</button><button class="rounded-full bg-[#F85A5A] text-white font-bold text-sm py-2 px-6 shadow-sm active:scale-95 transition-all flex items-center justify-center" id="btn-unlock" onclick="handleVerify()" type="button">かいじょする</button></div></div></div>
+</div>
+<script>
+  let currentAnswer = "";
+  const correctAnswer = "56"; // 7 x 8
+
+  function updateDisplay() {
+    const display = document.getElementById("answer-display");
+    const placeholder = document.getElementById("answer-placeholder");
+    const caret = document.getElementById("cursor-caret");
+
+    if (currentAnswer.length > 0) {
+      display.textContent = currentAnswer;
+      placeholder.style.display = "none";
+    } else {
+      display.textContent = "";
+      placeholder.style.display = "inline";
+    }
+  }
+
+  function keypadPress(digit) {
+    if (currentAnswer.length < 3) {
+      currentAnswer += digit;
+      updateDisplay();
+    }
+  }
+
+  function keypadBackspace() {
+    if (currentAnswer.length > 0) {
+      currentAnswer = currentAnswer.slice(0, -1);
+      updateDisplay();
+    }
+  }
+
+  function keypadClear() {
+    currentAnswer = "";
+    updateDisplay();
+  }
+
+  function handleVerify() {
+    const unlockBtn = document.getElementById("btn-unlock");
+    if (currentAnswer === correctAnswer) {
+      unlockBtn.classList.remove("bg-primary");
+      unlockBtn.classList.add("bg-secondary");
+      unlockBtn.innerHTML = '<span class="material-symbols-outlined text-body-large">check_circle</span><span>せいかい！</span>';
+      setTimeout(() => {
+        const dialog = document.querySelector(".fixed");
+        if (dialog) dialog.style.display = "none";
+      }, 500);
+    } else {
+      // Shake on wrong answer
+      const answerWell = document.querySelector("#answer-display").parentElement;
+      answerWell.classList.add("translate-x-1");
+      setTimeout(() => answerWell.classList.remove("translate-x-1"), 80);
+      setTimeout(() => answerWell.classList.add("-translate-x-1"), 160);
+      setTimeout(() => answerWell.classList.remove("-translate-x-1"), 240);
+      currentAnswer = "";
+      updateDisplay();
+    }
+  }
+
+  function handleCancel() {
+    const dialog = document.querySelector(".fixed");
+    if (dialog) dialog.style.display = "none";
+  }
+
+  // Initialize display state
+  updateDisplay();
+</script></main>
+<!-- END: ScrollableContent -->
+<!-- BEGIN: BottomNavigationBar -->
+<nav class="absolute bottom-0 left-0 right-0 bg-appBg/95 backdrop-blur-sm border-t border-cardBorder/40 pt-1 pb-4 px-6 z-30" data-purpose="bottom-nav">
+<div class="flex justify-between items-center text-brownDark">
+<!-- Tab 1: シート (Sheet) -->
+<button class="flex flex-col items-center justify-center w-16 py-1 text-brownDark/70 hover:text-brownDark focus:outline-none" type="button">
+<div class="w-9 h-7 flex items-center justify-center rounded-full">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+<polyline points="14 2 14 8 20 8"></polyline>
+<line x1="16" x2="8" y1="13" y2="13"></line>
+<line x1="16" x2="8" y1="17" y2="17"></line>
+<line x1="10" x2="8" y1="9" y2="9"></line>
+</svg>
+</div>
+<span class="text-[11px] font-bold mt-0.5 tracking-tight">シート</span>
+</button>
+<!-- Tab 2: ごほうび (Reward) -->
+<button class="flex flex-col items-center justify-center w-16 py-1 text-brownDark/70 hover:text-brownDark focus:outline-none" type="button">
+<div class="w-9 h-7 flex items-center justify-center rounded-full">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+<polyline points="20 12 20 22 4 22 4 12"></polyline>
+<rect height="5" width="20" x="2" y="7"></rect>
+<line x1="12" x2="12" y1="22" y2="7"></line>
+<path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+<path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+</svg>
+</div>
+<span class="text-[11px] font-bold mt-0.5 tracking-tight">ごほうび</span>
+</button>
+<!-- Tab 3: れきし (History) -->
+<button class="flex flex-col items-center justify-center w-16 py-1 text-brownDark/70 hover:text-brownDark focus:outline-none" type="button">
+<div class="w-9 h-7 flex items-center justify-center rounded-full">
+<svg class="w-6 h-6 stroke-current stroke-2 fill-none" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 15 15"></polyline>
+</svg>
+</div>
+<span class="text-[11px] font-bold mt-0.5 tracking-tight">れきし</span>
+</button>
+<!-- Tab 4: せってい (Settings) - ACTIVE STATE -->
+<button class="flex flex-col items-center justify-center w-16 py-1 text-brownDark focus:outline-none" type="button">
+<div class="w-10 h-7 flex items-center justify-center bg-coralLight rounded-full shadow-sm">
+<svg class="w-5 h-5 stroke-current stroke-2 fill-none text-brownDark" viewBox="0 0 24 24">
+<circle cx="12" cy="12" r="3"></circle>
+<path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+</svg>
+</div>
+<span class="text-[11px] font-black mt-0.5 tracking-tight text-brownDark">せってい</span>
+</button>
+</div>
+<!-- Android Home Navigation Indicator Pill -->
+<div class="w-full flex justify-center mt-3">
+<div class="w-32 h-1 bg-brownDark/80 rounded-full"></div>
+</div>
+</nav>
+<!-- END: BottomNavigationBar -->
+</div>
+
+
+</body></html>
