@@ -43,6 +43,7 @@ cd RewardStamp
 | カバレッジレポート | `./gradlew koverHtmlReportAll` |
 | ビルド | `./gradlew assembleDebug` |
 | リリースビルド（Google Play 用） | `./gradlew bundleRelease` |
+| 画面のスクリーンショット（ストア・README 用） | `tools/screenshots/take.sh` |
 
 ## リリースビルド
 
@@ -59,7 +60,7 @@ keyPassword=...
 
 ## テスト
 
-テストはすべて `app/src/test`（JVM 上）にあります。
+テストはすべて `app/src/test`（JVM 上）にあります（画面のスクリーンショットを撮る `ScreenshotTour` だけは `app/src/androidTest`）。
 
 | 種類 | 使うもの | 例 |
 | --- | --- | --- |
@@ -83,6 +84,23 @@ Paparazzi を使うテストクラスの名前は、必ず `ScreenshotTest` で�
 Kover の `all` バリアントで、debug と release の結果を合算して計測します。そのため、カバレッジの検証やレポートには `koverVerifyAll` / `koverHtmlReportAll` を使います。
 
 カバレッジから外したいもの（`Application`、DI 用のファクトリなど）には `@ExcludeFromCoverage` を付けます。`*Preview*` は自動で除外されます。
+
+## スクリーンショット
+
+見本のデータを入れた状態で、アプリを実際に操作して各画面のスクリーンショットを撮ります。撮った画像は `docs/screenshots/` に置いてリポジトリに入れ、README とストアの掲載画像のもとにします。Android Emulator を起動しておき、次を実行します。
+
+```bash
+tools/screenshots/take.sh            # docs/screenshots を置き換える。引数で出力先を変えられる
+```
+
+1. デバッグ版とテストを入れ、アプリのデータを消す。
+2. 画面の大きさを 1080×1920（Google Play に載せられる 9:16）にし、ステータスバーをデモモードにする（10:00・Wi-Fi・電池満タン・通知なし）。終わったら戻す。
+3. `ScreenshotTour`（[app/src/androidTest/.../screenshots/](../app/src/androidTest/java/com/cheesecomer/rewardstamp/screenshots/)）が `ShowcaseData` のデータを入れ、画面を巡って撮る。日付は撮った日から数えるので、いつ撮っても最近のきろくに見える。
+
+- 端末は `ANDROID_SERIAL` で選べます（既定は最初の Android Emulator）。アプリのデータを消すので、実機では動かしません。
+- 画面を変えて操作の手順が合わなくなると失敗し、`docs/screenshots` は変えずに、撮れた分と失敗したときの画面（`failed.png`）を `build/screenshots` に残します。`ScreenshotTour` の手順を直します。
+- ゴールの演出は時間で進むので、テストの時計（`mainClock`）を止めて、ゴールのスタンプが出たところで撮ります。ゴールのスタンプはランダムなので、撮るたびに変わります。
+- `ScreenshotTour` は `-e screenshots true` を付けたときだけ動き、通常の `connectedDebugAndroidTest` では飛ばします。
 
 ## CI
 
