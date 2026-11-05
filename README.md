@@ -74,12 +74,21 @@
 | ------------------------------------ | ------------------------------------------- |
 | ![](docs/screenshots/11-history.png) | ![](docs/screenshots/12-history-detail.png) |
 
+### せってい
+
+振動やゴールのお祝いアニメーションを切り替えられます。
+
+| せってい                              |
+| ------------------------------------- |
+| ![](docs/screenshots/13-settings.png) |
+
 ## 技術スタック
 
 - Kotlin
 - Jetpack Compose（Material 3）
 - Navigation Compose
 - Room / KSP
+- DataStore
 - MVVM（ViewModel + StateFlow）
 - テスト: JUnit, Robolectric, Paparazzi, Kover
 - 品質: ktlint, Detekt, Android Lint, GitHub Actions
