@@ -250,4 +250,41 @@ class RewardStampRepositoryTest {
             assertThat(actual.keys).containsExactly(*sheetIds)
             assertThat(actual.values.map { it.id }).containsExactly(*stampIds)
         }
+
+    @Test
+    fun changeStampType_updatesOnlyTheStamp() =
+        runTest {
+            val changedId = dao.insert(rewardStampEntity(sheetId = 1L, position = 0, stampType = StampType.Hippopotamus))
+            dao.insert(rewardStampEntity(sheetId = 1L, position = 1, stampType = StampType.Hippopotamus))
+
+            repository.changeStampType(changedId, StampType.Shortcake)
+
+            assertThat(repository.findBySheetId(1L).map { it.stampType })
+                .containsExactly(StampType.Shortcake, StampType.Hippopotamus)
+                .inOrder()
+        }
+
+    @Test
+    fun cancel_removesStampAndMovesLaterStampsForward() =
+        runTest {
+            val sheetId = sheetDao.insert(rewardSheetEntity(currentCount = 3))
+            val otherSheetId = sheetDao.insert(rewardSheetEntity(currentCount = 2))
+            (0..2).forEach { position ->
+                dao.insert(rewardStampEntity(sheetId = sheetId, position = position))
+            }
+            dao.insert(rewardStampEntity(sheetId = sheetId, completedRewardSheetId = 1L, position = 2))
+            dao.insert(rewardStampEntity(sheetId = otherSheetId, position = 2))
+
+            val stamps = repository.findBySheetId(sheetId)
+            repository.cancel(stamps[1])
+
+            val actual = repository.findBySheetId(sheetId)
+            assertThat(actual.map { it.id }).containsExactly(stamps[0].id, stamps[2].id).inOrder()
+            assertThat(actual.map { it.position }).containsExactly(0, 1).inOrder()
+            assertThat(sheetDao.findById(sheetId)?.currentCount).isEqualTo(2)
+
+            assertThat(repository.findByCompletedRewardSheetId(1L).single().position).isEqualTo(2)
+            assertThat(repository.findBySheetId(otherSheetId).single().position).isEqualTo(2)
+            assertThat(sheetDao.findById(otherSheetId)?.currentCount).isEqualTo(2)
+        }
 }

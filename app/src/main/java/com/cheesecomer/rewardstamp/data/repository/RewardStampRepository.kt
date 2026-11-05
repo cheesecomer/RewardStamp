@@ -4,6 +4,7 @@ import com.cheesecomer.rewardstamp.data.source.database.dao.RewardStampDao
 import com.cheesecomer.rewardstamp.data.source.database.mapper.toEntity
 import com.cheesecomer.rewardstamp.data.source.database.mapper.toModel
 import com.cheesecomer.rewardstamp.model.RewardStamp
+import com.cheesecomer.rewardstamp.model.StampType
 
 class RewardStampRepository(
     private val dao: RewardStampDao,
@@ -24,6 +25,17 @@ class RewardStampRepository(
         completedRewardSheetId: Long,
     ) {
         dao.attachToCompletedRewardSheet(sheetId, completedRewardSheetId)
+    }
+
+    suspend fun changeStampType(
+        id: Long,
+        stampType: StampType,
+    ) {
+        dao.updateStampType(id, stampType.id)
+    }
+
+    suspend fun cancel(stamp: RewardStamp) {
+        dao.cancel(stamp.toEntity())
     }
 
     suspend fun findLatestByEachSheet() = dao.findLatestByEachSheet().associate { it.sheetId to it.toModel() }

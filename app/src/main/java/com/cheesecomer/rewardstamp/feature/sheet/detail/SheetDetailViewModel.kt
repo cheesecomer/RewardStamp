@@ -137,6 +137,23 @@ class SheetDetailViewModel(
         }
     }
 
+    fun changeStampType(
+        stamp: RewardStamp,
+        stampType: StampType,
+    ) {
+        viewModelScope.launch {
+            rewardStampRepository.changeStampType(stamp.id, stampType)
+            reload(stamp.sheetId)
+        }
+    }
+
+    fun cancelStamp(stamp: RewardStamp) {
+        viewModelScope.launch {
+            rewardStampRepository.cancel(stamp)
+            reload(stamp.sheetId)
+        }
+    }
+
     fun restart(sheetId: Long) {
         reload(sheetId)
     }

@@ -5,6 +5,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardLayout.EMPTY_CELL
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardLayout.GOAL_CELL_SCALE
 
@@ -71,3 +72,15 @@ internal fun buildBoardPoints(
             }
         }.toMap()
 }
+
+// Finds the stamp whose cell contains the given point on the canvas
+internal fun findStampAt(
+    point: Offset,
+    pointsByIndex: Map<Int, Offset>,
+    stamps: List<RewardStamp>,
+    cellRadiusPx: Float,
+): RewardStamp? =
+    stamps.firstOrNull { stamp ->
+        val center = pointsByIndex[stamp.position]
+        center != null && (center - point).getDistance() <= cellRadiusPx
+    }

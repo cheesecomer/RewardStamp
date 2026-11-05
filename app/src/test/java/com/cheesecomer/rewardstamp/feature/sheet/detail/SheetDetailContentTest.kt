@@ -1,14 +1,25 @@
 package com.cheesecomer.rewardstamp.feature.sheet.detail
 
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.test.TouchInjectionScope
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.v2.createComposeRule
+import androidx.compose.ui.test.longClick
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTouchInput
 import com.cheesecomer.rewardstamp.data.rewardSheet
+import com.cheesecomer.rewardstamp.data.rewardStamp
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
+import com.cheesecomer.rewardstamp.ui.component.BoardLayoutMetrics
+import com.cheesecomer.rewardstamp.ui.component.RewardBoardViewTestTags
+import com.cheesecomer.rewardstamp.ui.component.boardPatterns
+import com.cheesecomer.rewardstamp.ui.component.buildBoardPoints
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialogTestTags
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
@@ -405,5 +416,128 @@ class SheetDetailContentTest {
             .performClick()
 
         assertThat(deleted).isTrue()
+    }
+
+    private val stampedStamp =
+        rewardStamp(
+            id = 5L,
+            sheetId = 1L,
+            position = 1,
+            stampType = StampType.Shortcake,
+        )
+
+    private fun setStampedContent(
+        onStampTypeChange: (RewardStamp, StampType) -> Unit = { _, _ -> },
+        onStampCancel: (RewardStamp) -> Unit = {},
+    ) {
+        composeTestRule.setContent {
+            SheetDetailContent(
+                sheet =
+                    rewardSheet(
+                        id = 1L,
+                        currentCount = 2,
+                        goalCount = 10,
+                    ),
+                stamps =
+                    listOf(
+                        rewardStamp(id = 4L, sheetId = 1L, position = 0),
+                        stampedStamp,
+                    ),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
+                onStampTypeChange = onStampTypeChange,
+                onStampCancel = onStampCancel,
+            )
+        }
+    }
+
+    // Center of the cell at the position, computed the same way as the board draws it
+    private fun TouchInjectionScope.cellCenter(position: Int): Offset {
+        val pattern = boardPatterns.getValue(10)
+        val metrics =
+            BoardLayoutMetrics.build(
+                containerHeight = height.toDp(),
+                containerWidth = width.toDp(),
+                rowNum = pattern.size,
+            )
+        return buildBoardPoints(
+            pattern = pattern,
+            metrics = metrics,
+            density = this,
+            cellNum = 10,
+            canvasSize = Size(width.toFloat(), height.toFloat()),
+        ).getValue(position)
+    }
+
+    private fun longPressStamp(position: Int) {
+        composeTestRule
+            .onNodeWithTag(RewardBoardViewTestTags.CANVAS)
+            .performTouchInput { longClick(cellCenter(position)) }
+    }
+
+    @Test
+    fun longPressStamp_changesStampType() {
+        var changed: Pair<RewardStamp, StampType>? = null
+        setStampedContent(
+            onStampTypeChange = { stamp, stampType -> changed = stamp to stampType },
+        )
+
+        longPressStamp(1)
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.CHANGE_BUTTON)
+            .performClick()
+        composeTestRule
+            .onNodeWithTag(StampPickerTestTags.stamp(StampType.Hippopotamus))
+            .performClick()
+
+        assertThat(changed).isEqualTo(stampedStamp to StampType.Hippopotamus)
+    }
+
+    @Test
+    fun longPressStamp_cancelsStamp() {
+        var canceled: RewardStamp? = null
+        setStampedContent(
+            onStampCancel = { canceled = it },
+        )
+
+        longPressStamp(1)
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.CANCEL_STAMP_BUTTON)
+            .performClick()
+
+        assertThat(canceled).isEqualTo(stampedStamp)
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.ROOT)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun longPressStamp_dismissesWithoutChanges() {
+        var called = false
+        setStampedContent(
+            onStampTypeChange = { _, _ -> called = true },
+            onStampCancel = { called = true },
+        )
+
+        longPressStamp(1)
+        composeTestRule
+            .onNodeWithText("キャンセル")
+            .performClick()
+
+        assertThat(called).isFalse()
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.ROOT)
+            .assertDoesNotExist()
+    }
+
+    @Test
+    fun longPressEmptyCell_doesNothing() {
+        setStampedContent()
+
+        longPressStamp(5)
+
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.ROOT)
+            .assertDoesNotExist()
     }
 }

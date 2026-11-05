@@ -366,6 +366,53 @@ class SheetDetailViewModelTest {
         }
 
     @Test
+    fun changeStampType_updatesStamps() =
+        runTest {
+            val sheetId = rewardSheetRepository.save(rewardSheet(id = 0, currentCount = 1))
+            rewardStampRepository.save(
+                rewardStamp(id = 0, sheetId = sheetId, position = 0, stampType = StampType.Hippopotamus),
+            )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.changeStampType(
+                viewModel.uiState.value.stamps
+                    .single(),
+                StampType.Shortcake,
+            )
+
+            assertThat(
+                viewModel.uiState.value.stamps
+                    .single()
+                    .stampType,
+            ).isEqualTo(StampType.Shortcake)
+        }
+
+    @Test
+    fun cancelStamp_removesStampAndDecrementsCount() =
+        runTest {
+            val sheetId = rewardSheetRepository.save(rewardSheet(id = 0, currentCount = 2))
+            rewardStampRepository.save(rewardStamp(id = 0, sheetId = sheetId, position = 0))
+            rewardStampRepository.save(rewardStamp(id = 0, sheetId = sheetId, position = 1))
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.cancelStamp(
+                viewModel.uiState.value.stamps
+                    .first(),
+            )
+
+            assertThat(
+                viewModel.uiState.value.sheet
+                    ?.currentCount,
+            ).isEqualTo(1)
+            assertThat(
+                viewModel.uiState.value.stamps
+                    .map { it.position },
+            ).containsExactly(0)
+        }
+
+    @Test
     fun delete_deletesSheetAndCallsCallback() =
         runTest {
             val sheetId =

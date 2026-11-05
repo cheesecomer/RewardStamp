@@ -2,6 +2,7 @@ package com.cheesecomer.rewardstamp.ui.component
 
 import android.graphics.Canvas
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,10 +12,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import com.cheesecomer.rewardstamp.R
@@ -33,6 +41,7 @@ fun RewardBoardView(
     modifier: Modifier = Modifier,
     goalStamp: GoalStamp? = null,
     press: StampPress = StampPress(),
+    onStampLongPress: ((RewardStamp) -> Unit)? = null,
 ) {
     val pattern = boardPatterns[board.goalCount]
     if (pattern == null) {
@@ -41,6 +50,8 @@ fun RewardBoardView(
     }
 
     val scrollState = rememberScrollState()
+    val haptic = LocalHapticFeedback.current
+    val currentOnStampLongPress by rememberUpdatedState(onStampLongPress)
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
     ) {
@@ -67,10 +78,60 @@ fun RewardBoardView(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(metrics.canvasHeight),
+                        .height(metrics.canvasHeight)
+                        .stampLongPress(
+                            metrics = metrics,
+                            pattern = pattern,
+                            board = board,
+                            stamps = stamps,
+                            onStampLongPress =
+                                onStampLongPress?.let {
+                                    { stamp ->
+                                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        currentOnStampLongPress?.invoke(stamp)
+                                    }
+                                },
+                        ),
             )
         }
     }
+}
+
+private fun Modifier.stampLongPress(
+    metrics: BoardLayoutMetrics,
+    pattern: List<List<Int>>,
+    board: RewardBoardState,
+    stamps: List<RewardStamp>,
+    onStampLongPress: ((RewardStamp) -> Unit)?,
+): Modifier {
+    if (onStampLongPress == null) return this
+
+    return this
+        .testTag(RewardBoardViewTestTags.CANVAS)
+        .pointerInput(metrics, pattern, board.goalCount, stamps) {
+            detectTapGestures(
+                onLongPress = { point ->
+                    val pointsByIndex =
+                        buildBoardPoints(
+                            pattern = pattern,
+                            metrics = metrics,
+                            density = this,
+                            cellNum = board.goalCount,
+                            canvasSize = Size(size.width.toFloat(), size.height.toFloat()),
+                        )
+                    val stamp =
+                        findStampAt(
+                            point = point,
+                            pointsByIndex = pointsByIndex,
+                            stamps = stamps,
+                            cellRadiusPx = metrics.cellRadius.toPx(),
+                        )
+                    if (stamp != null) {
+                        onStampLongPress(stamp)
+                    }
+                },
+            )
+        }
 }
 
 data class RewardBoardState(

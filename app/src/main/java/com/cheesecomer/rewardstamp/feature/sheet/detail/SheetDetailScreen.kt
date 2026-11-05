@@ -38,18 +38,30 @@ import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import java.time.LocalDateTime
 
-private enum class SheetDetailDialog {
-    Stamp,
-    Delete,
+private sealed interface SheetDetailDialog {
+    data object Stamp : SheetDetailDialog
+
+    data object Delete : SheetDetailDialog
+
+    data class StampAction(
+        val stamp: RewardStamp,
+    ) : SheetDetailDialog
+
+    data class ChangeStamp(
+        val stamp: RewardStamp,
+    ) : SheetDetailDialog
 }
 
 @Composable
 private fun SheetDetailDialogs(
     activeDialog: SheetDetailDialog?,
-    onDismissRequest: () -> Unit,
+    onActiveDialogChange: (SheetDetailDialog?) -> Unit,
     onDeleteRequest: () -> Unit,
     onStampTypeSelect: (StampType) -> Unit,
+    onStampTypeChange: (RewardStamp, StampType) -> Unit,
+    onStampCancel: (RewardStamp) -> Unit,
 ) {
+    val onDismissRequest = { onActiveDialogChange(null) }
     when (activeDialog) {
         SheetDetailDialog.Delete -> {
             DeleteSheetDialog(
@@ -62,6 +74,29 @@ private fun SheetDetailDialogs(
             StampPickerBottomSheet(
                 onDismiss = onDismissRequest,
                 onSelect = onStampTypeSelect,
+            )
+        }
+
+        is SheetDetailDialog.StampAction -> {
+            StampActionDialog(
+                onChangeRequest = {
+                    onActiveDialogChange(SheetDetailDialog.ChangeStamp(activeDialog.stamp))
+                },
+                onCancelStampRequest = {
+                    onDismissRequest()
+                    onStampCancel(activeDialog.stamp)
+                },
+                onDismissRequest = onDismissRequest,
+            )
+        }
+
+        is SheetDetailDialog.ChangeStamp -> {
+            StampPickerBottomSheet(
+                onDismiss = onDismissRequest,
+                onSelect = { stampType ->
+                    onDismissRequest()
+                    onStampTypeChange(activeDialog.stamp, stampType)
+                },
             )
         }
 
@@ -138,6 +173,7 @@ private fun SheetDetailBody(
     stampedPosition: Int?,
     stampAnimationState: StampAnimationState,
     onStampClick: () -> Unit,
+    onStampLongPress: (RewardStamp) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
@@ -146,6 +182,7 @@ private fun SheetDetailBody(
             stamps = stamps,
             goalStampType = goalStampType,
             onStampTypeSelect = onStampClick,
+            onStampLongPress = onStampLongPress,
             press = stampAnimationState.press(stampedPosition),
             modifier = Modifier.padding(16.dp),
         )
@@ -169,6 +206,8 @@ internal fun SheetDetailContent(
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
     onStampTypeSelect: (StampType) -> Unit = {},
+    onStampTypeChange: (RewardStamp, StampType) -> Unit = { _, _ -> },
+    onStampCancel: (RewardStamp) -> Unit = {},
     onRestartClick: () -> Unit = {},
     onRestartWithEditClick: () -> Unit = {},
 ) {
@@ -179,9 +218,7 @@ internal fun SheetDetailContent(
         val stampAnimationState = rememberStampAnimationState(stampedPosition, sheet.goalCount, goalStampType)
         SheetDetailDialogs(
             activeDialog = activeDialog,
-            onDismissRequest = {
-                activeDialog = null
-            },
+            onActiveDialogChange = { activeDialog = it },
             onDeleteRequest = {
                 activeDialog = null
                 onDeleteClick()
@@ -190,6 +227,8 @@ internal fun SheetDetailContent(
                 activeDialog = null
                 onStampTypeSelect(stampType)
             },
+            onStampTypeChange = onStampTypeChange,
+            onStampCancel = onStampCancel,
         )
 
         RewardStampScaffold(
@@ -222,6 +261,9 @@ internal fun SheetDetailContent(
                 stampAnimationState = stampAnimationState,
                 onStampClick = {
                     activeDialog = SheetDetailDialog.Stamp
+                },
+                onStampLongPress = { stamp ->
+                    activeDialog = SheetDetailDialog.StampAction(stamp)
                 },
                 modifier = Modifier.padding(innerPadding),
             )
@@ -276,6 +318,12 @@ fun SheetDetailScreen(
                 sheetId = sheetId,
                 stampType = stampType,
             )
+        },
+        onStampTypeChange = @ExcludeFromCoverage { stamp, stampType ->
+            viewModel.changeStampType(stamp, stampType)
+        },
+        onStampCancel = @ExcludeFromCoverage { stamp ->
+            viewModel.cancelStamp(stamp)
         },
         onRestartClick = @ExcludeFromCoverage {
             viewModel.restart(sheetId)
