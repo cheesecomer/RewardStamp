@@ -45,6 +45,7 @@ class SheetDetailViewModel(
                 it.copy(
                     sheet = sheet,
                     stamps = stamps,
+                    stampedPosition = null,
                     goalStampType = null,
                 )
             }
@@ -87,6 +88,7 @@ class SheetDetailViewModel(
                     it.copy(
                         sheet = sheet,
                         stamps = stamps,
+                        stampedPosition = sheetBefore.currentCount,
                     )
                 }
 

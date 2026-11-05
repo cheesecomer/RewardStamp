@@ -37,6 +37,7 @@ import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
+import com.cheesecomer.rewardstamp.ui.component.StampPress
 import com.cheesecomer.rewardstamp.ui.rememberDrawable
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
@@ -243,6 +244,7 @@ fun ProgressSheet(
     goalStampType: GoalStampType?,
     onStampTypeSelect: () -> Unit,
     modifier: Modifier = Modifier,
+    press: StampPress = StampPress(),
 ) {
     Column(
         modifier = modifier,
@@ -261,6 +263,7 @@ fun ProgressSheet(
                 ),
             stamps = stamps,
             goalStamp = goalStampType?.let { rememberGoalStamp(it) },
+            press = press,
             modifier = Modifier.weight(1f),
         )
         StampButton(

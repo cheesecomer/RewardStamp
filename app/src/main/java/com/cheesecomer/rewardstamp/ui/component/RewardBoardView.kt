@@ -32,6 +32,7 @@ fun RewardBoardView(
     stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
     goalStamp: GoalStamp? = null,
+    press: StampPress = StampPress(),
 ) {
     val pattern = boardPatterns[board.goalCount]
     if (pattern == null) {
@@ -62,6 +63,7 @@ fun RewardBoardView(
                 stamps = stamps,
                 board = board,
                 goalStamp = goalStamp,
+                press = press,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -84,6 +86,7 @@ private fun RewardBoardCanvas(
     board: RewardBoardState,
     stamps: List<RewardStamp>,
     goalStamp: GoalStamp?,
+    press: StampPress,
     modifier: Modifier = Modifier,
 ) {
     val density = LocalDensity.current
@@ -134,8 +137,18 @@ private fun RewardBoardCanvas(
             stamps = stamps,
             metrics = metrics,
             stampDrawables = stampDrawables,
-            goalStamp = goalStamp,
+            press = press,
         )
+
+        if (goalStamp != null) {
+            drawGoalStamp(
+                pointsByIndex,
+                metrics,
+                goalStamp.drawable,
+                goalStamp.stampedAt,
+                press.goalProgress(),
+            )
+        }
     }
 }
 

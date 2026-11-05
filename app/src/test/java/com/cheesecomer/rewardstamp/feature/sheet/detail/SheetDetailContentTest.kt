@@ -112,6 +112,109 @@ class SheetDetailContentTest {
     }
 
     @Test
+    fun goalStampPressed_celebratesBeforeCongratulationDialog() {
+        composeTestRule.mainClock.autoAdvance = false
+        setGoalReachedContent(goalStampType = GoalStampType.Bear1)
+
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(1_000)
+        composeTestRule
+            .onNodeWithTag(GoalCelebrationTestTags.GOAL_STAMP, useUnmergedTree = true)
+            .assertExists()
+
+        composeTestRule.mainClock.advanceTimeBy(5_000)
+        composeTestRule
+            .onNodeWithTag(GoalCelebrationTestTags.ROOT)
+            .assertDoesNotExist()
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertExists()
+    }
+
+    @Test
+    fun goalCelebration_skipsToCongratulationDialogOnClick() {
+        composeTestRule.mainClock.autoAdvance = false
+        setGoalReachedContent(goalStampType = GoalStampType.Bear1)
+
+        composeTestRule.mainClock.advanceTimeBy(1_000)
+        composeTestRule
+            .onNodeWithTag(GoalCelebrationTestTags.ROOT)
+            .performClick()
+        composeTestRule.mainClock.advanceTimeBy(100)
+
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertExists()
+    }
+
+    @Test
+    fun goalCelebration_givesUpWhenGoalStampDoesNotArrive() {
+        composeTestRule.mainClock.autoAdvance = false
+        setGoalReachedContent(goalStampType = null)
+
+        composeTestRule.mainClock.advanceTimeBy(1_000)
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(5_000)
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertExists()
+    }
+
+    @Test
+    fun stampPressedBeforeGoal_doesNotCelebrate() {
+        composeTestRule.mainClock.autoAdvance = false
+        composeTestRule.setContent {
+            SheetDetailContent(
+                sheet =
+                    rewardSheet(
+                        id = 1L,
+                        title = "はみがき",
+                        currentCount = 3,
+                        goalCount = 10,
+                    ),
+                stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
+                stampedPosition = 2,
+            )
+        }
+
+        composeTestRule
+            .onNodeWithTag(GoalCelebrationTestTags.ROOT)
+            .assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(1_000)
+        composeTestRule
+            .onNodeWithText("はみがき")
+            .assertIsDisplayed()
+    }
+
+    private fun setGoalReachedContent(goalStampType: GoalStampType?) {
+        composeTestRule.setContent {
+            SheetDetailContent(
+                sheet =
+                    rewardSheet(
+                        id = 1L,
+                        title = "はみがき",
+                        currentCount = 10,
+                        goalCount = 10,
+                    ),
+                stamps = emptyList(),
+                exchangeableRewards = emptyList(),
+                lockedRewards = emptyList(),
+                goalStampType = goalStampType,
+                stampedPosition = 9,
+            )
+        }
+    }
+
+    @Test
     fun displaysProgressSheetWithGoalStamp() {
         composeTestRule.setContent {
             SheetDetailContent(

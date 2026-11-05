@@ -224,6 +224,31 @@ class SheetDetailViewModelTest {
             assertThat(stamps.single().position).isEqualTo(0)
             assertThat(stamps.single().stampType).isEqualTo(StampType.Hippopotamus)
             assertThat(stamps.single().stampedAt).isEqualTo(now)
+            assertThat(viewModel.uiState.value.stampedPosition).isEqualTo(0)
+        }
+
+    @Test
+    fun load_clearsStampedPosition() =
+        runTest {
+            val sheetId =
+                rewardSheetRepository.save(
+                    rewardSheet(
+                        id = 0,
+                        currentCount = 0,
+                        goalCount = 3,
+                    ),
+                )
+
+            val viewModel = createViewModel()
+            viewModel.load(sheetId)
+            viewModel.increment(
+                sheetId = sheetId,
+                stampType = StampType.Dog,
+            )
+
+            viewModel.restart(sheetId)
+
+            assertThat(viewModel.uiState.value.stampedPosition).isNull()
         }
 
     @Test
