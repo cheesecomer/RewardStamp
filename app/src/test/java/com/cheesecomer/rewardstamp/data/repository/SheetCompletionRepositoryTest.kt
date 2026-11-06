@@ -51,6 +51,7 @@ class SheetCompletionRepositoryTest {
                 completedRewardSheetRepository = completedRewardSheetRepository,
                 rewardStampRepository = rewardStampRepository,
                 now = { now },
+                pickGoalStampType = { GoalStampType.Heart1 },
             )
     }
 
@@ -72,10 +73,10 @@ class SheetCompletionRepositoryTest {
                 )
             database.rewardStampDao().insert(rewardStampEntity(sheetId = sheetId))
 
-            val result = repository.complete(sheetId, GoalStampType.Heart1)
+            val result = repository.complete(sheetId)
 
             val completedSheet = completedRewardSheetRepository.findAll().single()
-            assertThat(result).isTrue()
+            assertThat(result).isEqualTo(GoalStampType.Heart1)
             assertThat(completedSheet.title).isEqualTo("はみがき")
             assertThat(completedSheet.goalStampType).isEqualTo(GoalStampType.Heart1)
             assertThat(completedSheet.completedAt).isEqualTo(now)
@@ -95,10 +96,10 @@ class SheetCompletionRepositoryTest {
                     ),
                 )
 
-            repository.complete(sheetId, GoalStampType.Heart1)
-            val result = repository.complete(sheetId, GoalStampType.Heart1)
+            repository.complete(sheetId)
+            val result = repository.complete(sheetId)
 
-            assertThat(result).isFalse()
+            assertThat(result).isNull()
             assertThat(completedRewardSheetRepository.countAll()).isEqualTo(1)
         }
 
@@ -113,17 +114,17 @@ class SheetCompletionRepositoryTest {
                     ),
                 )
 
-            val result = repository.complete(sheetId, GoalStampType.Heart1)
+            val result = repository.complete(sheetId)
 
-            assertThat(result).isFalse()
+            assertThat(result).isNull()
             assertThat(completedRewardSheetRepository.countAll()).isEqualTo(0)
         }
 
     @Test
     fun complete_returnsFalseWhenSheetDoesNotExist() =
         runTest {
-            val result = repository.complete(999L, GoalStampType.Heart1)
+            val result = repository.complete(999L)
 
-            assertThat(result).isFalse()
+            assertThat(result).isNull()
         }
 }

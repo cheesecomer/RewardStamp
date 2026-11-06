@@ -18,12 +18,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
+import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.feature.setting.SettingsViewModel
 import com.cheesecomer.rewardstamp.model.GoalStampType
@@ -210,6 +212,7 @@ internal fun SheetDetailContent(
     goalStampType: GoalStampType? = null,
     stampedPosition: Int? = null,
     goalCelebrationEnabled: Boolean = true,
+    showsConfetti: Boolean = true,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
@@ -229,6 +232,7 @@ internal fun SheetDetailContent(
                 goalCount = sheet.goalCount,
                 goalStampType = goalStampType,
                 showcasesGoal = goalCelebrationEnabled,
+                showsConfetti = showsConfetti,
             )
         SheetDetailDialogs(
             activeDialog = activeDialog,
@@ -246,9 +250,7 @@ internal fun SheetDetailContent(
             actions = {
                 SheetDetailMenu(
                     onEditClick = onEditClick,
-                    onDeleteClick = {
-                        activeDialog = SheetDetailDialog.Delete
-                    },
+                    onDeleteClick = { activeDialog = SheetDetailDialog.Delete },
                 )
             },
         ) { innerPadding ->
@@ -267,9 +269,7 @@ internal fun SheetDetailContent(
                 goalStampType = goalStampType,
                 stampedPosition = stampedPosition,
                 stampAnimationState = stampAnimationState,
-                onStampClick = {
-                    activeDialog = SheetDetailDialog.Stamp
-                },
+                onStampClick = { activeDialog = SheetDetailDialog.Stamp },
                 onStampLongPress = { stamp ->
                     activeDialog = SheetDetailDialog.StampAction(stamp)
                 },
@@ -297,6 +297,7 @@ fun SheetDetailScreen(
                 rewardStampRepository,
                 rewardMilestoneRepository,
                 sheetCompletionRepository,
+                now = now,
             )
         },
     settingsViewModel: SettingsViewModel =
@@ -317,6 +318,7 @@ fun SheetDetailScreen(
         goalStampType = uiState.goalStampType,
         stampedPosition = uiState.stampedPosition,
         goalCelebrationEnabled = settingsUiState.settings.goalCelebrationEnabled,
+        showsConfetti = (LocalContext.current.applicationContext as RewardStampApplication).showsConfetti,
         exchangeableRewards = uiState.exchangeableRewards,
         lockedRewards = uiState.lockedRewards,
         modifier = modifier,

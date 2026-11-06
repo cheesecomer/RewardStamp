@@ -7,7 +7,6 @@ import com.cheesecomer.rewardstamp.data.repository.RewardMilestoneRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardSheetRepository
 import com.cheesecomer.rewardstamp.data.repository.RewardStampRepository
 import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
-import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
@@ -102,11 +101,7 @@ class SheetDetailViewModel(
         val exchangeableSheetCount =
             completedRewardSheetRepository
                 .countExchangeableBySheetId(sheet.id) + 1
-        val goalStampType = GoalStampType.entries.random()
-
-        if (!sheetCompletionRepository.complete(sheet.id, goalStampType)) {
-            return
-        }
+        val goalStampType = sheetCompletionRepository.complete(sheet.id) ?: return
 
         val exchangeableRewards =
             rewardMilestoneRepository.findExchangeableMilestonesBySheetId(

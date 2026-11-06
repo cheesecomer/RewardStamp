@@ -13,11 +13,11 @@ import java.time.LocalTime
 
 /**
  * スクリーンショット用のデータ。前のデータは消してから入れる。
- * 日付は撮った日から数えるので、いつ撮っても最近のきろくに見える
+ * 日付は [today] から数える
  */
 internal class ShowcaseData(
     private val database: AppDatabase,
-    private val today: LocalDate = LocalDate.now(),
+    private val today: LocalDate,
 ) {
     /** ゴールまであと1回。ツアーでスタンプを押してゴールさせる */
     var toothbrushingId = 0L
@@ -122,7 +122,7 @@ internal class ShowcaseData(
         const val HELPING = "おてつだい"
 
         private const val COMPLETED_GOAL_COUNT = 10
-        private val STAMP_TIME: LocalTime = LocalTime.of(19, 30)
+        val STAMP_TIME: LocalTime = LocalTime.of(19, 30)
         private val TOOTHBRUSHING_STAMPS =
             listOf(
                 StampType.Star,

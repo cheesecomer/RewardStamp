@@ -11,17 +11,17 @@ class SheetCompletionRepository(
     private val completedRewardSheetRepository: CompletedRewardSheetRepository,
     private val rewardStampRepository: RewardStampRepository,
     private val now: () -> LocalDateTime = { LocalDateTime.now() },
+    private val pickGoalStampType: () -> GoalStampType = { GoalStampType.entries.random() },
 ) {
-    suspend fun complete(
-        sheetId: Long,
-        goalStampType: GoalStampType,
-    ): Boolean =
+    // Returns the goal stamp put on the completed sheet, or null when the sheet is not completed
+    suspend fun complete(sheetId: Long): GoalStampType? =
         transactionRunner.run {
             val sheet = rewardSheetRepository.findById(sheetId)
             if (sheet == null || !sheet.isCompleted) {
-                return@run false
+                return@run null
             }
 
+            val goalStampType = pickGoalStampType()
             val completedRewardSheetId =
                 completedRewardSheetRepository.save(
                     CompletedRewardSheet(
@@ -40,6 +40,6 @@ class SheetCompletionRepository(
             )
             rewardSheetRepository.restart(sheet.id)
 
-            true
+            goalStampType
         }
 }

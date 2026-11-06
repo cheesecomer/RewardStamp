@@ -95,11 +95,11 @@ tools/screenshots/take.sh            # docs/screenshots を置き換える。引
 
 1. デバッグ版とテストを入れ、アプリのデータを消す。
 2. 画面の大きさを 1080×1920（Google Play に載せられる 9:16）にし、ステータスバーをデモモードにする（10:00・Wi-Fi・電池満タン・通知なし）。終わったら戻す。
-3. `ScreenshotTour`（[app/src/androidTest/.../screenshots/](../app/src/androidTest/java/com/cheesecomer/rewardstamp/screenshots/)）が `ShowcaseData` のデータを入れ、画面を巡って撮る。日付は撮った日から数えるので、いつ撮っても最近のきろくに見える。
+3. `ScreenshotTour`（[app/src/androidTest/.../screenshots/](../app/src/androidTest/java/com/cheesecomer/rewardstamp/screenshots/)）が `ShowcaseData` のデータを入れ、画面を巡って撮る。アプリの日付（2026/11/1）と乱数を固定するので、何度撮っても同じ画面になる。
 
 - 端末は `ANDROID_SERIAL` で選べます（既定は最初の Android Emulator）。アプリのデータを消すので、実機では動かしません。
 - 画面を変えて操作の手順が合わなくなると失敗し、`docs/screenshots` は変えずに、撮れた分と失敗したときの画面（`failed.png`）を `build/screenshots` に残します。`ScreenshotTour` の手順を直します。
-- ゴールの演出は時間で進むので、テストの時計（`mainClock`）を止めて、ゴールのスタンプが出たところで撮ります。ゴールのスタンプはランダムなので、撮るたびに変わります。
+- ゴールの演出は時間で進むので、テストの時計（`mainClock`）を止めて、ゴールのスタンプが出たところで撮ります。ゴールのスタンプは `SEED` で変えられます（`SEED=3 tools/screenshots/take.sh`）。紙吹雪は乱数を固定できないので、スクリーンショットでは出しません。
 - `ScreenshotTour` は `-e screenshots true` を付けたときだけ動き、通常の `connectedDebugAndroidTest` では飛ばします。
 
 ## CI
