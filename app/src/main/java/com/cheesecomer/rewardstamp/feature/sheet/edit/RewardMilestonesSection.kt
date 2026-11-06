@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
+import com.cheesecomer.rewardstamp.ui.component.SectionTitle
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 
@@ -213,7 +214,7 @@ private fun RewardMilestonesSectionHeadline(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
     ) {
-        SheetEditSectionTitle(text = stringResource(R.string.sheet_edit_rewards_label))
+        SectionTitle(text = stringResource(R.string.sheet_edit_rewards_label))
         Text(
             modifier = Modifier.padding(start = 32.dp),
             text = stringResource(R.string.sheet_edit_rewards_description),

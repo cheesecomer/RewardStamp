@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardstamp.feature.setting.SettingsViewModel
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.model.RewardSheet
@@ -65,7 +66,10 @@ private fun SheetDetailDialogs(
     when (activeDialog) {
         SheetDetailDialog.Delete -> {
             DeleteSheetDialog(
-                onDeleteRequest = onDeleteRequest,
+                onDeleteRequest = {
+                    onDismissRequest()
+                    onDeleteRequest()
+                },
                 onDismissRequest = onDismissRequest,
             )
         }
@@ -73,7 +77,10 @@ private fun SheetDetailDialogs(
         SheetDetailDialog.Stamp -> {
             StampPickerBottomSheet(
                 onDismiss = onDismissRequest,
-                onSelect = onStampTypeSelect,
+                onSelect = { stampType ->
+                    onDismissRequest()
+                    onStampTypeSelect(stampType)
+                },
             )
         }
 
@@ -202,6 +209,7 @@ internal fun SheetDetailContent(
     modifier: Modifier = Modifier,
     goalStampType: GoalStampType? = null,
     stampedPosition: Int? = null,
+    goalCelebrationEnabled: Boolean = true,
     onBackClick: () -> Unit = {},
     onEditClick: () -> Unit = {},
     onDeleteClick: () -> Unit = {},
@@ -215,18 +223,18 @@ internal fun SheetDetailContent(
     if (sheet == null) {
         SheetNotFound(modifier = modifier, onBackClick = onBackClick)
     } else {
-        val stampAnimationState = rememberStampAnimationState(stampedPosition, sheet.goalCount, goalStampType)
+        val stampAnimationState =
+            rememberStampAnimationState(
+                stampedPosition = stampedPosition,
+                goalCount = sheet.goalCount,
+                goalStampType = goalStampType,
+                showcasesGoal = goalCelebrationEnabled,
+            )
         SheetDetailDialogs(
             activeDialog = activeDialog,
             onActiveDialogChange = { activeDialog = it },
-            onDeleteRequest = {
-                activeDialog = null
-                onDeleteClick()
-            },
-            onStampTypeSelect = { stampType ->
-                activeDialog = null
-                onStampTypeSelect(stampType)
-            },
+            onDeleteRequest = onDeleteClick,
+            onStampTypeSelect = onStampTypeSelect,
             onStampTypeChange = onStampTypeChange,
             onStampCancel = onStampCancel,
         )
@@ -291,8 +299,13 @@ fun SheetDetailScreen(
                 sheetCompletionRepository,
             )
         },
+    settingsViewModel: SettingsViewModel =
+        rewardStampViewModel {
+            SettingsViewModel(settingsRepository)
+        },
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val settingsUiState by settingsViewModel.uiState.collectAsStateWithLifecycle()
 
     LaunchedEffect(sheetId) {
         viewModel.load(sheetId)
@@ -303,6 +316,7 @@ fun SheetDetailScreen(
         stamps = uiState.stamps,
         goalStampType = uiState.goalStampType,
         stampedPosition = uiState.stampedPosition,
+        goalCelebrationEnabled = settingsUiState.settings.goalCelebrationEnabled,
         exchangeableRewards = uiState.exchangeableRewards,
         lockedRewards = uiState.lockedRewards,
         modifier = modifier,

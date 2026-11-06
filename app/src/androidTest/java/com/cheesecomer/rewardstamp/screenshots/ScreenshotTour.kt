@@ -24,6 +24,7 @@ import com.cheesecomer.rewardstamp.RewardStampApplication
 import com.cheesecomer.rewardstamp.feature.completedsheet.detail.CompletedSheetDetailTestTags
 import com.cheesecomer.rewardstamp.feature.completedsheet.list.CompletedSheetListTestTags
 import com.cheesecomer.rewardstamp.feature.exchangeablesheet.list.ExchangeableSheetCardTestTags
+import com.cheesecomer.rewardstamp.feature.setting.SettingsTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.detail.CongratulationDialogTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.detail.GoalCelebrationTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.detail.SheetDetailTestTags
@@ -133,6 +134,10 @@ class ScreenshotTour {
         click(hasTestTag(CompletedSheetListTestTags.gridItem(data.featuredCompletedSheetId)))
         waitFor(hasTestTag(CompletedSheetDetailTestTags.TITLE_LABEL))
         shoot("12-history-detail")
+
+        click(hasText(string(R.string.tab_settings)))
+        waitFor(hasTestTag(SettingsTestTags.VIBRATION_SWITCH))
+        shoot("13-settings")
     }
 
     private fun string(

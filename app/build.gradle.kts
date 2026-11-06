@@ -69,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     testOptions {
         unitTests {
@@ -121,6 +122,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
     implementation(libs.konfetti.compose)
+    implementation(libs.androidx.datastore.preferences)
     ksp(libs.androidx.room.compiler)
     ktlintRuleset(libs.ktlint.compose.rules)
 }

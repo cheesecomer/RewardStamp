@@ -27,6 +27,7 @@ import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.ui.RewardStampTextFieldDefaults
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
+import com.cheesecomer.rewardstamp.ui.component.SectionTitle
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 
@@ -40,7 +41,7 @@ private fun SheetNameSection(
     Column(
         modifier = modifier.fillMaxWidth(),
     ) {
-        SheetEditSectionTitle(
+        SectionTitle(
             text = stringResource(R.string.sheet_edit_name_label),
             modifier = Modifier.padding(start = 16.dp),
         )

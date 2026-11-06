@@ -206,7 +206,28 @@ class SheetDetailContentTest {
             .assertIsDisplayed()
     }
 
-    private fun setGoalReachedContent(goalStampType: GoalStampType?) {
+    @Test
+    fun goalCelebrationDisabled_skipsShowcase() {
+        composeTestRule.mainClock.autoAdvance = false
+        setGoalReachedContent(goalStampType = GoalStampType.Bear1, goalCelebrationEnabled = false)
+
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertDoesNotExist()
+
+        composeTestRule.mainClock.advanceTimeBy(1_000)
+        composeTestRule
+            .onNodeWithTag(GoalCelebrationTestTags.GOAL_STAMP, useUnmergedTree = true)
+            .assertDoesNotExist()
+        composeTestRule
+            .onNodeWithTag(CongratulationDialogTestTags.ROOT)
+            .assertExists()
+    }
+
+    private fun setGoalReachedContent(
+        goalStampType: GoalStampType?,
+        goalCelebrationEnabled: Boolean = true,
+    ) {
         composeTestRule.setContent {
             SheetDetailContent(
                 sheet =
@@ -221,6 +242,7 @@ class SheetDetailContentTest {
                 lockedRewards = emptyList(),
                 goalStampType = goalStampType,
                 stampedPosition = 9,
+                goalCelebrationEnabled = goalCelebrationEnabled,
             )
         }
     }
