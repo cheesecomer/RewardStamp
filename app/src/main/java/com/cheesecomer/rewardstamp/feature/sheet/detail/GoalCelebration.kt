@@ -150,7 +150,7 @@ fun GoalCelebration(
             )
         }
 
-        if (state.phase != GoalCelebrationPhase.None && !reduceMotion) {
+        if (state.phase != GoalCelebrationPhase.None && state.showsConfetti && !reduceMotion) {
             KonfettiView(
                 modifier = Modifier.fillMaxSize(),
                 parties = crackerParties,

@@ -14,9 +14,22 @@ import com.cheesecomer.rewardstamp.data.repository.SettingsRepository
 import com.cheesecomer.rewardstamp.data.repository.SheetCompletionRepository
 import com.cheesecomer.rewardstamp.data.source.database.AppDatabase
 import com.cheesecomer.rewardstamp.data.source.database.RoomTransactionRunner
+import com.cheesecomer.rewardstamp.model.GoalStampType
+import java.time.Clock
+import java.time.LocalDateTime
+import kotlin.random.Random
 
 @ExcludeFromCoverage
 class RewardStampApplication : Application() {
+    // The screenshot tour fixes these, so that the same screenshots are taken every time
+    var clock: Clock = Clock.systemDefaultZone()
+    var random: Random = Random.Default
+
+    // Confetti uses its own random numbers, so the screenshot tour turns it off instead
+    var showsConfetti: Boolean = true
+
+    val now: () -> LocalDateTime = { LocalDateTime.now(clock) }
+
     val database: AppDatabase by lazy {
         Room
             .databaseBuilder(
@@ -31,11 +44,11 @@ class RewardStampApplication : Application() {
     }
 
     val rewardSheetRepository: RewardSheetRepository by lazy {
-        RewardSheetRepository(database.rewardSheetDao())
+        RewardSheetRepository(database.rewardSheetDao(), now)
     }
 
     val completedRewardSheetRepository: CompletedRewardSheetRepository by lazy {
-        CompletedRewardSheetRepository(database.completedRewardSheetDao())
+        CompletedRewardSheetRepository(database.completedRewardSheetDao(), now)
     }
     val rewardStampRepository: RewardStampRepository by lazy {
         RewardStampRepository(database.rewardStampDao())
@@ -68,6 +81,8 @@ class RewardStampApplication : Application() {
             rewardSheetRepository,
             completedRewardSheetRepository,
             rewardStampRepository,
+            now,
+            pickGoalStampType = { GoalStampType.entries.random(random) },
         )
     }
 }

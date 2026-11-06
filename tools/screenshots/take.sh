@@ -9,6 +9,7 @@
 #    失敗したときは出力先を変えず、撮れた分と失敗したときの画面（failed.png）を build/screenshots に残す
 #
 # 端末は ANDROID_SERIAL で選ぶ（既定は最初の Android Emulator）。アプリのデータを消すので、実機では動かさない。
+# 日付とゴールのスタンプは固定されるので、何度撮っても同じ画面になる。ゴールのスタンプは SEED で変えられる（SEED=3 tools/screenshots/take.sh）。
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -53,7 +54,11 @@ demo notifications -e visible false
 
 # 2. 撮って取り出す。am instrument はテストが失敗しても 0 で終わるので、結果の行で判定する。
 # 失敗したときも、そこまでに撮った画面と、失敗したときの画面（failed.png）を取り出す
-result="$(adb shell am instrument -w -e screenshots true -e class "$PACKAGE.screenshots.ScreenshotTour" \
+seed_args=()
+if [[ -n "${SEED:-}" ]]; then
+  seed_args=(-e seed "$SEED")
+fi
+result="$(adb shell am instrument -w -e screenshots true ${seed_args[@]+"${seed_args[@]}"} -e class "$PACKAGE.screenshots.ScreenshotTour" \
   "$PACKAGE.test/androidx.test.runner.AndroidJUnitRunner")"
 rm -rf "$WORK"/*.png
 adb pull "$DEVICE_DIR/." "$WORK" >/dev/null 2>&1 || true

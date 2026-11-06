@@ -42,6 +42,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.File
+import java.time.Clock
+import java.time.LocalDate
+import java.time.ZoneId
+import kotlin.random.Random
 
 /**
  * アプリを実際に操作して、画面のスクリーンショットを撮る（docs/development.md「スクリーンショット」）。
@@ -68,7 +72,14 @@ class ScreenshotTour {
     fun insertShowcaseData() {
         assumeTrue(InstrumentationRegistry.getArguments().getString("screenshots") == "true")
         val application = context.applicationContext as RewardStampApplication
-        data = ShowcaseData(application.database)
+        // 日付とゴールのスタンプを固定して、いつ撮っても同じ画面にする。ゴールのスタンプは seed で変えられる。
+        // 紙吹雪は乱数を固定できないので出さない
+        val seed = InstrumentationRegistry.getArguments().getString("seed")?.toInt() ?: DEFAULT_SEED
+        val zone = ZoneId.systemDefault()
+        application.clock = Clock.fixed(TODAY.atTime(ShowcaseData.STAMP_TIME).atZone(zone).toInstant(), zone)
+        application.random = Random(seed)
+        application.showsConfetti = false
+        data = ShowcaseData(application.database, today = TODAY)
         runBlocking { data.insert() }
     }
 
@@ -260,5 +271,7 @@ class ScreenshotTour {
         const val SHOWCASE_ENTER_MILLIS = 700L
         const val PNG_QUALITY = 100
         const val FAILED = "failed"
+        const val DEFAULT_SEED = 1
+        val TODAY: LocalDate = LocalDate.of(2026, 11, 1)
     }
 }

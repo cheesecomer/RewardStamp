@@ -52,13 +52,14 @@ enum class GoalCelebrationPhase {
 /**
  * Plays the press of the latest stamp. When the stamp reaches the goal, it goes on to show the goal stamp
  * in the middle of the screen with confetti, press it onto the goal, and wait a little before the sheet is finished.
- * Without [showcases], the goal stamp is put on right after the press.
+ * Without [showcases], the goal stamp is put on right after the press. [showsConfetti] turns only the confetti off.
  */
 @Stable
 class StampAnimationState(
     pressed: Boolean,
     val celebrates: Boolean,
     private val showcases: Boolean = true,
+    val showsConfetti: Boolean = true,
 ) {
     private val pressProgress = Animatable(if (pressed) 0f else 1f)
     private val goalPressProgress = Animatable(if (celebrates) 0f else 1f)
@@ -132,6 +133,7 @@ fun rememberStampAnimationState(
     goalCount: Int,
     goalStampType: GoalStampType?,
     showcasesGoal: Boolean = true,
+    showsConfetti: Boolean = true,
 ): StampAnimationState {
     val state =
         remember(stampedPosition) {
@@ -139,6 +141,7 @@ fun rememberStampAnimationState(
                 pressed = stampedPosition != null,
                 celebrates = stampedPosition == goalCount - 1,
                 showcases = showcasesGoal,
+                showsConfetti = showsConfetti,
             )
         }
     val currentGoalStampType by rememberUpdatedState(goalStampType)
