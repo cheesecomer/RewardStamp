@@ -29,12 +29,17 @@ import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.CompletedRewardSheet
 import com.cheesecomer.rewardstamp.model.GoalStamp
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardState
 import com.cheesecomer.rewardstamp.ui.component.RewardBoardView
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialog
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialog
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAppAdultLockState
 import com.cheesecomer.rewardstamp.ui.rememberDrawable
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -82,11 +87,14 @@ private fun GoalCountLabel(
 }
 
 @Composable
-private fun DeleteAction(onDeleteClick: () -> Unit) {
+private fun DeleteAction(
+    adultLock: AdultLockState,
+    onDeleteClick: () -> Unit,
+) {
     var showDialog by remember { mutableStateOf(false) }
 
     IconButton(
-        onClick = { showDialog = true },
+        onClick = { adultLock.runUnlocked(LockTarget.ParentAction) { showDialog = true } },
         modifier = Modifier.testTag(CompletedSheetDetailTestTags.DELETE_BUTTON),
     ) {
         Icon(
@@ -116,6 +124,7 @@ internal fun CompletedSheetDetailContent(
     stamps: List<RewardStamp>,
     modifier: Modifier = Modifier,
     onDeleteClick: () -> Unit = {},
+    adultLock: AdultLockState = rememberAdultLockState(),
 ) {
     if (sheet == null) {
         Text(stringResource(R.string.common_not_found))
@@ -123,12 +132,13 @@ internal fun CompletedSheetDetailContent(
     }
 
     val goalStampDrawable = rememberDrawable(sheet.goalStampType.iconRes)
+    AdultLockDialog(adultLock)
 
     RewardStampScaffold(
         title = stringResource(R.string.completed_title),
         modifier = modifier,
         actions = {
-            DeleteAction(onDeleteClick = onDeleteClick)
+            DeleteAction(adultLock = adultLock, onDeleteClick = onDeleteClick)
         },
     ) { innerPadding ->
         Column(
@@ -199,6 +209,7 @@ fun CompletedSheetDetailScreen(
                 onDeleteClick()
             }
         },
+        adultLock = rememberAppAdultLockState(),
     )
 }
 

@@ -35,6 +35,7 @@ import com.cheesecomer.rewardstamp.feature.sheet.edit.SheetEditTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.list.SheetListTestTags
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
 import kotlinx.coroutines.runBlocking
 import org.junit.Assume.assumeTrue
 import org.junit.Before
@@ -146,9 +147,17 @@ class ScreenshotTour {
         waitFor(hasTestTag(CompletedSheetDetailTestTags.TITLE_LABEL))
         shoot("12-history-detail")
 
+        // おとなロックをオンにして撮り、シートでスタンプを押そうとして、解除の問題を撮る
         click(hasText(string(R.string.tab_settings)))
-        waitFor(hasTestTag(SettingsTestTags.VIBRATION_SWITCH))
+        click(hasTestTag(SettingsTestTags.ADULT_LOCK_SWITCH))
+        waitFor(hasTestTag(SettingsTestTags.STAMP_LOCK_SWITCH))
         shoot("13-settings")
+
+        click(hasText(string(R.string.tab_sheets)))
+        click(hasTestTag(SheetListTestTags.sheetCard(data.toothbrushingId)))
+        click(hasText(string(R.string.sheet_detail_stamp)))
+        waitFor(hasTestTag(AdultLockDialogTestTags.ROOT))
+        shoot("14-unlock-dialog")
     }
 
     private fun string(

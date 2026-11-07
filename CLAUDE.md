@@ -3,6 +3,7 @@
 ごほうびスタンプ（Android / Jetpack Compose）。単一モジュール `:app`。
 
 開発環境、タスク、パッケージ構成、コードの決まりごとは [docs/development.md](docs/development.md) を参照。
+だれが何のために使うか（おとなロックの対象を含む）は [docs/usecases.md](docs/usecases.md)、見た目の決まりは [docs/design/DESIGN.md](docs/design/DESIGN.md) を参照。
 
 ## 確認コマンド
 

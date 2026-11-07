@@ -107,4 +107,18 @@
     <string name="settings_privacy_policy">プライバシーポリシー</string>
     <string name="settings_contact">お問い合わせ</string>
     <string name="settings_rate_app">アプリを評価する</string>
+    <string name="settings_adult_lock_title">おとなロック</string>
+    <string name="settings_adult_lock_enabled">おとなロックを使う</string>
+    <string name="settings_adult_lock_description">シートの編集や削除、ごほうびの交換の前に、かんたんな問題を出します</string>
+    <string name="settings_stamp_lock">スタンプを押すときもロックする</string>
+
+    <!-- Adult lock -->
+    <string name="adult_lock_title">保護者の方へ</string>
+    <string name="adult_lock_message">お子さまの誤操作を防ぐため\n計算の答えを入力してください</string>
+    <string name="adult_lock_problem">%1$d ＋ %2$d ＝ ？</string>
+    <string name="adult_lock_input_placeholder">答えを入力</string>
+    <string name="adult_lock_wrong_answer">答えが違います</string>
+    <string name="adult_lock_clear">クリア</string>
+    <string name="adult_lock_backspace">1文字消す</string>
+    <string name="adult_lock_unlock">解除する</string>
 </resources>
