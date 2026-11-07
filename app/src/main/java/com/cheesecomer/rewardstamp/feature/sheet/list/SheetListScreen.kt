@@ -31,12 +31,17 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.navigation.BottomTab
 import com.cheesecomer.rewardstamp.ui.component.RewardStampBottomBar
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialog
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAppAdultLockState
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -93,13 +98,15 @@ internal fun SheetListContent(
     onSheetClick: (Long) -> Unit,
     onCreateSheetClick: () -> Unit,
     modifier: Modifier = Modifier,
+    adultLock: AdultLockState = rememberAdultLockState(),
 ) {
+    AdultLockDialog(adultLock)
     RewardStampScaffold(
         title = stringResource(R.string.sheet_list_title),
         modifier = modifier,
         floatingActionButton = {
             FloatingCreateSheetButton(
-                onClick = onCreateSheetClick,
+                onClick = { adultLock.runUnlocked(LockTarget.ParentAction, action = onCreateSheetClick) },
             )
         },
     ) { innerPadding ->
@@ -164,6 +171,7 @@ fun SheetListScreen(
         latestStamps = uiState.latestStamps,
         onSheetClick = onSheetClick,
         onCreateSheetClick = onCreateSheetClick,
+        adultLock = rememberAppAdultLockState(),
     )
 }
 

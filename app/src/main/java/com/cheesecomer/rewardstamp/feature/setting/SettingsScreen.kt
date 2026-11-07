@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
@@ -18,6 +19,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,13 +37,19 @@ import com.cheesecomer.rewardstamp.BuildConfig
 import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.ui.component.RewardStampScaffold
 import com.cheesecomer.rewardstamp.ui.component.SectionTitle
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialog
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAppAdultLockState
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 
 private val RowMinHeight = 56.dp
+private const val SUB_SETTINGS_ALPHA = 0.5f
 
 @Composable
 private fun SettingsSection(
@@ -66,6 +74,7 @@ private fun SettingsSwitchRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    supportingText: String? = null,
 ) {
     Row(
         modifier =
@@ -78,12 +87,20 @@ private fun SettingsSwitchRow(
                     onValueChange = onCheckedChange,
                 ),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
     ) {
-        Text(
-            text = label,
-            modifier = Modifier.weight(1f),
-            style = MaterialTheme.typography.bodyLarge,
-        )
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = label,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            if (supportingText != null) {
+                Text(
+                    text = supportingText,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
+        }
         Switch(
             checked = checked,
             onCheckedChange = null,
@@ -140,6 +157,40 @@ private fun SettingsValueRow(
             text = value,
             style = MaterialTheme.typography.bodyMedium,
         )
+    }
+}
+
+@Composable
+private fun AdultLockSection(
+    settings: AppSettings,
+    onAdultLockChange: (Boolean) -> Unit,
+    onStampLockChange: (Boolean) -> Unit,
+) {
+    SettingsSection(title = stringResource(R.string.settings_adult_lock_title)) {
+        SettingsSwitchRow(
+            label = stringResource(R.string.settings_adult_lock_enabled),
+            supportingText = stringResource(R.string.settings_adult_lock_description),
+            checked = settings.adultLockEnabled,
+            onCheckedChange = onAdultLockChange,
+            modifier = Modifier.testTag(SettingsTestTags.ADULT_LOCK_SWITCH),
+        )
+        if (settings.adultLockEnabled) {
+            Surface(
+                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = SUB_SETTINGS_ALPHA),
+            ) {
+                SettingsSwitchRow(
+                    label = stringResource(R.string.settings_stamp_lock),
+                    checked = settings.stampLockEnabled,
+                    onCheckedChange = onStampLockChange,
+                    modifier =
+                        Modifier
+                            .padding(horizontal = 12.dp)
+                            .testTag(SettingsTestTags.STAMP_LOCK_SWITCH),
+                )
+            }
+        }
     }
 }
 
@@ -206,7 +257,15 @@ internal fun SettingsContent(
     modifier: Modifier = Modifier,
     onVibrationChange: (Boolean) -> Unit = {},
     onGoalCelebrationChange: (Boolean) -> Unit = {},
+    onAdultLockChange: (Boolean) -> Unit = {},
+    onStampLockChange: (Boolean) -> Unit = {},
+    adultLock: AdultLockState = rememberAdultLockState(settings),
 ) {
+    AdultLockDialog(adultLock)
+    // While the lock is on, the lock settings change only after unlocking, which lasts until the screen is left
+    val changeLockSetting = { change: () -> Unit ->
+        adultLock.runUnlocked(LockTarget.ParentAction, keepsUnlocked = true, action = change)
+    }
     RewardStampScaffold(
         title = stringResource(R.string.settings_title),
         modifier = modifier,
@@ -219,6 +278,11 @@ internal fun SettingsContent(
                     .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
+            AdultLockSection(
+                settings = settings,
+                onAdultLockChange = { enabled -> changeLockSetting { onAdultLockChange(enabled) } },
+                onStampLockChange = { enabled -> changeLockSetting { onStampLockChange(enabled) } },
+            )
             EffectsSection(
                 settings = settings,
                 onVibrationChange = onVibrationChange,
@@ -246,6 +310,9 @@ fun SettingsScreen(
         modifier = modifier,
         onVibrationChange = viewModel::setVibrationEnabled,
         onGoalCelebrationChange = viewModel::setGoalCelebrationEnabled,
+        onAdultLockChange = viewModel::setAdultLockEnabled,
+        onStampLockChange = viewModel::setStampLockEnabled,
+        adultLock = rememberAppAdultLockState(),
     )
 }
 

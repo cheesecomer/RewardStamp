@@ -22,7 +22,7 @@ class SettingsViewModelTest {
             val viewModel = SettingsViewModel(settingsRepository)
 
             assertThat(viewModel.uiState.value.settings)
-                .isEqualTo(AppSettings(vibrationEnabled = false, goalCelebrationEnabled = true))
+                .isEqualTo(AppSettings(vibrationEnabled = false))
         }
 
     @Test
@@ -45,5 +45,27 @@ class SettingsViewModelTest {
 
             assertThat(settingsRepository.settings.first().goalCelebrationEnabled).isFalse()
             assertThat(viewModel.uiState.value.settings.goalCelebrationEnabled).isFalse()
+        }
+
+    @Test
+    fun setAdultLockEnabled_savesAndUpdatesState() =
+        runTest {
+            val viewModel = SettingsViewModel(settingsRepository)
+
+            viewModel.setAdultLockEnabled(true)
+
+            assertThat(settingsRepository.settings.first().adultLockEnabled).isTrue()
+            assertThat(viewModel.uiState.value.settings.adultLockEnabled).isTrue()
+        }
+
+    @Test
+    fun setStampLockEnabled_savesAndUpdatesState() =
+        runTest {
+            val viewModel = SettingsViewModel(settingsRepository)
+
+            viewModel.setStampLockEnabled(false)
+
+            assertThat(settingsRepository.settings.first().stampLockEnabled).isFalse()
+            assertThat(viewModel.uiState.value.settings.stampLockEnabled).isFalse()
         }
 }

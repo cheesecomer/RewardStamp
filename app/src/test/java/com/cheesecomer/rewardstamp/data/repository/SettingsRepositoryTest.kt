@@ -11,10 +11,17 @@ class SettingsRepositoryTest {
     private val repository = SettingsRepository(InMemoryPreferencesDataStore())
 
     @Test
-    fun settings_defaultsToEnabled() =
+    fun settings_defaultsToEffectsOnAndAdultLockOff() =
         runTest {
             assertThat(repository.settings.first())
-                .isEqualTo(AppSettings(vibrationEnabled = true, goalCelebrationEnabled = true))
+                .isEqualTo(
+                    AppSettings(
+                        vibrationEnabled = true,
+                        goalCelebrationEnabled = true,
+                        adultLockEnabled = false,
+                        stampLockEnabled = true,
+                    ),
+                )
         }
 
     @Test
@@ -33,5 +40,21 @@ class SettingsRepositoryTest {
 
             assertThat(repository.settings.first())
                 .isEqualTo(AppSettings(vibrationEnabled = true, goalCelebrationEnabled = false))
+        }
+
+    @Test
+    fun setAdultLockEnabled_updatesSettings() =
+        runTest {
+            repository.setAdultLockEnabled(true)
+
+            assertThat(repository.settings.first().adultLockEnabled).isTrue()
+        }
+
+    @Test
+    fun setStampLockEnabled_updatesSettings() =
+        runTest {
+            repository.setStampLockEnabled(false)
+
+            assertThat(repository.settings.first().stampLockEnabled).isFalse()
         }
 }

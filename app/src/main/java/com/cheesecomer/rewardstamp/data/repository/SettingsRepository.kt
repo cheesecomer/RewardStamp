@@ -18,6 +18,8 @@ class SettingsRepository(
             AppSettings(
                 vibrationEnabled = preferences[VIBRATION_ENABLED] ?: defaults.vibrationEnabled,
                 goalCelebrationEnabled = preferences[GOAL_CELEBRATION_ENABLED] ?: defaults.goalCelebrationEnabled,
+                adultLockEnabled = preferences[ADULT_LOCK_ENABLED] ?: defaults.adultLockEnabled,
+                stampLockEnabled = preferences[STAMP_LOCK_ENABLED] ?: defaults.stampLockEnabled,
             )
         }
 
@@ -29,8 +31,18 @@ class SettingsRepository(
         dataStore.edit { it[GOAL_CELEBRATION_ENABLED] = enabled }
     }
 
+    suspend fun setAdultLockEnabled(enabled: Boolean) {
+        dataStore.edit { it[ADULT_LOCK_ENABLED] = enabled }
+    }
+
+    suspend fun setStampLockEnabled(enabled: Boolean) {
+        dataStore.edit { it[STAMP_LOCK_ENABLED] = enabled }
+    }
+
     private companion object {
         val VIBRATION_ENABLED = booleanPreferencesKey("vibration_enabled")
         val GOAL_CELEBRATION_ENABLED = booleanPreferencesKey("goal_celebration_enabled")
+        val ADULT_LOCK_ENABLED = booleanPreferencesKey("adult_lock_enabled")
+        val STAMP_LOCK_ENABLED = booleanPreferencesKey("stamp_lock_enabled")
     }
 }

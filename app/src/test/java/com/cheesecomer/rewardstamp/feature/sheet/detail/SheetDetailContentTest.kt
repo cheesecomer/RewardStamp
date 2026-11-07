@@ -13,6 +13,7 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTouchInput
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.data.rewardStamp
+import com.cheesecomer.rewardstamp.model.AppSettings
 import com.cheesecomer.rewardstamp.model.GoalStampType
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
@@ -21,11 +22,16 @@ import com.cheesecomer.rewardstamp.ui.component.RewardBoardViewTestTags
 import com.cheesecomer.rewardstamp.ui.component.boardPatterns
 import com.cheesecomer.rewardstamp.ui.component.buildBoardPoints
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialogTestTags
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.unlock
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
+import kotlin.random.Random
 
 @RunWith(RobolectricTestRunner::class)
 class SheetDetailContentTest {
@@ -448,11 +454,15 @@ class SheetDetailContentTest {
             stampType = StampType.Shortcake,
         )
 
+    private lateinit var adultLock: AdultLockState
+
     private fun setStampedContent(
         onStampTypeChange: (RewardStamp, StampType) -> Unit = { _, _ -> },
         onStampCancel: (RewardStamp) -> Unit = {},
+        settings: AppSettings = AppSettings(),
     ) {
         composeTestRule.setContent {
+            adultLock = rememberAdultLockState(settings, Random(0))
             SheetDetailContent(
                 sheet =
                     rewardSheet(
@@ -469,6 +479,7 @@ class SheetDetailContentTest {
                 lockedRewards = emptyList(),
                 onStampTypeChange = onStampTypeChange,
                 onStampCancel = onStampCancel,
+                adultLock = adultLock,
             )
         }
     }
@@ -513,6 +524,24 @@ class SheetDetailContentTest {
             .performClick()
 
         assertThat(changed).isEqualTo(stampedStamp to StampType.Hippopotamus)
+    }
+
+    @Test
+    // The unlock dialog is taller than the default screen of Robolectric
+    @Config(qualifiers = "w411dp-h891dp")
+    fun longPressStamp_asksAdultWhenLocked() {
+        setStampedContent(settings = AppSettings(adultLockEnabled = true))
+
+        longPressStamp(1)
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.ROOT)
+            .assertDoesNotExist()
+
+        composeTestRule.unlock(adultLock)
+
+        composeTestRule
+            .onNodeWithTag(StampActionDialogTestTags.ROOT)
+            .assertExists()
     }
 
     @Test

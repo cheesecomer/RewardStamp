@@ -34,4 +34,16 @@ class SettingsViewModel(
             settingsRepository.setGoalCelebrationEnabled(enabled)
         }
     }
+
+    fun setAdultLockEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setAdultLockEnabled(enabled)
+        }
+    }
+
+    fun setStampLockEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setStampLockEnabled(enabled)
+        }
+    }
 }

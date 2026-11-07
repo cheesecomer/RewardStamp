@@ -31,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.cheesecomer.rewardstamp.R
 import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.model.ExchangeableSheet
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.RewardMilestone
 import com.cheesecomer.rewardstamp.model.RewardSheet
 import com.cheesecomer.rewardstamp.navigation.BottomTab
@@ -40,6 +41,10 @@ import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialog
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialog
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialogTestTags
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialog
+import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
+import com.cheesecomer.rewardstamp.ui.component.lock.rememberAppAdultLockState
 import com.cheesecomer.rewardstamp.ui.rewardStampViewModel
 import com.cheesecomer.rewardstamp.ui.theme.Nikumaru
 import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
@@ -102,7 +107,9 @@ internal fun ExchangeableSheetListContent(
     sheets: List<ExchangeableSheet>,
     modifier: Modifier = Modifier,
     onRewardSelect: (Long, RewardMilestone) -> Unit = { _, _ -> },
+    adultLock: AdultLockState = rememberAdultLockState(),
 ) {
+    AdultLockDialog(adultLock)
     var showExchangeDialog by remember { mutableLongStateOf(0L) }
     val exchangingSheet = sheets.find { it.rewardSheet.id == showExchangeDialog }
     exchangingSheet?.let { sheet ->
@@ -146,7 +153,9 @@ internal fun ExchangeableSheetListContent(
                     ExchangeableSheetCard(
                         sheet,
                         onRewardReceiveClick = {
-                            showExchangeDialog = sheet.rewardSheet.id
+                            adultLock.runUnlocked(LockTarget.ParentAction) {
+                                showExchangeDialog = sheet.rewardSheet.id
+                            }
                         },
                     )
                 }
@@ -175,6 +184,7 @@ fun ExchangeableSheetListScreen(
         onRewardSelect = { sheetId, milestone ->
             viewModel.receiveReward(sheetId, milestone)
         },
+        adultLock = rememberAppAdultLockState(),
     )
 }
 
