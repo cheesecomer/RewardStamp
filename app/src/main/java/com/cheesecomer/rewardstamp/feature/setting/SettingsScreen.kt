@@ -14,6 +14,7 @@ import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -26,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -113,6 +115,7 @@ private fun SettingsLinkRow(
     label: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.AutoMirrored.Filled.OpenInNew,
 ) {
     Row(
         modifier =
@@ -128,7 +131,7 @@ private fun SettingsLinkRow(
             style = MaterialTheme.typography.bodyLarge,
         )
         Icon(
-            imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+            imageVector = icon,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.primary,
         )
@@ -218,7 +221,10 @@ private fun EffectsSection(
 }
 
 @Composable
-private fun AboutSection(versionName: String) {
+private fun AboutSection(
+    versionName: String,
+    onLicensesClick: () -> Unit,
+) {
     val uriHandler = LocalUriHandler.current
     // Nothing to do when no app can open the link
     val openUri = { uri: String -> runCatching { uriHandler.openUri(uri) } }
@@ -247,6 +253,13 @@ private fun AboutSection(versionName: String) {
             onClick = { openUri(SettingsLinks.RATE_APP) },
             modifier = Modifier.testTag(SettingsTestTags.RATE_APP),
         )
+        HorizontalDivider()
+        SettingsLinkRow(
+            label = stringResource(R.string.settings_licenses),
+            onClick = onLicensesClick,
+            icon = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+            modifier = Modifier.testTag(SettingsTestTags.LICENSES),
+        )
     }
 }
 
@@ -259,6 +272,7 @@ internal fun SettingsContent(
     onGoalCelebrationChange: (Boolean) -> Unit = {},
     onAdultLockChange: (Boolean) -> Unit = {},
     onStampLockChange: (Boolean) -> Unit = {},
+    onLicensesClick: () -> Unit = {},
     adultLock: AdultLockState = rememberAdultLockState(settings),
 ) {
     AdultLockDialog(adultLock)
@@ -288,7 +302,10 @@ internal fun SettingsContent(
                 onVibrationChange = onVibrationChange,
                 onGoalCelebrationChange = onGoalCelebrationChange,
             )
-            AboutSection(versionName = versionName)
+            AboutSection(
+                versionName = versionName,
+                onLicensesClick = onLicensesClick,
+            )
         }
     }
 }
@@ -296,6 +313,7 @@ internal fun SettingsContent(
 @ExcludeFromCoverage
 @Composable
 fun SettingsScreen(
+    onLicensesClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel =
         rewardStampViewModel {
@@ -312,6 +330,7 @@ fun SettingsScreen(
         onGoalCelebrationChange = viewModel::setGoalCelebrationEnabled,
         onAdultLockChange = viewModel::setAdultLockEnabled,
         onStampLockChange = viewModel::setStampLockEnabled,
+        onLicensesClick = onLicensesClick,
         adultLock = rememberAppAdultLockState(),
     )
 }

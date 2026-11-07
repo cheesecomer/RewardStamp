@@ -18,6 +18,7 @@ object Route {
     const val COMPLETED_SHEET_DETAIL = "sheets/completed/{completedSheetId}"
 
     const val SETTINGS = "settings"
+    const val LICENSES = "settings/licenses"
 
     fun sheetDetail(sheetId: Long): String = "sheets/$sheetId"
 
@@ -39,7 +40,9 @@ object Route {
             COMPLETED_SHEET_DETAIL,
             -> BottomTab.History
 
-            SETTINGS -> BottomTab.Settings
+            SETTINGS,
+            LICENSES,
+            -> BottomTab.Settings
 
             else -> null
         }

@@ -9,4 +9,5 @@ internal object SettingsTestTags {
     const val PRIVACY_POLICY = "SettingsScreen.PrivacyPolicy"
     const val CONTACT = "SettingsScreen.Contact"
     const val RATE_APP = "SettingsScreen.RateApp"
+    const val LICENSES = "SettingsScreen.Licenses"
 }

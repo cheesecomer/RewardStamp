@@ -93,7 +93,14 @@ fun RewardStampNavHost(
             )
         }
         composable(Route.SETTINGS) {
-            screenFactory.Settings()
+            screenFactory.Settings(
+                onLicensesClick = navigator::toLicenses,
+            )
+        }
+        composable(Route.LICENSES) {
+            screenFactory.Licenses(
+                onBackClick = navigator::back,
+            )
         }
     }
 }

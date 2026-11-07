@@ -1,0 +1,8 @@
+{
+  "uniqueId": "com.fontna:nikumaru-font",
+  "name": "にくまるフォント",
+  "description": "見出しやタイトルに使っているフォント。M+ FONTS をもとに作られている",
+  "website": "http://www.fontna.com/blog/nikumaru_font.html",
+  "developers": [{ "name": "フォントな", "organisationUrl": "http://www.fontna.com/" }],
+  "licenses": ["mplus-fonts"]
+}

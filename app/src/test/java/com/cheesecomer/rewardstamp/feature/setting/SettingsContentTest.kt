@@ -38,6 +38,7 @@ class SettingsContentTest {
         uriHandler: UriHandler = this.uriHandler,
         onVibrationChange: (Boolean) -> Unit = {},
         onGoalCelebrationChange: (Boolean) -> Unit = {},
+        onLicensesClick: () -> Unit = {},
     ) {
         composeTestRule.setContent {
             RewardStampTheme {
@@ -47,6 +48,7 @@ class SettingsContentTest {
                         versionName = "1.2.3",
                         onVibrationChange = onVibrationChange,
                         onGoalCelebrationChange = onGoalCelebrationChange,
+                        onLicensesClick = onLicensesClick,
                     )
                 }
             }
@@ -128,6 +130,20 @@ class SettingsContentTest {
                 SettingsLinks.CONTACT,
                 SettingsLinks.RATE_APP,
             ).inOrder()
+    }
+
+    @Test
+    fun clickLicenses_callsCallback() {
+        var clicked = false
+        setContent(onLicensesClick = { clicked = true })
+
+        composeTestRule
+            .onNodeWithTag(SettingsTestTags.LICENSES)
+            .performScrollTo()
+            .performClick()
+
+        assertThat(clicked).isTrue()
+        assertThat(openedUris).isEmpty()
     }
 
     @Test

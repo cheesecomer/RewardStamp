@@ -107,6 +107,7 @@
     <string name="settings_privacy_policy">プライバシーポリシー</string>
     <string name="settings_contact">お問い合わせ</string>
     <string name="settings_rate_app">アプリを評価する</string>
+    <string name="settings_licenses">ライセンス</string>
     <string name="settings_adult_lock_title">おとなロック</string>
     <string name="settings_adult_lock_enabled">おとなロックを使う</string>
     <string name="settings_adult_lock_description">シートの編集や削除、ごほうびの交換の前に、かんたんな問題を出します</string>
@@ -121,4 +122,11 @@
     <string name="adult_lock_clear">クリア</string>
     <string name="adult_lock_backspace">1文字消す</string>
     <string name="adult_lock_unlock">解除する</string>
+
+    <!-- Licenses -->
+    <string name="licenses_title">ライセンス</string>
+    <string name="licenses_source">ソースコード</string>
+    <string name="licenses_website">Webサイト</string>
+    <string name="licenses_view_license">ライセンス全文</string>
+    <string name="licenses_close">閉じる</string>
 </resources>
