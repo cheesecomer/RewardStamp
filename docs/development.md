@@ -101,6 +101,7 @@ tools/screenshots/take.sh            # docs/screenshots を置き換える。引
 
 - 端末は `ANDROID_SERIAL` で選べます（既定は最初の Android Emulator）。アプリのデータを消すので、実機では動かしません。
 - 画面を変えて操作の手順が合わなくなると失敗し、`docs/screenshots` は変えずに、撮れた分と失敗したときの画面（`failed.png`）を `build/screenshots` に残します。`ScreenshotTour` の手順を直します。
+- スクロールする画面は、スクロールで隠れている部分まで含めた画像も `NN-name-full.png` として撮ります。画面の高さを伸ばして撮り、撮り終えたら 1080×1920 に戻します。ストアには 9:16 の画像しか載せられないので、`-full` はストアには使いません。
 - ゴールの演出は時間で進むので、テストの時計（`mainClock`）を止めて、ゴールのスタンプが出たところで撮ります。ゴールのスタンプは `SEED` で変えられます（`SEED=3 tools/screenshots/take.sh`）。紙吹雪は乱数を固定できないので、スクリーンショットでは出しません。
 - `ScreenshotTour` は `-e screenshots true` を付けたときだけ動き、通常の `connectedDebugAndroidTest` では飛ばします。
 
