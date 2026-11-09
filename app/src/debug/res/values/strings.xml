@@ -1,0 +1,4 @@
+<resources>
+    <!-- Tells the debug build from the one installed from Google Play -->
+    <string name="app_name">ごほうびスタンプ（debug）</string>
+</resources>

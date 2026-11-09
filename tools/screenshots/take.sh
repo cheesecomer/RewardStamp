@@ -16,7 +16,8 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 OUT="${1:-$ROOT/docs/screenshots}"
 WORK="$ROOT/build/screenshots"
 PACKAGE="com.cheesecomer.rewardstamp"
-DEVICE_DIR="/sdcard/Android/data/$PACKAGE/files/screenshots"
+APP_ID="$PACKAGE.debug" # デバッグ版は Google Play 版と別のアプリとして入る（app/build.gradle.kts の applicationIdSuffix）
+DEVICE_DIR="/sdcard/Android/data/$APP_ID/files/screenshots"
 
 if ! command -v adb >/dev/null; then
   SDK="${ANDROID_HOME:-$(sed -n 's/^sdk\.dir=//p' "$ROOT/local.properties" 2>/dev/null)}"
@@ -38,7 +39,7 @@ trap cleanup EXIT
 
 # 1. アプリとテスト。前のデータを残さない
 (cd "$ROOT" && ./gradlew -q :app:installDebug :app:installDebugAndroidTest)
-adb shell pm clear "$PACKAGE" >/dev/null
+adb shell pm clear "$APP_ID" >/dev/null
 
 # Google Play の掲載用の比率（9:16。長辺が短辺の2倍を超える画像は載せられない）で撮る。終わったら戻す
 adb shell wm size 1080x1920
@@ -59,7 +60,7 @@ if [[ -n "${SEED:-}" ]]; then
   seed_args=(-e seed "$SEED")
 fi
 result="$(adb shell am instrument -w -e screenshots true ${seed_args[@]+"${seed_args[@]}"} -e class "$PACKAGE.screenshots.ScreenshotTour" \
-  "$PACKAGE.test/androidx.test.runner.AndroidJUnitRunner")"
+  "$APP_ID.test/androidx.test.runner.AndroidJUnitRunner")"
 rm -rf "$WORK"/*.png
 adb pull "$DEVICE_DIR/." "$WORK" >/dev/null 2>&1 || true
 if ! grep -q "^OK (1 test)" <<<"$result"; then

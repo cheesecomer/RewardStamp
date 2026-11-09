@@ -45,6 +45,8 @@ cd RewardStamp
 | リリースビルド（Google Play 用） | `./gradlew bundleRelease` |
 | 画面のスクリーンショット（ストア・README 用） | `tools/screenshots/take.sh` |
 
+debug ビルドのパッケージ名は `com.cheesecomer.rewardstamp.debug`、アプリ名は「ごほうびスタンプ（debug）」です。Google Play から入れたアプリとは別のアプリとして入るので、同じ端末に並べて入れられます。データも別々です。
+
 ## リリースビルド
 
 リポジトリ直下に `keystore.properties` を置くと、release ビルドが署名されます。このファイルとキーストアは `.gitignore` 済みで、コミットしません。ファイルがない場合、release は未署名でビルドされます。

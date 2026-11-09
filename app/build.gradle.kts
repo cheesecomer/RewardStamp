@@ -54,6 +54,10 @@ android {
     }
 
     buildTypes {
+        // Google Play から入れたアプリと並べて入れられるように、別のアプリとして入れる
+        debug {
+            applicationIdSuffix = ".debug"
+        }
         release {
             signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = false
