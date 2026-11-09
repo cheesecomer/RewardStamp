@@ -37,8 +37,8 @@ android {
         applicationId = "com.cheesecomer.rewardstamp"
         minSdk = 26
         targetSdk = 36
-        versionCode = 4
-        versionName = "0.9.3"
+        versionCode = 5
+        versionName = "0.9.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
