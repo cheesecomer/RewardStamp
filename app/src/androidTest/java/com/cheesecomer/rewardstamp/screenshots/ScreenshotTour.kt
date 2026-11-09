@@ -1,8 +1,11 @@
 package com.cheesecomer.rewardstamp.screenshots
 
 import android.graphics.Bitmap
+import android.os.ParcelFileDescriptor
 import android.os.SystemClock
 import androidx.annotation.StringRes
+import androidx.compose.ui.semantics.SemanticsProperties
+import androidx.compose.ui.semantics.getOrNull
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.hasTestTag
@@ -33,6 +36,7 @@ import com.cheesecomer.rewardstamp.feature.sheet.edit.RewardMilestoneDialogTestT
 import com.cheesecomer.rewardstamp.feature.sheet.edit.RewardMilestonesSectionTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.edit.SheetEditTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.list.SheetListTestTags
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
@@ -89,11 +93,11 @@ class ScreenshotTour {
         scenario = ActivityScenario.launch(MainActivity::class.java)
 
         waitFor(hasText(ShowcaseData.HELPING))
-        shoot("01-sheet-list")
+        shoot("01-sheet-list", full = true)
 
         click(hasTestTag(SheetListTestTags.sheetCard(data.toothbrushingId)))
         waitFor(hasText(string(R.string.sheet_detail_stamp)))
-        shoot("02-sheet-detail")
+        shoot("02-sheet-detail", full = true)
 
         click(hasText(string(R.string.sheet_detail_stamp)))
         waitFor(hasTestTag(StampPickerTestTags.stamp(StampType.Dog)))
@@ -110,7 +114,7 @@ class ScreenshotTour {
         click(hasTestTag(SheetDetailTestTags.MENU_BUTTON))
         click(hasTestTag(SheetDetailTestTags.MENU_EDIT_BUTTON))
         waitFor(hasText("どうぶつえん"))
-        shoot("06-sheet-edit")
+        shoot("06-sheet-edit", full = true)
 
         // 一覧は遅延して並べるので、画面の外のボタンは、スクロールするまで見つからない
         composeRule
@@ -127,12 +131,12 @@ class ScreenshotTour {
 
         click(hasContentDescription(string(R.string.sheet_list_create)))
         waitFor(hasTestTag(SheetEditTestTags.SAVE))
-        shoot("08-sheet-new")
+        shoot("08-sheet-new", full = true)
         backUntilGone(hasTestTag(SheetEditTestTags.SAVE))
 
         click(hasText(string(R.string.tab_rewards)))
         waitFor(hasTestTag(ExchangeableSheetCardTestTags.exchangeButton(data.toothbrushingId)))
-        shoot("09-rewards")
+        shoot("09-rewards", full = true)
 
         click(hasTestTag(ExchangeableSheetCardTestTags.exchangeButton(data.toothbrushingId)))
         waitFor(hasTestTag(ChoiceRewardDialogTestTags.ROOT))
@@ -141,17 +145,17 @@ class ScreenshotTour {
 
         click(hasText(string(R.string.tab_history)))
         waitFor(hasTestTag(CompletedSheetListTestTags.gridItem(data.featuredCompletedSheetId)))
-        shoot("11-history")
+        shoot("11-history", full = true)
 
         click(hasTestTag(CompletedSheetListTestTags.gridItem(data.featuredCompletedSheetId)))
         waitFor(hasTestTag(CompletedSheetDetailTestTags.TITLE_LABEL))
-        shoot("12-history-detail")
+        shoot("12-history-detail", full = true)
 
         // おとなロックをオンにして撮り、シートでスタンプを押そうとして、解除の問題を撮る
         click(hasText(string(R.string.tab_settings)))
         click(hasTestTag(SettingsTestTags.ADULT_LOCK_SWITCH))
-        waitFor(hasTestTag(SettingsTestTags.STAMP_LOCK_SWITCH))
-        shoot("13-settings")
+        waitFor(hasTestTag(SettingsTestTags.lockTarget(LockTarget.Stamp)))
+        shoot("13-settings", full = true)
 
         click(hasText(string(R.string.tab_sheets)))
         click(hasTestTag(SheetListTestTags.sheetCard(data.toothbrushingId)))
@@ -259,9 +263,79 @@ class ScreenshotTour {
         composeRule.waitForIdle()
     }
 
-    private fun shoot(name: String) {
+    /** [full] のときは、スクロールして見える部分まで含めた画面も「名前-full」で撮る（スクロールしない画面では撮らない） */
+    private fun shoot(
+        name: String,
+        full: Boolean = false,
+    ) {
         settle()
         capture(name)
+        if (full) shootFull("$name-full")
+    }
+
+    /**
+     * 画面を縦に伸ばして、スクロールで隠れている部分がなくなったところを撮り、元の大きさに戻す。
+     * 遅延して並べる一覧はスクロールできる量がピクセルでないので、収まるまで伸ばしてから、余白が残らないように縮める
+     */
+    private fun shootFull(name: String) {
+        if (hiddenHeight() == 0) return
+        val (width, height) = windowSize()
+        try {
+            var tooShort = height
+            var fits = height
+            while (hiddenHeight() > 0) {
+                if (fits >= height * MAX_FULL_SCREENS) {
+                    capture(FAILED)
+                    error("伸ばしてもスクロールが残る: $name")
+                }
+                tooShort = fits
+                fits = minOf(fits + maxOf(hiddenHeight(), FULL_STEP), height * MAX_FULL_SCREENS)
+                resize(width, fits)
+            }
+            while (fits - tooShort > FULL_PRECISION) {
+                val middle = (tooShort + fits) / 2
+                resize(width, middle)
+                if (hiddenHeight() > 0) tooShort = middle else fits = middle
+            }
+            resize(width, fits)
+            capture(name)
+        } finally {
+            resize(width, height)
+        }
+    }
+
+    /** 画面の中で一番多くスクロールできる量（ふつうは px、遅延して並べる一覧は項目の数）。スクロールしない画面では 0 */
+    private fun hiddenHeight(): Int =
+        composeRule
+            .onAllNodes(SemanticsMatcher.keyIsDefined(SemanticsProperties.VerticalScrollAxisRange))
+            .fetchSemanticsNodes()
+            .maxOfOrNull { node ->
+                val range = node.config.getOrNull(SemanticsProperties.VerticalScrollAxisRange) ?: return@maxOfOrNull 0f
+                range.maxValue() - range.value()
+            }?.let { kotlin.math.ceil(it).toInt() } ?: 0
+
+    /** 画面の大きさ。take.sh が変えた大きさ（Override size）があればそれ */
+    private fun windowSize(): Pair<Int, Int> {
+        val output = shell("wm size")
+        val size =
+            checkNotNull(Regex("""Override size: (\d+)x(\d+)""").find(output) ?: Regex("""Physical size: (\d+)x(\d+)""").find(output)) {
+                "画面の大きさがわからない: $output"
+            }
+        return size.groupValues[1].toInt() to size.groupValues[2].toInt()
+    }
+
+    private fun shell(command: String): String =
+        ParcelFileDescriptor.AutoCloseInputStream(instrumentation.uiAutomation.executeShellCommand(command)).use {
+            it.readBytes().decodeToString()
+        }
+
+    /** 画面の大きさを変えて、描き直されるのを待つ（take.sh が最後に元へ戻す） */
+    private fun resize(
+        width: Int,
+        height: Int,
+    ) {
+        shell("wm size ${width}x$height")
+        settle()
     }
 
     /** 画面全体（ダイアログやシートの別ウィンドウも含む）を撮る */
@@ -279,6 +353,9 @@ class ScreenshotTour {
         const val FRAME_MILLIS = 16L
         const val SHOWCASE_ENTER_MILLIS = 700L
         const val PNG_QUALITY = 100
+        const val FULL_STEP = 480
+        const val FULL_PRECISION = 8
+        const val MAX_FULL_SCREENS = 6
         const val FAILED = "failed"
         const val DEFAULT_SEED = 1
         val TODAY: LocalDate = LocalDate.of(2026, 11, 1)

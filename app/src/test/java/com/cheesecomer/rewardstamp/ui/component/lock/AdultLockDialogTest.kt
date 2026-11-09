@@ -126,7 +126,7 @@ class AdultLockDialogTest {
         }
         composeTestRule.onNodeWithTag(AdultLockDialogTestTags.ROOT).assertDoesNotExist()
 
-        composeTestRule.runOnIdle { state.runUnlocked(LockTarget.ParentAction) { unlocked = true } }
+        composeTestRule.runOnIdle { state.runUnlocked(LockTarget.Stamp) { unlocked = true } }
         composeTestRule.onNodeWithTag(AdultLockDialogTestTags.ROOT).assertExists()
 
         composeTestRule.unlock(state)

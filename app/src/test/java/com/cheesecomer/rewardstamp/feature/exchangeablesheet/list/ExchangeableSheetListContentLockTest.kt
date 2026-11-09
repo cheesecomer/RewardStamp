@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.exchangeableSheet
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.ui.component.dialog.ExchangeDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
@@ -41,7 +42,7 @@ class ExchangeableSheetListContentLockTest {
 
     @Test
     fun exchange_asksAdultBeforeChoosingReward() {
-        setContent(AppSettings(adultLockEnabled = true))
+        setContent(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.RewardExchange)))
 
         composeTestRule.onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(7L)).performClick()
 
@@ -54,8 +55,8 @@ class ExchangeableSheetListContentLockTest {
     }
 
     @Test
-    fun exchange_doesNotAskWhenUnlocked() {
-        setContent(AppSettings(adultLockEnabled = false))
+    fun exchange_doesNotAskWhenNotChosen() {
+        setContent(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.Stamp)))
 
         composeTestRule.onNodeWithTag(ExchangeableSheetCardTestTags.exchangeButton(7L)).performClick()
 

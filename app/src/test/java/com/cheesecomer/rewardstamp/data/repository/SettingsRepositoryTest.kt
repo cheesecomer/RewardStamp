@@ -1,14 +1,18 @@
 package com.cheesecomer.rewardstamp.data.repository
 
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.cheesecomer.rewardstamp.data.InMemoryPreferencesDataStore
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
 class SettingsRepositoryTest {
-    private val repository = SettingsRepository(InMemoryPreferencesDataStore())
+    private val dataStore = InMemoryPreferencesDataStore()
+    private val repository = SettingsRepository(dataStore)
 
     @Test
     fun settings_defaultsToEffectsOnAndAdultLockOff() =
@@ -19,7 +23,7 @@ class SettingsRepositoryTest {
                         vibrationEnabled = true,
                         goalCelebrationEnabled = true,
                         adultLockEnabled = false,
-                        stampLockEnabled = true,
+                        lockTargets = setOf(LockTarget.Stamp),
                     ),
                 )
         }
@@ -51,10 +55,33 @@ class SettingsRepositoryTest {
         }
 
     @Test
-    fun setStampLockEnabled_updatesSettings() =
+    fun setLockTarget_addsAndRemovesTargets() =
         runTest {
-            repository.setStampLockEnabled(false)
+            repository.setLockTarget(LockTarget.RewardExchange, locked = true)
 
-            assertThat(repository.settings.first().stampLockEnabled).isFalse()
+            assertThat(repository.settings.first().lockTargets)
+                .containsExactly(LockTarget.Stamp, LockTarget.RewardExchange)
+
+            repository.setLockTarget(LockTarget.Stamp, locked = false)
+
+            assertThat(repository.settings.first().lockTargets)
+                .containsExactly(LockTarget.RewardExchange)
+        }
+
+    @Test
+    fun setLockTarget_keepsEmptyTargets() =
+        runTest {
+            repository.setLockTarget(LockTarget.Stamp, locked = false)
+
+            assertThat(repository.settings.first().lockTargets).isEmpty()
+        }
+
+    @Test
+    fun settings_ignoresUnknownLockTargets() =
+        runTest {
+            dataStore.edit { it[stringSetPreferencesKey("lock_targets")] = setOf("Removed", "HistoryDelete") }
+
+            assertThat(repository.settings.first().lockTargets)
+                .containsExactly(LockTarget.HistoryDelete)
         }
 }

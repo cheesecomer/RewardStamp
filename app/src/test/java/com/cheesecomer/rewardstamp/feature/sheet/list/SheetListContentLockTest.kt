@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
 import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
@@ -44,7 +45,7 @@ class SheetListContentLockTest {
 
     @Test
     fun createSheet_asksAdultWhenLocked() {
-        setContent(AppSettings(adultLockEnabled = true))
+        setContent(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.SheetEdit)))
 
         composeTestRule.onNodeWithContentDescription("シートを作る").performClick()
 
@@ -57,8 +58,8 @@ class SheetListContentLockTest {
     }
 
     @Test
-    fun createSheet_doesNotAskWhenUnlocked() {
-        setContent(AppSettings(adultLockEnabled = false))
+    fun createSheet_doesNotAskWhenNotChosen() {
+        setContent(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.Stamp)))
 
         composeTestRule.onNodeWithContentDescription("シートを作る").performClick()
 

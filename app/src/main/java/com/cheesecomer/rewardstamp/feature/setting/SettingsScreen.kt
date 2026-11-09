@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.toggleable
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -20,7 +19,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -51,10 +49,9 @@ import com.cheesecomer.rewardstamp.ui.theme.RewardStampTheme
 import com.cheesecomer.rewardstamp.ui.theme.SheetBorder
 
 private val RowMinHeight = 56.dp
-private const val SUB_SETTINGS_ALPHA = 0.5f
 
 @Composable
-private fun SettingsSection(
+internal fun SettingsSection(
     title: String,
     modifier: Modifier = Modifier,
     content: @Composable ColumnScope.() -> Unit,
@@ -71,7 +68,7 @@ private fun SettingsSection(
 }
 
 @Composable
-private fun SettingsSwitchRow(
+internal fun SettingsSwitchRow(
     label: String,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
@@ -164,40 +161,6 @@ private fun SettingsValueRow(
 }
 
 @Composable
-private fun AdultLockSection(
-    settings: AppSettings,
-    onAdultLockChange: (Boolean) -> Unit,
-    onStampLockChange: (Boolean) -> Unit,
-) {
-    SettingsSection(title = stringResource(R.string.settings_adult_lock_title)) {
-        SettingsSwitchRow(
-            label = stringResource(R.string.settings_adult_lock_enabled),
-            supportingText = stringResource(R.string.settings_adult_lock_description),
-            checked = settings.adultLockEnabled,
-            onCheckedChange = onAdultLockChange,
-            modifier = Modifier.testTag(SettingsTestTags.ADULT_LOCK_SWITCH),
-        )
-        if (settings.adultLockEnabled) {
-            Surface(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                shape = RoundedCornerShape(12.dp),
-                color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = SUB_SETTINGS_ALPHA),
-            ) {
-                SettingsSwitchRow(
-                    label = stringResource(R.string.settings_stamp_lock),
-                    checked = settings.stampLockEnabled,
-                    onCheckedChange = onStampLockChange,
-                    modifier =
-                        Modifier
-                            .padding(horizontal = 12.dp)
-                            .testTag(SettingsTestTags.STAMP_LOCK_SWITCH),
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun EffectsSection(
     settings: AppSettings,
     onVibrationChange: (Boolean) -> Unit,
@@ -271,14 +234,14 @@ internal fun SettingsContent(
     onVibrationChange: (Boolean) -> Unit = {},
     onGoalCelebrationChange: (Boolean) -> Unit = {},
     onAdultLockChange: (Boolean) -> Unit = {},
-    onStampLockChange: (Boolean) -> Unit = {},
+    onLockTargetChange: (LockTarget, Boolean) -> Unit = { _, _ -> },
     onLicensesClick: () -> Unit = {},
     adultLock: AdultLockState = rememberAdultLockState(settings),
 ) {
     AdultLockDialog(adultLock)
     // While the lock is on, the lock settings change only after unlocking, which lasts until the screen is left
     val changeLockSetting = { change: () -> Unit ->
-        adultLock.runUnlocked(LockTarget.ParentAction, keepsUnlocked = true, action = change)
+        adultLock.runUnlocked(LockTarget.LockSettings, keepsUnlocked = true, action = change)
     }
     RewardStampScaffold(
         title = stringResource(R.string.settings_title),
@@ -295,7 +258,7 @@ internal fun SettingsContent(
             AdultLockSection(
                 settings = settings,
                 onAdultLockChange = { enabled -> changeLockSetting { onAdultLockChange(enabled) } },
-                onStampLockChange = { enabled -> changeLockSetting { onStampLockChange(enabled) } },
+                onLockTargetChange = { target, locked -> changeLockSetting { onLockTargetChange(target, locked) } },
             )
             EffectsSection(
                 settings = settings,
@@ -329,7 +292,7 @@ fun SettingsScreen(
         onVibrationChange = viewModel::setVibrationEnabled,
         onGoalCelebrationChange = viewModel::setGoalCelebrationEnabled,
         onAdultLockChange = viewModel::setAdultLockEnabled,
-        onStampLockChange = viewModel::setStampLockEnabled,
+        onLockTargetChange = viewModel::setLockTarget,
         onLicensesClick = onLicensesClick,
         adultLock = rememberAppAdultLockState(),
     )
