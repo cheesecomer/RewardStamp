@@ -145,6 +145,30 @@ class RewardStampNavHostTest {
         composeTestRule.onNodeWithText("settings").assertExists()
     }
 
+    @Test
+    fun navigatesToLicensesFromSettings() {
+        navController.navigate(Route.SETTINGS)
+
+        composeTestRule.onNodeWithText("open licenses").performClick()
+
+        verify(navigator).toLicenses()
+    }
+
+    @Test
+    fun navigatesToLicenses() {
+        navController.navigate(Route.LICENSES)
+        composeTestRule.onNodeWithText("licenses").assertExists()
+    }
+
+    @Test
+    fun navigatesBackFromLicenses() {
+        navController.navigate(Route.LICENSES)
+
+        composeTestRule.onNodeWithText("back from licenses").performClick()
+
+        verify(navigator).back()
+    }
+
     private class FakeScreenFactory : ScreenFactory {
         @Composable
         override fun SheetList(
@@ -251,10 +275,25 @@ class RewardStampNavHostTest {
         }
 
         @Composable
-        override fun Settings() {
+        override fun Settings(onLicensesClick: () -> Unit) {
             Scaffold {
                 Column(modifier = Modifier.padding(it)) {
                     Text("settings")
+                    Button(onClick = onLicensesClick) {
+                        Text("open licenses")
+                    }
+                }
+            }
+        }
+
+        @Composable
+        override fun Licenses(onBackClick: () -> Unit) {
+            Scaffold {
+                Column(modifier = Modifier.padding(it)) {
+                    Text("licenses")
+                    Button(onClick = onBackClick) {
+                        Text("back from licenses")
+                    }
                 }
             }
         }

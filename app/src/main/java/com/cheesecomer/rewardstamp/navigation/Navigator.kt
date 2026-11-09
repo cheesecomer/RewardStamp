@@ -20,6 +20,8 @@ interface Navigator {
 
     fun toSettings()
 
+    fun toLicenses()
+
     fun back()
 }
 
@@ -69,6 +71,10 @@ class NavControllerNavigator(
 
     override fun toSettings() {
         navController.navigateTopLevel(Route.SETTINGS)
+    }
+
+    override fun toLicenses() {
+        navController.navigate(Route.LICENSES)
     }
 
     override fun back() {

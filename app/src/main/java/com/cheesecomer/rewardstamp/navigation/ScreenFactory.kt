@@ -5,6 +5,7 @@ import com.cheesecomer.rewardstamp.annotation.ExcludeFromCoverage
 import com.cheesecomer.rewardstamp.feature.completedsheet.detail.CompletedSheetDetailScreen
 import com.cheesecomer.rewardstamp.feature.completedsheet.list.CompletedSheetListScreen
 import com.cheesecomer.rewardstamp.feature.exchangeablesheet.list.ExchangeableSheetListScreen
+import com.cheesecomer.rewardstamp.feature.license.LicenseListScreen
 import com.cheesecomer.rewardstamp.feature.setting.SettingsScreen
 import com.cheesecomer.rewardstamp.feature.sheet.detail.SheetDetailScreen
 import com.cheesecomer.rewardstamp.feature.sheet.edit.SheetEditScreen
@@ -46,7 +47,10 @@ interface ScreenFactory {
     )
 
     @Composable
-    fun Settings()
+    fun Settings(onLicensesClick: () -> Unit)
+
+    @Composable
+    fun Licenses(onBackClick: () -> Unit)
 }
 
 @ExcludeFromCoverage
@@ -116,7 +120,16 @@ object RewardStampScreenFactory : ScreenFactory {
     }
 
     @Composable
-    override fun Settings() {
-        SettingsScreen()
+    override fun Settings(onLicensesClick: () -> Unit) {
+        SettingsScreen(
+            onLicensesClick = onLicensesClick,
+        )
+    }
+
+    @Composable
+    override fun Licenses(onBackClick: () -> Unit) {
+        LicenseListScreen(
+            onBackClick = onBackClick,
+        )
     }
 }

@@ -71,6 +71,12 @@ class RouteTest {
     }
 
     @Test
+    fun bottomTabReturnsSettingsForLicensesRoute() {
+        assertThat(Route.bottomTab(Route.LICENSES))
+            .isEqualTo(BottomTab.Settings)
+    }
+
+    @Test
     fun bottomTabReturnsNullForUnknownRoute() {
         assertThat(Route.bottomTab("unknown"))
             .isNull()

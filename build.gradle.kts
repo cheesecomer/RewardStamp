@@ -6,4 +6,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.test.logger) apply false
     alias(libs.plugins.kover) apply false
+    alias(libs.plugins.aboutlibraries.android) apply false
 }

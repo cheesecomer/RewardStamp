@@ -13,6 +13,7 @@ plugins {
     alias(libs.plugins.kover)
 
     alias(libs.plugins.paparazzi)
+    alias(libs.plugins.aboutlibraries.android)
 }
 
 // リリース署名の設定。ファイルがなければ release は未署名でビルドされる
@@ -127,6 +128,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.konfetti.compose)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.aboutlibraries.compose.m3)
     ksp(libs.androidx.room.compiler)
     ktlintRuleset(libs.ktlint.compose.rules)
 }
@@ -137,6 +139,13 @@ ktlint {
 
     filter {
         exclude("**/*.gradle.kts")
+    }
+}
+
+// ライセンス表示に使う。ライブラリでない素材（フォントなど）は config/aboutlibraries に置く
+aboutLibraries {
+    collect {
+        configPath = file("config/aboutlibraries")
     }
 }
 
