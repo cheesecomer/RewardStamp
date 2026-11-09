@@ -153,7 +153,7 @@ internal fun ExchangeableSheetListContent(
                     ExchangeableSheetCard(
                         sheet,
                         onRewardReceiveClick = {
-                            adultLock.runUnlocked(LockTarget.ParentAction) {
+                            adultLock.runUnlocked(LockTarget.RewardExchange) {
                                 showExchangeDialog = sheet.rewardSheet.id
                             }
                         },

@@ -94,7 +94,7 @@ private fun DeleteAction(
     var showDialog by remember { mutableStateOf(false) }
 
     IconButton(
-        onClick = { adultLock.runUnlocked(LockTarget.ParentAction) { showDialog = true } },
+        onClick = { adultLock.runUnlocked(LockTarget.HistoryDelete) { showDialog = true } },
         modifier = Modifier.testTag(CompletedSheetDetailTestTags.DELETE_BUTTON),
     ) {
         Icon(

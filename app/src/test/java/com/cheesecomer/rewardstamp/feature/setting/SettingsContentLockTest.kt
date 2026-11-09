@@ -10,6 +10,7 @@ import androidx.compose.ui.test.junit4.v2.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
 import com.cheesecomer.rewardstamp.ui.component.lock.rememberAdultLockState
@@ -40,7 +41,10 @@ class SettingsContentLockTest {
                     settings = settings,
                     versionName = "1.0.0",
                     onAdultLockChange = { settings = settings.copy(adultLockEnabled = it) },
-                    onStampLockChange = { settings = settings.copy(stampLockEnabled = it) },
+                    onLockTargetChange = { target, locked ->
+                        settings =
+                            settings.copy(lockTargets = if (locked) settings.lockTargets + target else settings.lockTargets - target)
+                    },
                     adultLock = adultLock,
                 )
             }
@@ -53,29 +57,40 @@ class SettingsContentLockTest {
     }
 
     @Test
-    fun adultLockOff_hidesStampLockAndTurnsOnWithoutAsking() {
+    fun adultLockOff_hidesTargetsAndTurnsOnWithoutAsking() {
         setContent(AppSettings(adultLockEnabled = false))
-        composeTestRule.onNodeWithTag(SettingsTestTags.STAMP_LOCK_SWITCH).assertDoesNotExist()
+        composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(LockTarget.Stamp)).assertDoesNotExist()
 
         composeTestRule.onNodeWithTag(SettingsTestTags.ADULT_LOCK_SWITCH).performClick()
 
         assertAsking(false)
         composeTestRule.onNodeWithTag(SettingsTestTags.ADULT_LOCK_SWITCH).assertIsOn()
-        composeTestRule.onNodeWithTag(SettingsTestTags.STAMP_LOCK_SWITCH).assertIsOn()
+        // Only stamping is chosen at first
+        composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(LockTarget.Stamp)).assertIsOn()
+        listOf(LockTarget.RewardExchange, LockTarget.SheetEdit, LockTarget.HistoryDelete).forEach { target ->
+            composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(target)).assertIsOff()
+        }
+        composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(LockTarget.LockSettings)).assertDoesNotExist()
     }
 
     @Test
     fun adultLockOn_asksOnceBeforeChangingLockSettings() {
         setContent(AppSettings(adultLockEnabled = true))
 
-        composeTestRule.onNodeWithTag(SettingsTestTags.STAMP_LOCK_SWITCH).performClick()
+        val stamp = composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(LockTarget.Stamp))
+        stamp.performClick()
         assertAsking(true)
-        composeTestRule.onNodeWithTag(SettingsTestTags.STAMP_LOCK_SWITCH).assertIsOn()
+        stamp.assertIsOn()
 
         composeTestRule.unlock(adultLock)
-        composeTestRule.onNodeWithTag(SettingsTestTags.STAMP_LOCK_SWITCH).assertIsOff()
+        stamp.assertIsOff()
 
         // The unlock lasts while the screen is open
+        val exchange = composeTestRule.onNodeWithTag(SettingsTestTags.lockTarget(LockTarget.RewardExchange))
+        exchange.performClick()
+        assertAsking(false)
+        exchange.assertIsOn()
+
         composeTestRule.onNodeWithTag(SettingsTestTags.ADULT_LOCK_SWITCH).performClick()
         assertAsking(false)
         composeTestRule.onNodeWithTag(SettingsTestTags.ADULT_LOCK_SWITCH).assertIsOff()

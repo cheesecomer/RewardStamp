@@ -7,12 +7,12 @@ import org.junit.Test
 import kotlin.random.Random
 
 class AdultLockStateTest {
-    private var settings = AppSettings(adultLockEnabled = true)
+    private var settings = AppSettings(adultLockEnabled = true, lockTargets = LockTarget.selectable.toSet())
     private val state = AdultLockState(settings = { settings }, random = Random(0))
     private var runCount = 0
 
     private fun run(
-        target: LockTarget = LockTarget.ParentAction,
+        target: LockTarget = LockTarget.SheetEdit,
         keepsUnlocked: Boolean = false,
     ) {
         state.runUnlocked(target, keepsUnlocked) { runCount++ }
@@ -92,7 +92,7 @@ class AdultLockStateTest {
 
         run(LockTarget.Stamp, keepsUnlocked = true)
         assertThat(runCount).isEqualTo(2)
-        assertThat(state.isLocked(LockTarget.ParentAction)).isTrue()
+        assertThat(state.isLocked(LockTarget.SheetEdit)).isTrue()
 
         state.lock(LockTarget.Stamp)
         run(LockTarget.Stamp, keepsUnlocked = true)
@@ -104,7 +104,7 @@ class AdultLockStateTest {
     fun followsSettingsChanges() {
         assertThat(state.isLocked(LockTarget.Stamp)).isTrue()
 
-        settings = settings.copy(stampLockEnabled = false)
+        settings = settings.copy(lockTargets = setOf(LockTarget.SheetEdit))
 
         assertThat(state.isLocked(LockTarget.Stamp)).isFalse()
     }

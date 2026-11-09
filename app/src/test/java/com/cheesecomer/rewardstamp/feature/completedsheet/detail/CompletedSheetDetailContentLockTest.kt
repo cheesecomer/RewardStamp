@@ -5,6 +5,7 @@ import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.completedRewardSheet
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockState
@@ -30,7 +31,8 @@ class CompletedSheetDetailContentLockTest {
     fun delete_asksAdultBeforeConfirming() {
         composeTestRule.setContent {
             RewardStampTheme {
-                adultLock = rememberAdultLockState(AppSettings(adultLockEnabled = true), Random(0))
+                adultLock =
+                    rememberAdultLockState(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.HistoryDelete)), Random(0))
                 CompletedSheetDetailContent(
                     sheet = completedRewardSheet(),
                     stamps = emptyList(),

@@ -110,8 +110,13 @@
     <string name="settings_licenses">ライセンス</string>
     <string name="settings_adult_lock_title">おとなロック</string>
     <string name="settings_adult_lock_enabled">おとなロックを使う</string>
-    <string name="settings_adult_lock_description">シートの編集や削除、ごほうびの交換の前に、かんたんな問題を出します</string>
-    <string name="settings_stamp_lock">スタンプを押すときもロックする</string>
+    <string name="settings_adult_lock_description">選んだ操作の前に、計算問題を出します</string>
+    <string name="settings_lock_targets_title">ロックする操作</string>
+    <string name="settings_lock_target_stamp">スタンプを押す</string>
+    <string name="settings_lock_target_reward_exchange">ごほうびを交換する</string>
+    <string name="settings_lock_target_sheet_edit">シートの作成・編集・削除</string>
+    <string name="settings_lock_target_sheet_edit_note">スタンプの変更・取り消しも含みます</string>
+    <string name="settings_lock_target_history_delete">きろくを削除する</string>
 
     <!-- Adult lock -->
     <string name="adult_lock_title">保護者の方へ</string>

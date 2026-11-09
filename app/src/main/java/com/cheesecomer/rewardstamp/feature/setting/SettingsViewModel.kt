@@ -3,6 +3,7 @@ package com.cheesecomer.rewardstamp.feature.setting
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cheesecomer.rewardstamp.data.repository.SettingsRepository
+import com.cheesecomer.rewardstamp.model.LockTarget
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -41,9 +42,12 @@ class SettingsViewModel(
         }
     }
 
-    fun setStampLockEnabled(enabled: Boolean) {
+    fun setLockTarget(
+        target: LockTarget,
+        locked: Boolean,
+    ) {
         viewModelScope.launch {
-            settingsRepository.setStampLockEnabled(enabled)
+            settingsRepository.setLockTarget(target, locked)
         }
     }
 }

@@ -3,6 +3,7 @@ package com.cheesecomer.rewardstamp.feature.setting
 import com.cheesecomer.rewardstamp.data.InMemoryPreferencesDataStore
 import com.cheesecomer.rewardstamp.data.repository.SettingsRepository
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -59,13 +60,13 @@ class SettingsViewModelTest {
         }
 
     @Test
-    fun setStampLockEnabled_savesAndUpdatesState() =
+    fun setLockTarget_savesAndUpdatesState() =
         runTest {
             val viewModel = SettingsViewModel(settingsRepository)
 
-            viewModel.setStampLockEnabled(false)
+            viewModel.setLockTarget(LockTarget.SheetEdit, locked = true)
 
-            assertThat(settingsRepository.settings.first().stampLockEnabled).isFalse()
-            assertThat(viewModel.uiState.value.settings.stampLockEnabled).isFalse()
+            assertThat(settingsRepository.settings.first().lockTargets).contains(LockTarget.SheetEdit)
+            assertThat(viewModel.uiState.value.settings.lockTargets).contains(LockTarget.SheetEdit)
         }
 }

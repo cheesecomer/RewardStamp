@@ -208,7 +208,7 @@ private fun SheetDetailBody(
 }
 
 private val SheetDetailDialog.lockTarget: LockTarget
-    get() = if (this == SheetDetailDialog.Stamp) LockTarget.Stamp else LockTarget.ParentAction
+    get() = if (this == SheetDetailDialog.Stamp) LockTarget.Stamp else LockTarget.SheetEdit
 
 @Composable
 private fun SheetDetailLoaded(
@@ -256,7 +256,7 @@ private fun SheetDetailLoaded(
         onBackClick = onBackClick,
         actions = {
             SheetDetailMenu(
-                onEditClick = { adultLock.runUnlocked(LockTarget.ParentAction, action = onEditClick) },
+                onEditClick = { adultLock.runUnlocked(LockTarget.SheetEdit, action = onEditClick) },
                 onDeleteClick = { openDialog(SheetDetailDialog.Delete) },
             )
         },
@@ -264,7 +264,7 @@ private fun SheetDetailLoaded(
         if (sheet.isCompleted && stampAnimationState.isFinished) {
             CongratulationDialog(
                 onDismissRequest = onRestartClick,
-                onEditButtonClick = { adultLock.runUnlocked(LockTarget.ParentAction, action = onRestartWithEditClick) },
+                onEditButtonClick = { adultLock.runUnlocked(LockTarget.SheetEdit, action = onRestartWithEditClick) },
                 exchangeableRewards = exchangeableRewards,
                 lockedRewards = lockedRewards,
                 modifier = Modifier.testTag(CongratulationDialogTestTags.ROOT),

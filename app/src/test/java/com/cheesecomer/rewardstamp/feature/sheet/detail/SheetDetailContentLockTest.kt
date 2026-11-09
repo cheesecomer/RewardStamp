@@ -6,6 +6,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.model.AppSettings
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.dialog.DeleteSheetDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
@@ -32,7 +33,7 @@ class SheetDetailContentLockTest {
     private var restartWithEditClicked = false
 
     private fun setContent(
-        settings: AppSettings = AppSettings(adultLockEnabled = true),
+        settings: AppSettings = AppSettings(adultLockEnabled = true, lockTargets = LockTarget.selectable.toSet()),
         currentCount: Int = 0,
     ) {
         composeTestRule.setContent {
@@ -81,8 +82,8 @@ class SheetDetailContentLockTest {
     }
 
     @Test
-    fun stamp_isLeftToChildrenWhenStampLockIsOff() {
-        setContent(AppSettings(adultLockEnabled = true, stampLockEnabled = false))
+    fun stamp_isLeftToChildrenWhenNotChosen() {
+        setContent(AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.SheetEdit)))
 
         clickStampButton()
 
@@ -100,6 +101,17 @@ class SheetDetailContentLockTest {
 
         composeTestRule.unlock(adultLock)
 
+        assertThat(editClicked).isTrue()
+    }
+
+    @Test
+    fun edit_isNotAskedByDefault() {
+        setContent(AppSettings(adultLockEnabled = true))
+
+        composeTestRule.onNodeWithTag(SheetDetailTestTags.MENU_BUTTON).performClick()
+        composeTestRule.onNodeWithTag(SheetDetailTestTags.MENU_EDIT_BUTTON).performClick()
+
+        assertAsking(false)
         assertThat(editClicked).isTrue()
     }
 

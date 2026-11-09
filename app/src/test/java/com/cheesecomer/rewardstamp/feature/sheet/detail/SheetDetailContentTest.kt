@@ -15,6 +15,7 @@ import com.cheesecomer.rewardstamp.data.rewardSheet
 import com.cheesecomer.rewardstamp.data.rewardStamp
 import com.cheesecomer.rewardstamp.model.AppSettings
 import com.cheesecomer.rewardstamp.model.GoalStampType
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.RewardStamp
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.BoardLayoutMetrics
@@ -530,7 +531,7 @@ class SheetDetailContentTest {
     // The unlock dialog is taller than the default screen of Robolectric
     @Config(qualifiers = "w411dp-h891dp")
     fun longPressStamp_asksAdultWhenLocked() {
-        setStampedContent(settings = AppSettings(adultLockEnabled = true))
+        setStampedContent(settings = AppSettings(adultLockEnabled = true, lockTargets = setOf(LockTarget.SheetEdit)))
 
         longPressStamp(1)
         composeTestRule

@@ -106,7 +106,7 @@ internal fun SheetListContent(
         modifier = modifier,
         floatingActionButton = {
             FloatingCreateSheetButton(
-                onClick = { adultLock.runUnlocked(LockTarget.ParentAction, action = onCreateSheetClick) },
+                onClick = { adultLock.runUnlocked(LockTarget.SheetEdit, action = onCreateSheetClick) },
             )
         },
     ) { innerPadding ->

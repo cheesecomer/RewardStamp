@@ -33,6 +33,7 @@ import com.cheesecomer.rewardstamp.feature.sheet.edit.RewardMilestoneDialogTestT
 import com.cheesecomer.rewardstamp.feature.sheet.edit.RewardMilestonesSectionTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.edit.SheetEditTestTags
 import com.cheesecomer.rewardstamp.feature.sheet.list.SheetListTestTags
+import com.cheesecomer.rewardstamp.model.LockTarget
 import com.cheesecomer.rewardstamp.model.StampType
 import com.cheesecomer.rewardstamp.ui.component.dialog.ChoiceRewardDialogTestTags
 import com.cheesecomer.rewardstamp.ui.component.lock.AdultLockDialogTestTags
@@ -150,7 +151,7 @@ class ScreenshotTour {
         // おとなロックをオンにして撮り、シートでスタンプを押そうとして、解除の問題を撮る
         click(hasText(string(R.string.tab_settings)))
         click(hasTestTag(SettingsTestTags.ADULT_LOCK_SWITCH))
-        waitFor(hasTestTag(SettingsTestTags.STAMP_LOCK_SWITCH))
+        waitFor(hasTestTag(SettingsTestTags.lockTarget(LockTarget.Stamp)))
         shoot("13-settings")
 
         click(hasText(string(R.string.tab_sheets)))
